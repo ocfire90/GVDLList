@@ -139,7 +139,7 @@ props: ['indexFile'],
     }),
     computed: {
         level() {
-            return this.list[this.selected][0];
+            return this.list[this.selected]?.[0] || null;
         },
         video() {
             if (!this.level.showcase) {
@@ -155,7 +155,7 @@ props: ['indexFile'],
     },
     async mounted() {
         // Hide loading spinner
-        this.list = await fetchList();
+        this.list = await fetchList(this.indexFile || '_list.json');
         this.editors = await fetchEditors();
 
         // Error handling

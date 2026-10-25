@@ -16,6 +16,7 @@ const roleIconMap = {
 
 export default {
     components: { Spinner, LevelAuthors },
+props: ['indexFile'],
     template: `
         <main v-if="loading">
             <Spinner></Spinner>

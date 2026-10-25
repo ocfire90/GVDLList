@@ -4,18 +4,37 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
         <title>GVDL - GRAB VR Demon List</title>
 
-        <link rel="stylesheet" href="./css/reset.css" />
-        <link rel="stylesheet" href="./css/typography.css" />
-        <link rel="stylesheet" href="./css/main.css" />
-        <link rel="stylesheet" href="./css/pages/list.css" />
-        <link rel="stylesheet" href="./css/pages/leaderboard.css" />
-        <link rel="stylesheet" href="./css/pages/roulette.css" />
-        <link rel="stylesheet" href="./css/components/nav.css" />
-        <link rel="stylesheet" href="./css/components/btn.css" />
-        <link rel="stylesheet" href="./css/components/tabs.css" />
+        <link rel="icon" href="./list_icon.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+
+        <link rel="stylesheet" type="text/css" href="./css/reset.css" />
+        <link rel="stylesheet" type="text/css" href="./css/typography.css" />
+        <link rel="stylesheet" type="text/css" href="./css/main.css" />
+        <link rel="stylesheet" type="text/css" href="./css/pages/list.css" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="./css/pages/leaderboard.css"
+        />
+        <link rel="stylesheet" type="text/css" href="./css/pages/roulette.css" />
+        <link rel="stylesheet" type="text/css" href="./css/components/nav.css" />
+        <link rel="stylesheet" type="text/css" href="./css/components/btn.css" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="./css/components/tabs.css"
+        />
+
+        <script src="https://unpkg.com/vue@3.2.31/dist/vue.global.js"></script>
+        <script src="https://unpkg.com/vue-router@4.0.14/dist/vue-router.global.prod.js"></script>
+        <script type="module" src="./js/main.js"></script>
     </head>
 
     <body id="app">
@@ -27,6 +46,10 @@
 
             <nav class="nav">
                 <div class="nav__list-selector">
+
+
+
+
                     <select
                         id="list-selector"
                         class="nav__dropdown"
@@ -65,11 +88,7 @@
                     </button>
 
                     <!-- Add your Discord invite link here -->
-                    <a
-                        class="nav__icon"
-                        href="#"
-                        aria-label="Discord"
-                    >
+                    <a class="nav__icon" href="#" aria-label="Discord">
                         <img src="./assets/discord.svg" alt="Discord Logo" />
                     </a>
 
@@ -90,28 +109,5 @@
             :key="$route.path"
             :class="{ dark: store.dark }"
         ></router-view>
-
-        <script type="module">
-            import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
-            import { createRouter, createWebHashHistory } from 'https://unpkg.com/vue-router@4/dist/vue-router.esm-browser.js';
-
-            import routes from './js/routes.js';
-            import store from './js/store.js';
-
-            const router = createRouter({
-                history: createWebHashHistory(),
-                routes,
-            });
-
-            createApp({
-                data() {
-                    return {
-                        store,
-                    };
-                },
-            })
-                .use(router)
-                .mount('#app');
-        </script>
     </body>
 </html>

@@ -1,109 +1,60 @@
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>GVDL - GRAB VR Demon List</title>
-
-        <link rel="icon" href="./list_icon.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;500;600;700&display=swap"
-            rel="stylesheet"
-        />
-
-        <link rel="stylesheet" type="text/css" href="./css/reset.css" />
-        <link rel="stylesheet" type="text/css" href="./css/typography.css" />
-        <link rel="stylesheet" type="text/css" href="./css/main.css" />
-        <link rel="stylesheet" type="text/css" href="./css/pages/list.css" />
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="./css/pages/leaderboard.css"
-        />
-        <link rel="stylesheet" type="text/css" href="./css/pages/roulette.css" />
-        <link rel="stylesheet" type="text/css" href="./css/components/nav.css" />
-        <link rel="stylesheet" type="text/css" href="./css/components/btn.css" />
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="./css/components/tabs.css"
-        />
-
-        <script src="https://unpkg.com/vue@3.2.31/dist/vue.global.js"></script>
-        <script src="https://unpkg.com/vue-router@4.0.14/dist/vue-router.global.prod.js"></script>
-        <script type="module" src="./js/main.js"></script>
-    </head>
-
-    <body id="app">
-        <header :class="{ dark: store.dark }">
-            <div class="logo">
-                <h2>GVDL</h2>
-                <p>GRAB VR Demon List</p>
+        <nav class="nav">
+            <div class="nav__list-selector">
+                <select
+                    id="list-selector"
+                    class="nav__dropdown"
+                    :value="['/leaderboard', '/roulette'].includes($route.path) ? '' : $route.path"
+                    @change="$router.push($event.target.value)"
+                >
+                    <option value="" disabled>
+                        Choose a list
+                    </option>
+                    <option value="/">Main List</option>
+                    <option value="/platformer">Platformer</option>
+                    <option value="/challenge">Challenge</option>
+                    <option value="/created">Created</option>
+                    <option value="/upcoming">Upcoming</option>
+                </select>
             </div>
 
-            <nav class="nav">
-                <div class="nav__list-selector">
-                    <select
-                        id="list-selector"
-                        class="nav__dropdown"
-                        :value="['/leaderboard', '/roulette'].includes($route.path) ? '' : $route.path"
-                        @change="$router.push($event.target.value)"
-                    >
-                        <option value="" disabled>
-                            Choose a list
-                        </option>
-                        <option value="/">Main List</option>
-                        <option value="/platformer">Platformer</option>
-                        <option value="/challenge">Challenge</option>
-                        <option value="/created">Created</option>
-                        <option value="/upcoming">Upcoming</option>
-                    </select>
-                </div>
+            <router-link class="nav__tab" to="/leaderboard">
+                <span class="type-label-lg">Leaderboard</span>
+            </router-link>
 
-                <router-link class="nav__tab" to="/leaderboard">
-                    <span class="type-label-lg">Leaderboard</span>
-                </router-link>
+            <router-link class="nav__tab" to="/roulette">
+                <span class="type-label-lg">Roulette</span>
+            </router-link>
 
-                <router-link class="nav__tab" to="/roulette">
-                    <span class="type-label-lg">Roulette</span>
-                </router-link>
+            <div class="nav__actions">
+                <button
+                    class="nav__icon"
+                    @click.prevent="store.toggleDark()"
+                    aria-label="Toggle light and dark mode"
+                >
+                    <img
+                        :src="store.dark ? './assets/light.svg' : './assets/dark.svg'"
+                        alt=""
+                    />
+                </button>
 
-                <div class="nav__actions">
-                    <button
-                        class="nav__icon"
-                        @click.prevent="store.toggleDark()"
-                        aria-label="Toggle light and dark mode"
-                    >
-                        <img
-                            :src="store.dark ? './assets/light.svg' : './assets/dark.svg'"
-                            alt=""
-                        />
-                    </button>
+                <!-- Add your Discord invite link here -->
+                <a
+                    class="nav__icon"
+                    href="#"
+                    aria-label="Discord"
+                >
+                    <img src="./assets/discord.svg" alt="Discord Logo" />
+                </a>
 
-                    <!-- Add your Discord invite link here -->
-                    <a class="nav__icon" href="#" aria-label="Discord">
-                        <img src="./assets/discord.svg" alt="Discord Logo" />
-                    </a>
-
-                    <!-- Add your record submission form link here -->
-                    <a
-                        class="nav__cta type-label-lg"
-                        href="#"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Submit Record
-                    </a>
-                </div>
-            </nav>
-        </header>
-
-        <router-view
-            :key="$route.path"
-            :class="{ dark: store.dark }"
-        ></router-view>
-    </body>
-</html>
+                <!-- Add your record submission form link here -->
+                <a
+                    class="nav__cta type-label-lg"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Submit Record
+                </a>
+            </div>
+        </nav>

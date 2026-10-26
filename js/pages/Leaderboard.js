@@ -98,12 +98,32 @@ export default {
         },
     },
     async mounted() {
-        const [leaderboard, err] = await fetchLeaderboard();
-        this.leaderboard = leaderboard;
-        this.err = err;
-        // Hide loading spinner
-        this.loading = false;
-    },
+        const listFiles = {
+            main: '_list.json',
+            created: '_created.json',
+            challenge: '_challenge.json',
+            platformer: '_platformer.json',
+        };
+    
+        const indexFile = listFiles[store.activeList];
+    
+        if (!indexFile) {
+            this.leaderboard = [];
+            this.err = ['The leaderboard is unavailable for this list.'];
+            this.loading = false;
+            return;
+        }
+
+    const [leaderboard, err] = await fetchLeaderboard(indexFile);
+    this.leaderboard = leaderboard;
+    this.err = err;
+
+    if (this.leaderboard.length === 0) {
+        this.selected = 0;
+    }
+
+    this.loading = false;
+},
     methods: {
         localize,
     },

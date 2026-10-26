@@ -1,4 +1,4 @@
-
+    
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -66,10 +66,13 @@
 
                 </div>
 
-                <router-link class="nav__tab" to="/leaderboard">
+                <router-link
+                    v-if="!['upcoming', 'legacy'].includes(store.activeList)"
+                    class="nav__tab"
+                    to="/leaderboard"
+                >
                     <span class="type-label-lg">Leaderboard</span>
                 </router-link>
-
                 <router-link class="nav__tab" to="/roulette">
                     <span class="type-label-lg">Roulette</span>
                 </router-link>

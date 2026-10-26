@@ -53,7 +53,7 @@
                         id="list-selector"
                         class="nav__dropdown"
                         :value="store.activeList"
-                        @change="store.setActiveList($event.target.value)"
+                        @change="store.setActiveList($event.target.value); $router.push(({ main: '/', platformer: '/platformer', challenge: '/challenge', created: '/created', upcoming: '/upcoming', legacy: '/legacy' })[$event.target.value])"
                     >
                         <option value="/">Main List</option>
                         <option value="/platformer">Platformer</option>

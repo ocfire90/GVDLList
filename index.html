@@ -52,8 +52,8 @@
                     <select
                         id="list-selector"
                         class="nav__dropdown"
-                        :value="['/leaderboard', '/roulette'].includes($route.path) ? '/' : $route.path"
-                        @change="$router.push($event.target.value)"
+                        :value="store.activeList"
+                        @change="store.setActiveList($event.target.value)"
                     >
                         <option value="/">Main List</option>
                         <option value="/platformer">Platformer</option>

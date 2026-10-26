@@ -46,8 +46,12 @@ export async function fetchEditors() {
     }
 }
 
-export async function fetchLeaderboard() {
-    const list = await fetchList();
+export async function fetchLeaderboard(indexFile = '_list.json') {
+    const list = await fetchList(indexFile);
+
+    if (!list) {
+        return [[], ['Failed to load list.']];
+    }
 
     const scoreMap = {};
     const errs = [];

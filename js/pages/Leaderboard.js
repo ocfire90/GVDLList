@@ -1,5 +1,6 @@
 import { fetchLeaderboard } from '../content.js';
 import { localize } from '../util.js';
+import { store } from '../main.js';
 
 import Spinner from '../components/Spinner.js';
 
@@ -12,6 +13,7 @@ export default {
         loading: true,
         selected: 0,
         err: [],
+        store,
     }),
     template: `
         <main v-if="loading">

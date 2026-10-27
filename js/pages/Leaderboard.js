@@ -1,3 +1,4 @@
+
 import { fetchLeaderboard } from '../content.js';
 import { localize } from '../util.js';
 import { store } from '../main.js';
@@ -43,7 +44,7 @@ export default {
                         </tr>
                     </table>
                 </div>
-                <div class="player-container">
+                <div class="player-container" v-if="entry">
                     <div class="player">
                         <h1>#{{ selected + 1 }} {{ entry.user }}</h1>
                         <h3>{{ entry.total }}</h3>
@@ -106,9 +107,9 @@ export default {
             challenge: '_challenge.json',
             platformer: '_platformer.json',
         };
-    
+
         const indexFile = listFiles[store.activeList];
-    
+
         if (!indexFile) {
             this.leaderboard = [];
             this.err = ['The leaderboard is unavailable for this list.'];
@@ -116,16 +117,18 @@ export default {
             return;
         }
 
-    const [leaderboard, err] = await fetchLeaderboard(indexFile);
-    this.leaderboard = leaderboard;
-    this.err = err;
-
-    if (this.leaderboard.length === 0) {
-        this.selected = 0;
-    }
-
-    this.loading = false;
-},
+        try {
+            const [leaderboard, err] = await fetchLeaderboard(indexFile);
+            this.leaderboard = leaderboard;
+            this.err = err;
+        } catch (error) {
+            console.error('Failed to load leaderboard:', error);
+            this.leaderboard = [];
+            this.err = ['Failed to load leaderboard. Please try again.'];
+        } finally {
+            this.loading = false;
+        }
+    },
     methods: {
         localize,
     },

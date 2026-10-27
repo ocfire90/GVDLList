@@ -40,34 +40,41 @@ main {
     color: var(--color-on-background);
     display: grid;
     grid-template-columns: minmax(18rem, 1.1fr) minmax(16rem, 2fr) minmax(16rem, 1fr);
-            16em,
-            1fr
-        );
     column-gap: 2rem;
 }
 
 header {
     display: flex;
-    padding-inline: calc(25vw - 11rem);
-    height: 4rem;
+    align-items: center;
+    gap: 2rem;
+    padding-inline: 2rem;
+    min-height: 4rem;
+    box-sizing: border-box;
     background-color: var(--color-primary);
     color: var(--color-on-primary);
 }
-@media screen and (min-width: 1366px) {
-    header {
-        display: grid;
-        padding-inline: 0;
-    }
-}
+
 header .logo {
-    justify-self: end;
-    align-self: center;
     display: flex;
     align-items: flex-end;
     gap: 1rem;
+    flex-shrink: 0;
 }
+
 header .nav {
+    display: flex;
+    align-items: center;
     flex: 1;
+    min-width: 0;
+    column-gap: 2rem;
+}
+
+header .nav__actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
 }
 
 main {
@@ -77,6 +84,7 @@ main {
     grid-template-rows: minmax(0, 1fr);
     column-gap: 2rem;
 }
+
 main > div {
     overflow-y: auto;
 }

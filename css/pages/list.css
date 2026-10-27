@@ -137,14 +137,11 @@
     background: rgba(229, 179, 65, 0.12);
     border-radius: 6px;
 }
-
 .first-victor strong,
 .first-victor span {
-    color: inherit;
-    font-size: inherit;
-    font-family: inherit;
-    font-weight: inherit;
+    font-family: "Manrope", sans-serif;
 }
+
 .first-victor strong {
     color: #e5b341;
     font-weight: bold;

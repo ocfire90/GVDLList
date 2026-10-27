@@ -146,3 +146,24 @@
     color: #e5b341;
     font-weight: bold;
 }
+
+.achievement-label {
+    display: inline-block;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    font-family: "Manrope", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.verifier-label {
+    color: #b9f6ca;
+    background: #176b36;
+}
+
+.first-victor-label {
+    color: #ffe5a0;
+    background: #765414;
+}

@@ -1,3 +1,4 @@
+
 import { round, score } from './score.js';
 
 /**
@@ -55,66 +56,100 @@ export async function fetchLeaderboard(indexFile = '_list.json') {
 
     const scoreMap = {};
     const errs = [];
+
+    // Match player names without case sensitivity
+    const getUser = (name) =>
+        Object.keys(scoreMap).find(
+            (user) => user.toLowerCase() === name.toLowerCase(),
+        ) || name;
+
+    // Create a leaderboard entry if one does not exist
+    const ensureUser = (name) => {
+        const user = getUser(name);
+
+        scoreMap[user] ??= {
+            completed: [],
+            progressed: [],
+        };
+
+        return scoreMap[user];
+    };
+
     list.forEach(([level, err], rank) => {
         if (err) {
             errs.push(err);
             return;
         }
 
+        const levelRank = rank + 1;
+        const levelScore = score(
+            levelRank,
+            100,
+            level.percentToQualify,
+        );
+
         // Verification
-        const verifier = Object.keys(scoreMap).find(
-            (u) => u.toLowerCase() === level.verifier.toLowerCase(),
-        ) || level.verifier;
-        scoreMap[verifier] ??= {
-            verified: [],
-            completed: [],
-            progressed: [],
-        };
-        const { verified } = scoreMap[verifier];
-        verified.push({
-            rank: rank + 1,
+        const verifierScores = ensureUser(level.verifier);
+
+        verifierScores.completed.push({
+            rank: levelRank,
             level: level.name,
-            score: score(rank + 1, 100, level.percentToQualify),
+            score: levelScore,
             link: level.verification,
+            type: 'verifier',
         });
 
-        // Records
+        // First victor
+        if (level.firstVictor) {
+            const firstVictorScores = ensureUser(level.firstVictor);
+
+            firstVictorScores.completed.push({
+                rank: levelRank,
+                level: level.name,
+                score: levelScore,
+                link: '',
+                type: 'first-victor',
+            });
+        }
+
+        // Player records
         level.records.forEach((record) => {
-            const user = Object.keys(scoreMap).find(
-                (u) => u.toLowerCase() === record.user.toLowerCase(),
-            ) || record.user;
-            scoreMap[user] ??= {
-                verified: [],
-                completed: [],
-                progressed: [],
-            };
-            const { completed, progressed } = scoreMap[user];
+            const playerScores = ensureUser(record.user);
+
             if (record.percent === 100) {
-                completed.push({
-                    rank: rank + 1,
+                playerScores.completed.push({
+                    rank: levelRank,
                     level: level.name,
-                    score: score(rank + 1, 100, level.percentToQualify),
+                    score: levelScore,
                     link: record.link,
+                    type: 'completion',
                 });
+
                 return;
             }
 
-            progressed.push({
-                rank: rank + 1,
+            playerScores.progressed.push({
+                rank: levelRank,
                 level: level.name,
                 percent: record.percent,
-                score: score(rank + 1, record.percent, level.percentToQualify),
+                score: score(
+                    levelRank,
+                    record.percent,
+                    level.percentToQualify,
+                ),
                 link: record.link,
             });
         });
     });
 
-    // Wrap in extra Object containing the user and total score
+    // Calculate each player's total score
     const res = Object.entries(scoreMap).map(([user, scores]) => {
-        const { verified, completed, progressed } = scores;
-        const total = [verified, completed, progressed]
-            .flat()
-            .reduce((prev, cur) => prev + cur.score, 0);
+        const { completed, progressed } = scores;
+
+        const total = [...completed, ...progressed].reduce(
+            (previous, current) => previous + current.score,
+            0,
+        );
 
         return {
             user,
@@ -123,6 +158,7 @@ export async function fetchLeaderboard(indexFile = '_list.json') {
         };
     });
 
-    // Sort by total score
+    // Sort by total score, highest first
     return [res.sort((a, b) => b.total - a.total), errs];
 }
+

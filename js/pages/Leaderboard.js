@@ -53,8 +53,10 @@ export default {
                             Completions ({{ entry.completed.length }})
                         </h2>
                         <table class="table">
-                            <tr v-for="(item, index) in entry.completed"
-                                :key="item.rank + '-' + item.type + '-' + index">
+                            <tr
+                                v-for="(item, index) in entry.completed"
+                                :key="item.rank + '-' + item.type + '-' + index"
+                            >
                                 <td class="rank">
                                     <p>#{{ item.rank }}</p>
                                 </td>
@@ -66,7 +68,9 @@ export default {
                                         rel="noopener noreferrer"
                                         :href="item.link"
                                     >{{ item.level }}</a>
-                                    <span v-else class="type-label-lg">{{ item.level }}</span>
+                                    <span v-else class="type-label-lg">
+                                        {{ item.level }}
+                                    </span>
                                 </td>
                                 <td class="score">
                                     <span
@@ -86,7 +90,10 @@ export default {
                             Progressed ({{ entry.progressed.length }})
                         </h2>
                         <table class="table">
-                            <tr v-for="item in entry.progressed" :key="item.rank + '-' + item.percent">
+                            <tr
+                                v-for="item in entry.progressed"
+                                :key="item.rank + '-' + item.percent"
+                            >
                                 <td class="rank">
                                     <p>#{{ item.rank }}</p>
                                 </td>
@@ -112,14 +119,12 @@ export default {
             </div>
         </main>
     `,
-        methods: {
-                localize,
-        },
-        computed: {
-            entry() {
-                return this.leaderboard[this.selected];
+    methods: {
+        localize,
     },
-},
+    computed: {
+        entry() {
+            return this.leaderboard[this.selected];
         },
     },
     async mounted() {

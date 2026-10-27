@@ -120,7 +120,7 @@ export default {
         </main>
     `,
     methods: {
-        localize,
+        localize
     },
     computed: {
         entry() {

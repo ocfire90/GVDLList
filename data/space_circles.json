@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Space Circles",
+    "author": "SUOMI",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 119,
+    "difficulty": "Easy",
+    "enjoyment": "D",
+    "pointsReward": "3.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

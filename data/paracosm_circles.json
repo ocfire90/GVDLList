@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Paracosm Circles",
+    "author": "N1XO",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 54,
+    "difficulty": "Medium",
+    "enjoyment": "C+",
+    "pointsReward": "43.6",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

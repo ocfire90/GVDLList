@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Through the Decay",
+    "author": "sparktwo",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 8,
+    "difficulty": "Extreme -",
+    "enjoyment": "F",
+    "pointsReward": "265.8",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

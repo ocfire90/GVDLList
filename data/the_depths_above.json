@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "The Depths Above",
+    "author": "Bram4real",
+    "creators": [],
+    "verifier": "Duskt1lldawn",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 5,
+    "difficulty": "Extreme -",
+    "enjoyment": "S",
+    "pointsReward": "299.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "ZXCircleS",
+    "author": "Winnter",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 79,
+    "difficulty": "Easy",
+    "enjoyment": "B+",
+    "pointsReward": "16.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

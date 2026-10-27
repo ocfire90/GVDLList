@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Starquake",
+    "author": "Mask463",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 144,
+    "difficulty": "Easy",
+    "enjoyment": "D",
+    "pointsReward": "1.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Not a Phobia",
+    "author": "Enzore",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 93,
+    "difficulty": "Easy",
+    "enjoyment": "D",
+    "pointsReward": "9.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

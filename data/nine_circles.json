@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Nine Circles",
+    "author": "Zobros",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duckdabro",
+    "spreadsheetRank": 26,
+    "difficulty": "Hard",
+    "enjoyment": "C+",
+    "pointsReward": "131",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

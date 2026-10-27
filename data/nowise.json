@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Nowise",
+    "author": "Darwin",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 31,
+    "difficulty": "Hard",
+    "enjoyment": "B+",
+    "pointsReward": "107.6",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

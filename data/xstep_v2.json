@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "XStep V2",
+    "author": "IIINeptuneIII",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duckdabro",
+    "spreadsheetRank": 140,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "1.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

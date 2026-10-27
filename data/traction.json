@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Traction",
+    "author": "FerdeFunky",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 114,
+    "difficulty": "Easy",
+    "enjoyment": "D",
+    "pointsReward": "4.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

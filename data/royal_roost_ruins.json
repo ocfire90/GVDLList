@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Royal Roost Ruins",
+    "author": "Clubfuberz",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "XenolithGRAB",
+    "spreadsheetRank": 102,
+    "difficulty": "Easy",
+    "enjoyment": "S+",
+    "pointsReward": "6.6",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

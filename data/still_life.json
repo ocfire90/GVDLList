@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Still Life",
+    "author": "Empika",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 73,
+    "difficulty": "Medium",
+    "enjoyment": "A+",
+    "pointsReward": "20.6",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

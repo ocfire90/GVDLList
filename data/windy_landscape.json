@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Windy Landscape",
+    "author": "WOOGI1411",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duckdabro",
+    "spreadsheetRank": 15,
+    "difficulty": "Insane",
+    "enjoyment": "C+",
+    "pointsReward": "201.8",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

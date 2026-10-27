@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Space Factory",
+    "author": "FacusGG",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 24,
+    "difficulty": "Hard",
+    "enjoyment": "B",
+    "pointsReward": "141.7",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

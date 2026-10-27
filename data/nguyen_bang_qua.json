@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "nguyen bang qua",
+    "author": "Emily419",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 53,
+    "difficulty": "Medium",
+    "enjoyment": "S+",
+    "pointsReward": "45.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

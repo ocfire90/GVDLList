@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Potal",
+    "author": "Sillow",
+    "creators": [],
+    "verifier": "Daduckbro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 68,
+    "difficulty": "Medium",
+    "enjoyment": "C",
+    "pointsReward": "25.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

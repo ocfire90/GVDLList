@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Radient Rift",
+    "author": "IvyTeal",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 90,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "10.6",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "SkullduGGerY",
+    "author": "alkali",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 107,
+    "difficulty": "Easy",
+    "enjoyment": "A",
+    "pointsReward": "5.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

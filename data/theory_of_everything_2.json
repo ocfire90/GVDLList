@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Theory of Everything 2",
+    "author": "RobtopGames",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "FitArtist334071",
+    "spreadsheetRank": 141,
+    "difficulty": "Easy",
+    "enjoyment": "C",
+    "pointsReward": "1.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Neozenith",
+    "author": "F5Night",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 40,
+    "difficulty": "Medium",
+    "enjoyment": "D",
+    "pointsReward": "75.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

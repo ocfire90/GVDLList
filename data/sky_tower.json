@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Sky Tower",
+    "author": "Rafer",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 82,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "14.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

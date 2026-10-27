@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Ozone Glass",
+    "author": "",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 118,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "3.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

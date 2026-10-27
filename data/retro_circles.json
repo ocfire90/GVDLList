@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Retro Circles",
+    "author": "Nacho21",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "V0YAG3R",
+    "spreadsheetRank": 133,
+    "difficulty": "Easy",
+    "enjoyment": "F",
+    "pointsReward": "2",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

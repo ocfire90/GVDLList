@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Requiem",
+    "author": "FunnyGame",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 135,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "1.8",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

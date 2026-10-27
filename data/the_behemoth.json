@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "The Behemoth",
+    "author": "Jacobroso",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 61,
+    "difficulty": "Medium",
+    "enjoyment": "A",
+    "pointsReward": "33.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

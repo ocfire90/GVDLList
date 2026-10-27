@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "rauchkammer",
+    "author": "devilmine",
+    "creators": [],
+    "verifier": "V0YAG3R",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 9,
+    "difficulty": "Extreme -",
+    "enjoyment": "C",
+    "pointsReward": "255.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

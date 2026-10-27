@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Sea Hunter",
+    "author": "DaVyZ",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 131,
+    "difficulty": "Easy",
+    "enjoyment": "C",
+    "pointsReward": "2.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

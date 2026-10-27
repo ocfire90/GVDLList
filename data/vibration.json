@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Vibration",
+    "author": "Schady",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 113,
+    "difficulty": "Easy",
+    "enjoyment": "D",
+    "pointsReward": "4.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Sweater Weather",
+    "author": "VelYT",
+    "creators": [],
+    "verifier": "Kleptominer",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duskt1lldawn",
+    "spreadsheetRank": 6,
+    "difficulty": "Extreme -",
+    "enjoyment": "B",
+    "pointsReward": "287.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

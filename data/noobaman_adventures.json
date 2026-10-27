@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "noobaman adventures",
+    "author": "noobas",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 145,
+    "difficulty": "Easy",
+    "enjoyment": "D",
+    "pointsReward": "1.2",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

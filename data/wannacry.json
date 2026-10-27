@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "WANNACRY",
+    "author": "kira9999",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 69,
+    "difficulty": "Medium",
+    "enjoyment": "A+",
+    "pointsReward": "24.2",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

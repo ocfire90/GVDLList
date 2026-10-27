@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Problematic",
+    "author": "Dhafin",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duckdabro",
+    "spreadsheetRank": 88,
+    "difficulty": "Easy",
+    "enjoyment": "C+",
+    "pointsReward": "11.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

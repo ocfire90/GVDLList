@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "weird",
+    "author": "",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 112,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "4.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

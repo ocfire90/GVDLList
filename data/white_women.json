@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "White Women",
+    "author": "heatherhayes",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Dabritishcamel",
+    "spreadsheetRank": 32,
+    "difficulty": "Hard -",
+    "enjoyment": "A",
+    "pointsReward": "103.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

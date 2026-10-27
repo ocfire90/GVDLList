@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Puzzle Trials",
+    "author": "FunnyGame",
+    "creators": [],
+    "verifier": "FitArtist334071",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 19,
+    "difficulty": "Insane -",
+    "enjoyment": "A",
+    "pointsReward": "172.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

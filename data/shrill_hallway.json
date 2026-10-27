@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Shrill Hallway",
+    "author": "Nico99",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 59,
+    "difficulty": "Medium",
+    "enjoyment": "C",
+    "pointsReward": "35.8",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

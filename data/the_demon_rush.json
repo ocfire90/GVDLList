@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "The Demon Rush",
+    "author": "TEO",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 43,
+    "difficulty": "Medium",
+    "enjoyment": "C+",
+    "pointsReward": "67.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

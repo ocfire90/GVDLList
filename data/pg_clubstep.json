@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "PG Clubstep",
+    "author": "PG1004",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 22,
+    "difficulty": "Hard +",
+    "enjoyment": "C+",
+    "pointsReward": "153.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

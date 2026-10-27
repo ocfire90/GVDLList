@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Sidestep",
+    "author": "Chase",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 77,
+    "difficulty": "Easy",
+    "enjoyment": "F",
+    "pointsReward": "17.6",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

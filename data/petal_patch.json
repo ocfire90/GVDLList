@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Petal Patch",
+    "author": "Ghotstav",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "XenolithGRAB",
+    "spreadsheetRank": 109,
+    "difficulty": "Easy",
+    "enjoyment": "D",
+    "pointsReward": "5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

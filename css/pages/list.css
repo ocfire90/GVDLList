@@ -141,8 +141,10 @@
 .first-victor strong {
     color: #e5b341;
     font-size: 0.95rem;
+    font-family: inherit;
 }
 
 .first-victor span {
     font-size: 1rem;
+    font-family: inherit;
 }

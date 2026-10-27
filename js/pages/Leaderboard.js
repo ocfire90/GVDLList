@@ -112,9 +112,14 @@ export default {
             </div>
         </main>
     `,
-    computed: {
-        entry() {
-            return this.leaderboard[this.selected];
+        methods: {
+                localize,
+        },
+        computed: {
+            entry() {
+                return this.leaderboard[this.selected];
+    },
+},
         },
     },
     async mounted() {

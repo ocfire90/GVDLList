@@ -1,3 +1,4 @@
+
 import { store } from "../main.js";
 import { embed } from "../util.js";
 import { score } from "../score.js";
@@ -16,7 +17,7 @@ const roleIconMap = {
 
 export default {
     components: { Spinner, LevelAuthors },
-props: ['indexFile'],
+    props: ['indexFile'],
     template: `
         <main v-if="loading">
             <Spinner></Spinner>
@@ -56,10 +57,18 @@ props: ['indexFile'],
                             <p>{{ level.password || 'Free to Copy' }}</p>
                         </li>
                     </ul>
+
                     <h2>Records</h2>
+
+                    <div v-if="level.firstVictor" class="first-victor">
+                        <strong>🏆 First Victor</strong>
+                        <span>{{ level.firstVictor }}</span>
+                    </div>
+
                     <p v-if="selected + 1 <= 75"><strong>{{ level.percentToQualify }}%</strong> or better to qualify</p>
-                    <p v-else-if="selected +1 <= 150"><strong>100%</strong> or better to qualify</p>
+                    <p v-else-if="selected + 1 <= 150"><strong>100%</strong> or better to qualify</p>
                     <p v-else>This level does not accept new records.</p>
+
                     <table class="records">
                         <tr v-for="record in level.records" class="record">
                             <td class="percent">
@@ -154,11 +163,9 @@ props: ['indexFile'],
         },
     },
     async mounted() {
-        // Hide loading spinner
         this.list = await fetchList(this.indexFile || '_list.json');
         this.editors = await fetchEditors();
 
-        // Error handling
         if (!this.list) {
             this.errors = [
                 "Failed to load list. Retry in a few minutes or notify list staff.",
@@ -168,7 +175,7 @@ props: ['indexFile'],
                 ...this.list
                     .filter(([_, err]) => err)
                     .map(([_, err]) => {
-                        return `Failed to load level. (${err}.json)`;
+                        return \`Failed to load level. (\${err}.json)\`;
                     })
             );
             if (!this.editors) {

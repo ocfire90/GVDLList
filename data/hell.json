@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "HeLL",
+    "author": "Serponge",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "XenolithGRAB",
+    "spreadsheetRank": 67,
+    "difficulty": "Medium",
+    "enjoyment": "D",
+    "pointsReward": "26.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

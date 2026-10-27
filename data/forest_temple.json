@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Forest Temple",
+    "author": "Michigun",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 20,
+    "difficulty": "Hard +",
+    "enjoyment": "C",
+    "pointsReward": "165.8",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

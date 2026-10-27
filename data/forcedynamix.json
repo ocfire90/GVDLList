@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "ForceDynamix",
+    "author": "Minesap",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 51,
+    "difficulty": "Medium",
+    "enjoyment": "C",
+    "pointsReward": "49",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Dashplorers",
+    "author": "RuebeXPX",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 35,
+    "difficulty": "Hard -",
+    "enjoyment": "B+",
+    "pointsReward": "91.9",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

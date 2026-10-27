@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Motion",
+    "author": "TamaN",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "XenolithGRAB",
+    "spreadsheetRank": 99,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "7.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

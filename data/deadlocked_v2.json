@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Deadlocked v2",
+    "author": "Iid4sh3riI",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 37,
+    "difficulty": "Medium",
+    "enjoyment": "D",
+    "pointsReward": "85",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

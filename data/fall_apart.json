@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Fall Apart",
+    "author": "Bli",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 94,
+    "difficulty": "Easy",
+    "enjoyment": "S+",
+    "pointsReward": "9",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

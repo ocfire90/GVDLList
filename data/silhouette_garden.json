@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Silhouette Garden",
+    "author": "Vizitek",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 91,
+    "difficulty": "Easy",
+    "enjoyment": "C",
+    "pointsReward": "10.2",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

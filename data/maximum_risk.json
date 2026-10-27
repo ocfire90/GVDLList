@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Maximum Risk",
+    "author": "FunnyGame",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 150,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

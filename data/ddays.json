@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Ddays",
+    "author": "ThisIsPailyn",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 143,
+    "difficulty": "Easy",
+    "enjoyment": "B+",
+    "pointsReward": "1.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

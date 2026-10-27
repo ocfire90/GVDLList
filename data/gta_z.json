@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "GTA Z",
+    "author": "EVILF",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 149,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

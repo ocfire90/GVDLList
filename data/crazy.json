@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "CraZy",
+    "author": "DavJT",
+    "creators": [],
+    "verifier": "FitArtist334071",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Ax0lotl3",
+    "spreadsheetRank": 21,
+    "difficulty": "Hard +",
+    "enjoyment": "C+",
+    "pointsReward": "159.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

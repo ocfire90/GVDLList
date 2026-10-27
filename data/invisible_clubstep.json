@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Invisible Clubstep",
+    "author": "J4cKy",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "V0YAG3R",
+    "spreadsheetRank": 127,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "2.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

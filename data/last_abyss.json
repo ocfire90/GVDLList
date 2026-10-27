@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Last Abyss",
+    "author": "TroxxP1",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 81,
+    "difficulty": "Easy",
+    "enjoyment": "B+",
+    "pointsReward": "15.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

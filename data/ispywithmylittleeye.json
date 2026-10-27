@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "ISpyWithMyLittleEye",
+    "author": "Voxicat",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "XenolithGRAB",
+    "spreadsheetRank": 104,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "6.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "BISMARCK",
+    "author": "Inex",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 71,
+    "difficulty": "Medium",
+    "enjoyment": "B+",
+    "pointsReward": "22.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

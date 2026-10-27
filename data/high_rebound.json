@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "High Rebound",
+    "author": "Howler",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 125,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "2.7",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

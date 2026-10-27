@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Ablaze",
+    "author": "Wav",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 89,
+    "difficulty": "Easy",
+    "enjoyment": "S+",
+    "pointsReward": "11",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

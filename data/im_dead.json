@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Im Dead",
+    "author": "Danke",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 83,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "13.9",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

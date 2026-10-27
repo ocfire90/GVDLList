@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "MAYMORY",
+    "author": "ItzKiba",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 110,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "4.8",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

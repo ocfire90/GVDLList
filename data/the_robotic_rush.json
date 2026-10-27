@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "The Robotic Rush",
+    "author": "AndromedaGMD",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 108,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "5.2",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Demon Forest",
+    "author": "KeTis",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 147,
+    "difficulty": "Easy",
+    "enjoyment": "C",
+    "pointsReward": "1.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Blitz",
+    "author": "RHadium",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 52,
+    "difficulty": "Medium",
+    "enjoyment": "S",
+    "pointsReward": "47.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

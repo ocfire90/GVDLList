@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "MANIAC",
+    "author": "eridani",
+    "creators": [],
+    "verifier": "BurningAlpaca",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 2,
+    "difficulty": "Extreme +",
+    "enjoyment": "B",
+    "pointsReward": "336.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

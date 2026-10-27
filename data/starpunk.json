@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "STARPUNK",
+    "author": "Ferdefunky",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 117,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "3.7",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

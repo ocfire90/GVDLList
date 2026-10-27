@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Beautiful Place",
+    "author": "wdlucas",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 39,
+    "difficulty": "Medium",
+    "enjoyment": "S",
+    "pointsReward": "78.6",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

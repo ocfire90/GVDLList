@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Death Moon",
+    "author": "Caustic",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duckdabro",
+    "spreadsheetRank": 80,
+    "difficulty": "Easy",
+    "enjoyment": "S+",
+    "pointsReward": "15.7",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

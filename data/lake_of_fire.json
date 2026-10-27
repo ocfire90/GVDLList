@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Lake of Fire",
+    "author": "weoweoteo",
+    "creators": [],
+    "verifier": "Ax0lotl3",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 30,
+    "difficulty": "Hard",
+    "enjoyment": "B+",
+    "pointsReward": "111.9",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

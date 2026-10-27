@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Change of Scene",
+    "author": "Bli",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "XenolithGRAB",
+    "spreadsheetRank": 103,
+    "difficulty": "Easy",
+    "enjoyment": "S+",
+    "pointsReward": "6.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

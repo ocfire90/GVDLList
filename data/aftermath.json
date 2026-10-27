@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Aftermath",
+    "author": "IIExenityII",
+    "creators": [],
+    "verifier": "Kleptominer",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 3,
+    "difficulty": "Extreme",
+    "enjoyment": "C",
+    "pointsReward": "323.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

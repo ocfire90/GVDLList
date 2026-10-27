@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "infinite circles",
+    "author": "startor",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "XenolithGRAB",
+    "spreadsheetRank": 100,
+    "difficulty": "Easy",
+    "enjoyment": "F-",
+    "pointsReward": "7.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Acopalypse Eye",
+    "author": "Mask463",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 132,
+    "difficulty": "Easy",
+    "enjoyment": "D",
+    "pointsReward": "2",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

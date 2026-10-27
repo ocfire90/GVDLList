@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Stalemate",
+    "author": "Nox",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 18,
+    "difficulty": "Insane -",
+    "enjoyment": "B",
+    "pointsReward": "179.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

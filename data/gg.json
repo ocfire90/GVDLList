@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "GG",
+    "author": "Mulpan",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 146,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "1.2",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

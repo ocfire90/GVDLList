@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Theory of Everything V2",
+    "author": "Experience D",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 116,
+    "difficulty": "Easy",
+    "enjoyment": "C",
+    "pointsReward": "3.8",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

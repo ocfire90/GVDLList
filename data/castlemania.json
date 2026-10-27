@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "CastleMania",
+    "author": "Serponge",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 36,
+    "difficulty": "Medium",
+    "enjoyment": "A+",
+    "pointsReward": "88.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

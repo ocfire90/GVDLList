@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Bloodbath",
+    "author": "Riot",
+    "creators": [],
+    "verifier": "Kleptominer",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duskt1lldawn",
+    "spreadsheetRank": 1,
+    "difficulty": "Extreme +",
+    "enjoyment": "A",
+    "pointsReward": "350",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

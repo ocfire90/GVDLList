@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Extinction",
+    "author": "Haos",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "V0YAG3R",
+    "spreadsheetRank": 78,
+    "difficulty": "Easy",
+    "enjoyment": "D",
+    "pointsReward": "17",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

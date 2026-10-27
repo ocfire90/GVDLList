@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Death Step",
+    "author": "FunnyGame",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 28,
+    "difficulty": "Hard",
+    "enjoyment": "C+",
+    "pointsReward": "121.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "DEEP BLUE SEA",
+    "author": "Custi",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 74,
+    "difficulty": "Medium",
+    "enjoyment": "B",
+    "pointsReward": "19.8",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

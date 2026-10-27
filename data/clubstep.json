@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Clubstep",
+    "author": "RobtopGames",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "fortniteman67",
+    "spreadsheetRank": 128,
+    "difficulty": "Easy",
+    "enjoyment": "B+",
+    "pointsReward": "2.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Crazy Bolt",
+    "author": "FunnyGame",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 124,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "2.8",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Skeletal Shenanigans",
+    "author": "YoReid",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duckdabro",
+    "spreadsheetRank": 60,
+    "difficulty": "Medium",
+    "enjoyment": "S+",
+    "pointsReward": "34.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

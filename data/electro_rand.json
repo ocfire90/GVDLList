@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Electro Rand",
+    "author": "GwMadBoy",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 121,
+    "difficulty": "Easy",
+    "enjoyment": "C",
+    "pointsReward": "3.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

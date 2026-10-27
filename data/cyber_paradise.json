@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Cyber Paradise",
+    "author": "Tunar98",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 126,
+    "difficulty": "Easy",
+    "enjoyment": "C",
+    "pointsReward": "2.6",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

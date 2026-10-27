@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Cataclysm",
+    "author": "Ggb0y",
+    "creators": [],
+    "verifier": "Kleptominer",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duskt1lldawn",
+    "spreadsheetRank": 4,
+    "difficulty": "Extreme -",
+    "enjoyment": "C+",
+    "pointsReward": "311.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Nilscapes",
+    "author": "L413",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 13,
+    "difficulty": "Insane +",
+    "enjoyment": "C",
+    "pointsReward": "218.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

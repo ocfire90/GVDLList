@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Absolute Zero",
+    "author": "Skywyrd",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 139,
+    "difficulty": "Easy",
+    "enjoyment": "C",
+    "pointsReward": "1.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

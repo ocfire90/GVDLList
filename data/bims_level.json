@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "bims level",
+    "author": "Bimms",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "foxo8",
+    "spreadsheetRank": 45,
+    "difficulty": "Medium",
+    "enjoyment": "S+",
+    "pointsReward": "62.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

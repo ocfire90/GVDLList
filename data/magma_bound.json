@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Magma Bound",
+    "author": "ScorchVx",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Bernanabread",
+    "spreadsheetRank": 16,
+    "difficulty": "Insane -",
+    "enjoyment": "A",
+    "pointsReward": "194.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

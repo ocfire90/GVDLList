@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Acropolis",
+    "author": "Zobros",
+    "creators": [],
+    "verifier": "seesee360",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "XenolithGRAB",
+    "spreadsheetRank": 11,
+    "difficulty": "Insane +",
+    "enjoyment": "C",
+    "pointsReward": "236.2",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

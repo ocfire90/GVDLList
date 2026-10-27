@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "DarnoCant Let Go",
+    "author": "TheRealDarnoc",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 57,
+    "difficulty": "Medium",
+    "enjoyment": "C",
+    "pointsReward": "38.7",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

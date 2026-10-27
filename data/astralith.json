@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Astralith",
+    "author": "Arclia",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 106,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "5.6",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

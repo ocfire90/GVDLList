@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "FALL Seasons",
+    "author": "ZeLink",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 65,
+    "difficulty": "Medium",
+    "enjoyment": "F",
+    "pointsReward": "28.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

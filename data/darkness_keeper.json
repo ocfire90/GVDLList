@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Darkness Keeper",
+    "author": "AbstractDark",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 29,
+    "difficulty": "Hard",
+    "enjoyment": "C+",
+    "pointsReward": "116.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

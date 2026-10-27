@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "ITS STEAMPUNK",
+    "author": "MinigunGD77",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 33,
+    "difficulty": "Hard -",
+    "enjoyment": "S+",
+    "pointsReward": "99.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

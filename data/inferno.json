@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Inferno",
+    "author": "GD Jose",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 86,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "12.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

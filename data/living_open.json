@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Living Open",
+    "author": "MaFFaKa",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 76,
+    "difficulty": "Medium",
+    "enjoyment": "S",
+    "pointsReward": "18.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

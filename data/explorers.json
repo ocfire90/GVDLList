@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Explorers",
+    "author": "Mathiscreator",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 46,
+    "difficulty": "Medium",
+    "enjoyment": "S+",
+    "pointsReward": "59.7",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

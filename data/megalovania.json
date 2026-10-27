@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Megalovania",
+    "author": "EternaswipVMAX",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 34,
+    "difficulty": "Hard -",
+    "enjoyment": "B",
+    "pointsReward": "95.6",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

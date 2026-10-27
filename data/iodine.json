@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Iodine",
+    "author": "Sr3k",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 75,
+    "difficulty": "Medium",
+    "enjoyment": "A+",
+    "pointsReward": "19.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

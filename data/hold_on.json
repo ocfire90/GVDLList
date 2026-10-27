@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Hold On",
+    "author": "DHaner",
+    "creators": [],
+    "verifier": "Duckdabro",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 95,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "8.7",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

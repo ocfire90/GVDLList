@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Crystal Corridor",
+    "author": "Knots",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 92,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "9.8",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

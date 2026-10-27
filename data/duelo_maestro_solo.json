@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Duelo Maestro (Solo)",
+    "author": "Nacho21",
+    "creators": [],
+    "verifier": "V0YAG3R",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 10,
+    "difficulty": "Insane +",
+    "enjoyment": "D",
+    "pointsReward": "245.7",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

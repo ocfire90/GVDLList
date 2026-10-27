@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Great Asset",
+    "author": "PixelLolka",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 96,
+    "difficulty": "Easy",
+    "enjoyment": "C",
+    "pointsReward": "8.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

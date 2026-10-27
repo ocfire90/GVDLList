@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Ice Cave",
+    "author": "KeTis",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 142,
+    "difficulty": "Easy",
+    "enjoyment": "B",
+    "pointsReward": "1.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

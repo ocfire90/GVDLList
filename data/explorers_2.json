@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Explorers",
+    "author": "Optation",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 47,
+    "difficulty": "Medium",
+    "enjoyment": "B+",
+    "pointsReward": "57.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

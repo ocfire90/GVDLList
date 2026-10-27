@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Jet Lag",
+    "author": "Disp",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 56,
+    "difficulty": "Medium",
+    "enjoyment": "S",
+    "pointsReward": "40.3",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

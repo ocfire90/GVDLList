@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Acu",
+    "author": "neigefeu",
+    "creators": [],
+    "verifier": "XenolithGRAB",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duskt1lldawn",
+    "spreadsheetRank": 7,
+    "difficulty": "Extreme -",
+    "enjoyment": "A+",
+    "pointsReward": "276.5",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

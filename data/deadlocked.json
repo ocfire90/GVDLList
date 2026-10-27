@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Deadlocked",
+    "author": "RobtopGames",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "TheBlueSlime",
+    "spreadsheetRank": 84,
+    "difficulty": "Easy",
+    "enjoyment": "A+",
+    "pointsReward": "13.4",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Butiti II",
+    "author": "JohnathanGD",
+    "creators": [],
+    "verifier": "V0YAG3R",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 12,
+    "difficulty": "Insane +",
+    "enjoyment": "B",
+    "pointsReward": "227.1",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Magistro",
+    "author": "CHRAPIVA",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 48,
+    "difficulty": "Medium",
+    "enjoyment": "C+",
+    "pointsReward": "55.2",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

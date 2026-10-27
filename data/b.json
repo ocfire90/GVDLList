@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "B",
+    "author": "Motleyorc",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "Duckdabro",
+    "spreadsheetRank": 55,
+    "difficulty": "Medium",
+    "enjoyment": "A",
+    "pointsReward": "41.9",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 0,
+    "name": "Lutetia",
+    "author": "LaserSword33",
+    "creators": [],
+    "verifier": "Dabritishcamel",
+    "verification": "",
+    "percentToQualify": "100",
+    "password": "Unknown",
+    "records": [],
+    "firstVictor": "",
+    "spreadsheetRank": 70,
+    "difficulty": "Medium",
+    "enjoyment": "S+",
+    "pointsReward": "23.2",
+    "_needsCompletion": [
+        "id",
+        "verification",
+        "password",
+        "records"
+    ]
+}

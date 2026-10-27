@@ -58,8 +58,10 @@ props: ['indexFile'],
                     </ul>
 
                     <h2>Records</h2>
-
-
+                    <div v-if="level.firstVictor" class="first-victor">
+                        <strong>🏆 First Victor</strong>
+                        <span>{{ level.firstVictor }}</span>
+                    </div>
 
 
 

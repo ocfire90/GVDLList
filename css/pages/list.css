@@ -127,3 +127,22 @@
 .page-list .meta .editors li a:hover {
     text-decoration: underline;
 }
+.first-victor {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 12px 0 20px;
+    padding: 12px 16px;
+    border-left: 4px solid #e5b341;
+    background: rgba(229, 179, 65, 0.12);
+    border-radius: 6px;
+}
+
+.first-victor strong {
+    color: #e5b341;
+    font-size: 0.95rem;
+}
+
+.first-victor span {
+    font-size: 1rem;
+}

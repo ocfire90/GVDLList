@@ -138,10 +138,16 @@
     border-radius: 6px;
 }
 
+.first-victor strong,
+.first-victor span {
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+}
 .first-victor strong {
     color: #e5b341;
-    font-size: 0.95rem;
-    font-family: inherit;
+    font-weight: bold;
 }
 
 .first-victor span {

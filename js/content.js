@@ -19,9 +19,7 @@ export async function fetchList(indexFile = '_list.json') {
                         {
                             ...level,
                             path,
-                            records: level.records.sort(
-                                (a, b) => b.percent - a.percent,
-                            ),
+                            records: level.records || [],
                         },
                         null,
                     ];

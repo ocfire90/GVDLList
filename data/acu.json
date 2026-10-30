@@ -8,19 +8,10 @@
     "percentToQualify": "100",
     "password": "Unknown",
     "records": [
-        {
-            "user": "TrivxVR",
-            "percent": 100
-        },
-        {
-            "user": "Kleptominer",
-            "percent": 100
-        },
-        {
-            "user": "foxo8",
-            "percent": 100
-        }
-    ],
+        "TrivxVR",
+        "Kleptominer",
+        "foxo8"
+    ]
     "firstVictor": "Duskt1lldawn",
     "spreadsheetRank": 7,
     "difficulty": "Extreme -",

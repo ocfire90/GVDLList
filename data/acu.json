@@ -7,7 +7,11 @@
     "verification": "",
     "percentToQualify": "100",
     "password": "Unknown",
-    "records": [],
+    "records": [
+        "TrivxVR",
+        "Kleptominer",
+        "foxo8",
+    ],
     "firstVictor": "Duskt1lldawn",
     "spreadsheetRank": 7,
     "difficulty": "Extreme -",

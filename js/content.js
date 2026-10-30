@@ -13,7 +13,9 @@ export async function fetchList(indexFile = '_list.json') {
 
         return await Promise.all(
             list.map(async (path, rank) => {
-                const levelResult = await fetch(`${dir}/${path}.json`);
+                const levelResult = await fetch(`${dir}/${path}.json`, {
+                    cache: 'no-store',
+                });
 
                 try {
                     const level = await levelResult.json();

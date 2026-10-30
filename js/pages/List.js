@@ -1,3 +1,4 @@
+
 import { store } from "../main.js";
 import { embed } from "../util.js";
 import { score } from "../score.js";
@@ -16,7 +17,7 @@ const roleIconMap = {
 
 export default {
     components: { Spinner, LevelAuthors },
-props: ['indexFile'],
+    props: ['indexFile'],
     template: `
         <main v-if="loading">
             <Spinner></Spinner>
@@ -58,34 +59,27 @@ props: ['indexFile'],
                     </ul>
 
                     <h2>Records</h2>
+
                     <div v-if="level.firstVictor" class="first-victor">
                         <strong class="type-label-lg">First Victor</strong>
                         <span class="type-label-lg">{{ level.firstVictor }}</span>
                     </div>
 
-
-
-
-                    <p v-if="selected + 1 <= 75"><strong>{{ level.percentToQualify }}%</strong> or better to qualify</p>
-                    <p v-else-if="selected +1 <= 150"><strong>100%</strong> or better to qualify</p>
+                    <p v-if="selected + 1 <= 75">
+                        <strong>{{ level.percentToQualify }}%</strong> or better to qualify
+                    </p>
+                    <p v-else-if="selected + 1 <= 150">
+                        <strong>100%</strong> or better to qualify
+                    </p>
                     <p v-else>This level does not accept new records.</p>
 
-                    <table class="records">
-                        <tr v-for="record in level.records" class="record">
-                            <td class="percent">
-                                <p>{{ record.percent }}%</p>
-                            </td>
-                            <td class="user">
-                                <a :href="record.link" target="_blank" class="type-label-lg">{{ record.user }}</a>
-                            </td>
-                            <td class="mobile">
-                                <img v-if="record.mobile" :src="\`/assets/phone-landscape\${store.dark ? '-dark' : ''}.svg\`" alt="Mobile">
-                            </td>
-                            <td class="hz">
-                                <p>{{ record.hz }}Hz</p>
-                            </td>
-                        </tr>
-                    </table>
+                    <ul class="records">
+                        <li v-for="(record, i) in level.records" :key="i" class="record">
+                            <span class="type-label-lg">
+                                {{ typeof record === 'string' ? record : record.user }}
+                            </span>
+                        </li>
+                    </ul>
                 </div>
                 <div v-else class="level" style="height: 100%; justify-content: center; align-items: center;">
                     <p>(ノಠ益ಠ)ノ彡┻━┻</p>
@@ -164,11 +158,9 @@ props: ['indexFile'],
         },
     },
     async mounted() {
-        // Hide loading spinner
         this.list = await fetchList(this.indexFile || '_list.json');
         this.editors = await fetchEditors();
 
-        // Error handling
         if (!this.list) {
             this.errors = [
                 "Failed to load list. Retry in a few minutes or notify list staff.",

@@ -1,4 +1,3 @@
-
 import { round, score } from './score.js';
 
 /**
@@ -8,13 +7,17 @@ const dir = './data';
 
 export async function fetchList(indexFile = '_list.json') {
     const listResult = await fetch(`${dir}/${indexFile}`);
+
     try {
         const list = await listResult.json();
+
         return await Promise.all(
             list.map(async (path, rank) => {
                 const levelResult = await fetch(`${dir}/${path}.json`);
+
                 try {
                     const level = await levelResult.json();
+
                     return [
                         {
                             ...level,
@@ -23,14 +26,17 @@ export async function fetchList(indexFile = '_list.json') {
                         },
                         null,
                     ];
-                } catch {
-                    console.error(`Failed to load level #${rank + 1} ${path}.`);
+                } catch (error) {
+                    console.error(
+                        `Failed to load level #${rank + 1} ${path}:`,
+                        error,
+                    );
                     return [null, path];
                 }
             }),
         );
-    } catch {
-        console.error(`Failed to load list.`);
+    } catch (error) {
+        console.error('Failed to load list:', error);
         return null;
     }
 }
@@ -87,15 +93,17 @@ export async function fetchLeaderboard(indexFile = '_list.json') {
         );
 
         // Verification
-        const verifierScores = ensureUser(level.verifier);
+        if (level.verifier) {
+            const verifierScores = ensureUser(level.verifier);
 
-        verifierScores.completed.push({
-            rank: levelRank,
-            level: level.name,
-            score: levelScore,
-            link: level.verification,
-            type: 'verifier',
-        });
+            verifierScores.completed.push({
+                rank: levelRank,
+                level: level.name,
+                score: levelScore,
+                link: level.verification,
+                type: 'verifier',
+            });
+        }
 
         // First victor
         if (level.firstVictor) {
@@ -112,19 +120,23 @@ export async function fetchLeaderboard(indexFile = '_list.json') {
 
         // Player records
         level.records.forEach((record) => {
-            const playerScores = ensureUser(record.user);
+            // String records represent completed levels
+            if (typeof record === 'string') {
+                const playerScores = ensureUser(record);
 
-            if (record.percent === 100) {
                 playerScores.completed.push({
                     rank: levelRank,
                     level: level.name,
                     score: levelScore,
-                    link: record.link,
+                    link: '',
                     type: 'completion',
                 });
 
                 return;
             }
+
+            // Object records represent percentage progress
+            const playerScores = ensureUser(record.user);
 
             playerScores.progressed.push({
                 rank: levelRank,
@@ -159,4 +171,3 @@ export async function fetchLeaderboard(indexFile = '_list.json') {
     // Sort by total score, highest first
     return [res.sort((a, b) => b.total - a.total), errs];
 }
-

@@ -1,4 +1,4 @@
-
+    
 import { store } from "../main.js";
 import { embed } from "../util.js";
 import { score } from "../score.js";
@@ -74,9 +74,24 @@ export default {
                     <p v-else>This level does not accept new records.</p>
 
                     <ul class="records">
-                        <li v-for="(record, i) in level.records" :key="i" class="record">
+                        <li
+                            v-for="(record, i) in level.records"
+                            :key="i"
+                                class="record"
+                        >
                             <span class="type-label-lg">
-                                {{ typeof record === 'string' ? record : record.user }}
+                                    {{ typeof record === 'string' ? record : record.user }}
+                                </span>
+                    
+                            <span
+                                class="type-label-lg"
+                                :style="{
+                                    color: typeof record === 'string' || record.percent === 100
+                                        ? '#16A34A'
+                                        : ''
+                                    }"
+                            >
+                                {{ typeof record === 'string' ? '100%' : record.percent + '%' }}
                             </span>
                         </li>
                     </ul>

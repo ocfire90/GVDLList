@@ -1,4 +1,3 @@
-
 import { store } from "../main.js";
 import { embed } from "../util.js";
 import { score } from "../score.js";
@@ -71,20 +70,22 @@ export default {
                         </li>
                     </ul>
 
-                    <h2>Records</h2>
+                    <div class="records-heading">
+                        <h2>Records</h2>
+
+                        <p v-if="selected + 1 <= 75">
+                            <strong>{{ level.percentToQualify }}%</strong> or better to qualify
+                        </p>
+                        <p v-else-if="selected + 1 <= 150">
+                            <strong>100%</strong> or better to qualify
+                        </p>
+                        <p v-else>This level does not accept new records.</p>
+                    </div>
 
                     <div v-if="level.firstVictor" class="first-victor">
                         <strong class="type-label-lg">First Victor</strong>
                         <span class="type-label-lg">{{ level.firstVictor }}</span>
                     </div>
-
-                    <p v-if="selected + 1 <= 75">
-                        <strong>{{ level.percentToQualify }}%</strong> or better to qualify
-                    </p>
-                    <p v-else-if="selected + 1 <= 150">
-                        <strong>100%</strong> or better to qualify
-                    </p>
-                    <p v-else>This level does not accept new records.</p>
 
                     <ul class="records">
                         <li

@@ -7,7 +7,10 @@
     "verification": "",
     "percentToQualify": "100",
     "password": "Unknown",
-    "records": [],
+    "records": [
+        "foxo8",
+        "XenolithGRAB"
+    ],
     "firstVictor": "Duckdabro",
     "spreadsheetRank": 26,
     "difficulty": "Hard",

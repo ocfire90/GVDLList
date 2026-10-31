@@ -1,4 +1,4 @@
-    
+
 import { store } from "../main.js";
 import { embed } from "../util.js";
 import { score } from "../score.js";
@@ -38,11 +38,24 @@ export default {
                     </tr>
                 </table>
             </div>
+
             <div class="level-container">
                 <div class="level" v-if="level">
                     <h1>{{ level.name }}</h1>
-                    <LevelAuthors :author="level.author" :creators="level.creators" :verifier="level.verifier"></LevelAuthors>
-                    <iframe class="video" id="videoframe" :src="video" frameborder="0"></iframe>
+
+                    <LevelAuthors
+                        :author="level.author"
+                        :creators="level.creators"
+                        :verifier="level.verifier"
+                    ></LevelAuthors>
+
+                    <iframe
+                        class="video"
+                        id="videoframe"
+                        :src="video"
+                        frameborder="0"
+                    ></iframe>
+
                     <ul class="stats">
                         <li>
                             <div class="type-title-sm">Points when completed</div>
@@ -77,47 +90,67 @@ export default {
                         <li
                             v-for="(record, i) in level.records"
                             :key="i"
-                                class="record"
+                            class="record"
+                            :class="typeof record === 'string' ? 'completion' : 'progress'"
                         >
-                            <span class="type-label-lg">
+                            <strong class="type-label-lg">
+                                {{ typeof record === 'string' ? 'Completion' : 'Progress' }}
+                            </strong>
+
+                            <div class="record-details">
+                                <span class="type-label-lg">
                                     {{ typeof record === 'string' ? record : record.user }}
                                 </span>
-                    
-                            <span
-                                class="type-label-lg"
-                                :style="{
-                                    color: typeof record === 'string' || record.percent === 100
-                                        ? '#16A34A'
-                                        : ''
-                                    }"
-                            >
-                                {{ typeof record === 'string' ? '100%' : record.percent + '%' }}
-                            </span>
+
+                                <span class="type-label-lg">
+                                    {{ typeof record === 'string' ? '100%' : record.percent + '%' }}
+                                </span>
+                            </div>
                         </li>
                     </ul>
                 </div>
-                <div v-else class="level" style="height: 100%; justify-content: center; align-items: center;">
+
+                <div
+                    v-else
+                    class="level"
+                    style="height: 100%; justify-content: center; align-items: center;"
+                >
                     <p>(ノಠ益ಠ)ノ彡┻━┻</p>
                 </div>
             </div>
+
             <div class="meta-container">
                 <div class="meta">
                     <div class="errors" v-show="errors.length > 0">
                         <p class="error" v-for="error of errors">{{ error }}</p>
                     </div>
+
                     <div class="og">
-                        <p class="type-label-md">Website layout made by <a href="https://tsl.pages.dev/" target="_blank">TheShittyList</a></p>
+                        <p class="type-label-md">
+                            Website layout made by
+                            <a href="https://tsl.pages.dev/" target="_blank">TheShittyList</a>
+                        </p>
                     </div>
+
                     <template v-if="editors">
                         <h3>List Editors</h3>
                         <ol class="editors">
                             <li v-for="editor in editors">
-                                <img :src="\`/assets/\${roleIconMap[editor.role]}\${store.dark ? '-dark' : ''}.svg\`" :alt="editor.role">
-                                <a v-if="editor.link" class="type-label-lg link" target="_blank" :href="editor.link">{{ editor.name }}</a>
+                                <img
+                                    :src="\`/assets/\${roleIconMap[editor.role]}\${store.dark ? '-dark' : ''}.svg\`"
+                                    :alt="editor.role"
+                                >
+                                <a
+                                    v-if="editor.link"
+                                    class="type-label-lg link"
+                                    target="_blank"
+                                    :href="editor.link"
+                                >{{ editor.name }}</a>
                                 <p v-else>{{ editor.name }}</p>
                             </li>
                         </ol>
                     </template>
+
                     <h3>Submission Requirements</h3>
                     <p>
                         Achieved the record without using hacks (however, FPS bypass is allowed, up to 360fps)
@@ -188,6 +221,7 @@ export default {
                         return `Failed to load level. (${err}.json)`;
                     })
             );
+
             if (!this.editors) {
                 this.errors.push("Failed to load list editors.");
             }

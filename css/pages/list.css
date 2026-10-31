@@ -108,9 +108,11 @@
     font-family: "Manrope", sans-serif;
 }
 
-.page-list .level-container .level .records .record strong,
-.page-list .level-container .level .records .record span {
+/* Record type */
+
+.page-list .level-container .level .records .record strong {
     font-family: "Manrope", sans-serif;
+    font-weight: bold;
 }
 
 /* Username and percentage alignment */
@@ -125,8 +127,23 @@
     box-sizing: border-box;
 }
 
-.page-list .level-container .level .records .record .record-details span {
+/* Username */
+
+.page-list .level-container .level .records .record .record-details span:first-child {
     display: block;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+/* Percentage */
+
+.page-list .level-container .level .records .record .record-details span:last-child {
+    display: block;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: normal;
+    white-space: nowrap;
 }
 
 /* Completion: Green */
@@ -136,8 +153,7 @@
     background: rgba(22, 163, 74, 0.12);
 }
 
-.page-list .level-container .level .records .completion strong,
-.page-list .level-container .level .records .completion span {
+.page-list .level-container .level .records .completion strong {
     color: #16a34a;
 }
 
@@ -148,8 +164,7 @@
     background: rgba(156, 163, 175, 0.12);
 }
 
-.page-list .level-container .level .records .progress strong,
-.page-list .level-container .level .records .progress span {
+.page-list .level-container .level .records .progress strong {
     color: #9ca3af;
 }
 

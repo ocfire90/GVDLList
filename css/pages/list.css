@@ -1,4 +1,3 @@
-
 .page-list .list-container,
 .page-list .level-container,
 .page-list .meta-container {
@@ -116,13 +115,18 @@
 
 /* Username and percentage alignment */
 
-.page-list .level-container .level .records .record-details {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+.page-list .level-container .level .records .record .record-details {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
     width: 100%;
     gap: 1rem;
+    box-sizing: border-box;
+}
+
+.page-list .level-container .level .records .record .record-details span {
+    display: block;
 }
 
 /* Completion: Green */
@@ -246,8 +250,4 @@
 
 .page-list .meta .editors li img {
     height: 1.25rem;
-}
-
-.page-list .meta .editors li a:hover {
-    text-decoration: underline;
 }

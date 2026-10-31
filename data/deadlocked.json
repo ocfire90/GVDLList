@@ -7,7 +7,12 @@
     "verification": "",
     "percentToQualify": "100",
     "password": "Unknown",
-    "records": [],
+    "records": [
+        "XenolithGRAB",
+        "foxo8",
+        "Duckdabro",
+        "V0YAG3R"
+    ],
     "firstVictor": "TheBlueSlime",
     "spreadsheetRank": 84,
     "difficulty": "Easy",

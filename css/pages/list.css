@@ -1,3 +1,4 @@
+
 .page-list .list-container,
 .page-list .level-container,
 .page-list .meta-container {
@@ -94,7 +95,7 @@
     flex-direction: column;
     gap: 12px;
     padding: 0;
-    margin: 0;
+    margin: -1rem 0 0;
     list-style: none;
 }
 
@@ -111,6 +112,17 @@
 .page-list .level-container .level .records .record strong,
 .page-list .level-container .level .records .record span {
     font-family: "Manrope", sans-serif;
+}
+
+/* Username and percentage alignment */
+
+.page-list .level-container .level .records .record-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
 }
 
 /* Completion: Green */
@@ -137,7 +149,7 @@
     color: #9ca3af;
 }
 
-/* Verifier: Light blue */
+/* Verifier: Light blue (reserved for future use) */
 
 .page-list .level-container .level .records .verifier {
     border-left-color: #7dd3fc;

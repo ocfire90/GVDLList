@@ -7,7 +7,11 @@
     "verification": "",
     "percentToQualify": "100",
     "password": "Unknown",
-    "records": [],
+    "records": [
+        "XenolithGRAB",
+        "Duckdabro",
+        "V0YAG3R"
+    ],
     "firstVictor": "FitArtist334071",
     "spreadsheetRank": 141,
     "difficulty": "Easy",

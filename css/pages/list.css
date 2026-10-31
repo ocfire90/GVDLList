@@ -3,10 +3,12 @@
 .page-list .meta-container {
     padding-block: 2rem;
 }
+
 .page-list .list-container {
     padding-left: 2rem;
     padding-right: 1rem;
 }
+
 .page-list .meta-container {
     padding-right: 2rem;
 }
@@ -14,13 +16,16 @@
 .page-list .list {
     table-layout: auto;
 }
+
 .page-list .list .rank {
     text-align: end;
     padding-right: 1rem;
 }
+
 .page-list .list .level {
     width: 100%;
 }
+
 .page-list .list .level button {
     background-color: var(--color-background);
     color: var(--color-on-background);
@@ -32,19 +37,23 @@
     overflow-wrap: anywhere;
     cursor: pointer;
 }
+
 .page-list .list .level.error button {
     color: var(--color-error);
     cursor: not-allowed;
     text-decoration: line-through;
 }
+
 .page-list .list .level button:hover {
     background-color: var(--color-background-hover);
     color: var(--color-on-background-hover);
 }
+
 .page-list .list .level.active button {
     background-color: var(--color-primary);
     color: var(--color-on-primary);
 }
+
 .page-list .level-container .level {
     display: flex;
     flex-direction: column;
@@ -52,81 +61,96 @@
     padding-right: 2rem;
     max-width: 48rem;
 }
+
 .page-list .level-container .level .level-authors {
     display: grid;
     grid-template-columns: max-content 1fr;
     grid-auto-rows: max-content;
     gap: 1rem;
 }
+
 .page-list .level-container .level .video {
     aspect-ratio: 16/9;
 }
+
 .page-list .level-container .level .stats {
     display: flex;
     justify-content: space-evenly;
     text-align: center;
     gap: 2rem;
 }
+
 .page-list .level-container .level .stats li {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
 }
+
+/* Record boxes */
+
 .page-list .level-container .level .records {
-    table-layout: fixed;
-}
-.page-list .level-container .level .records tr td:not(:last-child) {
-    padding-right: 1rem;
-}
-.page-list .level-container .level .records .percent,
-.page-list .level-container .level .records .user,
-.page-list .level-container .level .records .hz {
-    padding-block: 1rem;
-}
-.page-list .level-container .level .records .user {
-    width: 100%;
-}
-.page-list .level-container .level .records .percent,
-.page-list .level-container .level .records .hz {
-    text-align: end;
-}
-.page-list .meta-container .og a:hover,
-.page-list .level-container .level .records a:hover {
-    text-decoration: underline;
-}
-.page-list .meta {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 12px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
-.page-list .meta .errors {
+
+.page-list .level-container .level .records .record {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 6px;
+    padding: 12px 16px;
+    border-left: 4px solid;
+    border-radius: 6px;
+    font-family: "Manrope", sans-serif;
 }
-.page-list .meta .errors .error {
-    padding: 1rem;
-    background-color: var(--color-error);
-    color: var(--color-on-error);
-    border-radius: 0.5rem;
+
+.page-list .level-container .level .records .record strong,
+.page-list .level-container .level .records .record span {
+    font-family: "Manrope", sans-serif;
 }
-.page-list .meta .editors {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+
+/* Completion: Green */
+
+.page-list .level-container .level .records .completion {
+    border-left-color: #16a34a;
+    background: rgba(22, 163, 74, 0.12);
 }
-.page-list .meta .editors li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+
+.page-list .level-container .level .records .completion strong,
+.page-list .level-container .level .records .completion span {
+    color: #16a34a;
 }
-.page-list .meta .editors li img {
-    height: 1.25rem;
+
+/* Progress: Gray */
+
+.page-list .level-container .level .records .progress {
+    border-left-color: #9ca3af;
+    background: rgba(156, 163, 175, 0.12);
 }
-.page-list .meta .editors li a:hover {
-    text-decoration: underline;
+
+.page-list .level-container .level .records .progress strong,
+.page-list .level-container .level .records .progress span {
+    color: #9ca3af;
 }
+
+/* Verifier: Light blue */
+
+.page-list .level-container .level .records .verifier {
+    border-left-color: #7dd3fc;
+    background: rgba(125, 211, 252, 0.12);
+}
+
+.page-list .level-container .level .records .verifier strong,
+.page-list .level-container .level .records .verifier span {
+    color: #7dd3fc;
+}
+
+/* First Victor: Yellow */
+
 .first-victor {
     display: flex;
     flex-direction: column;
@@ -137,6 +161,7 @@
     background: rgba(229, 179, 65, 0.12);
     border-radius: 6px;
 }
+
 .first-victor strong,
 .first-victor span {
     font-family: "Manrope", sans-serif;
@@ -146,6 +171,8 @@
     color: #e5b341;
     font-weight: bold;
 }
+
+/* Achievement labels */
 
 .achievement-label {
     display: inline-block;
@@ -166,4 +193,49 @@
 .first-victor-label {
     color: #ffe5a0;
     background: #765414;
+}
+
+/* Meta section */
+
+.page-list .meta-container .og a:hover {
+    text-decoration: underline;
+}
+
+.page-list .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.page-list .meta .errors {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.page-list .meta .errors .error {
+    padding: 1rem;
+    background-color: var(--color-error);
+    color: var(--color-on-error);
+    border-radius: 0.5rem;
+}
+
+.page-list .meta .editors {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.page-list .meta .editors li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.page-list .meta .editors li img {
+    height: 1.25rem;
+}
+
+.page-list .meta .editors li a:hover {
+    text-decoration: underline;
 }

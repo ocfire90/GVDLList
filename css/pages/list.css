@@ -87,6 +87,25 @@
     gap: 1rem;
 }
 
+/* Records heading and qualification requirement */
+
+.page-list .level-container .level .records-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-list .level-container .level .records-heading h2,
+.page-list .level-container .level .records-heading p {
+    margin: 0;
+}
+
+.page-list .level-container .level .records-heading p {
+    text-align: right;
+    font-size: 0.9rem;
+}
+
 /* Record boxes */
 
 .page-list .level-container .level .records {

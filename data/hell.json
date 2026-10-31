@@ -7,7 +7,9 @@
     "verification": "",
     "percentToQualify": "100",
     "password": "Unknown",
-    "records": [],
+    "records": [
+        "foxo8"
+    ],
     "firstVictor": "XenolithGRAB",
     "spreadsheetRank": 67,
     "difficulty": "Medium",

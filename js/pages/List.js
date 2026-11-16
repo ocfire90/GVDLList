@@ -82,31 +82,33 @@ export default {
                         <p v-else>This level does not accept new records.</p>
                     </div>
 
-                    <div v-if="level.firstVictor" class="first-victor">
-                        <strong class="type-label-lg">First Victor</strong>
-                        <span class="type-label-lg">{{ level.firstVictor }}</span>
-                    </div>
-
                     <ul class="records">
+                        <li v-if="level.firstVictor" class="record first-victor">
+                            <div class="record-info">
+                                <strong class="type-label-lg">First Victor</strong>
+                                <span class="type-label-lg">{{ level.firstVictor }}</span>
+                            </div>
+                            <span class="record-percent type-label-lg">100%</span>
+                        </li>
+
                         <li
                             v-for="(record, i) in level.records"
                             :key="i"
                             class="record"
                             :class="typeof record === 'string' ? 'completion' : 'progress'"
                         >
-                            <strong class="type-label-lg">
-                                {{ typeof record === 'string' ? 'Completion' : 'Progress' }}
-                            </strong>
-
-                            <div class="record-details">
+                            <div class="record-info">
+                                <strong class="type-label-lg">
+                                    {{ typeof record === 'string' ? 'Completion' : 'Progress' }}
+                                </strong>
                                 <span class="type-label-lg">
                                     {{ typeof record === 'string' ? record : record.user }}
                                 </span>
-
-                                <span class="type-label-lg">
-                                    {{ typeof record === 'string' ? '100%' : record.percent + '%' }}
-                                </span>
                             </div>
+
+                            <span class="record-percent type-label-lg">
+                                {{ typeof record === 'string' ? '100%' : record.percent + '%' }}
+                            </span>
                         </li>
                     </ul>
                 </div>

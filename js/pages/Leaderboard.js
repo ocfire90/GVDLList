@@ -76,8 +76,6 @@ export default {
                                     <span v-else class="type-label-lg">
                                         {{ item.level }}
                                     </span>
-                                </td>
-                                <td class="score">
                                     <span
                                         v-if="item.type === 'verifier'"
                                         class="achievement-label verifier-label"
@@ -85,7 +83,9 @@ export default {
                                     <span
                                         v-if="item.type === 'first-victor'"
                                         class="achievement-label first-victor-label"
-                                    >First victor</span>
+                                    >First Victor</span>
+                                </td>
+                                <td class="score">
                                     <p>+{{ localize(item.score) }}</p>
                                 </td>
                             </tr>

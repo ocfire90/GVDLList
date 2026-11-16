@@ -87,7 +87,10 @@ export default {
                         <li v-if="level.firstVictor" class="record first-victor">
                             <div class="record-info">
                                 <strong class="type-label-lg">First Victor</strong>
-                                <span class="type-label-lg">{{ level.firstVictor }}</span>
+                                <a
+                                    class="type-label-lg"
+                                    :href="playerUrl(level.firstVictor)"
+                                >{{ level.firstVictor }}</a>
                             </div>
                             <span class="record-percent type-label-lg">100%</span>
                         </li>
@@ -102,9 +105,10 @@ export default {
                                 <strong class="type-label-lg">
                                     {{ typeof record === 'string' ? 'Completion' : 'Progress' }}
                                 </strong>
-                                <span class="type-label-lg">
-                                    {{ typeof record === 'string' ? record : record.user }}
-                                </span>
+                                <a
+                                    class="type-label-lg"
+                                    :href="playerUrl(typeof record === 'string' ? record : record.user)"
+                                >{{ typeof record === 'string' ? record : record.user }}</a>
                             </div>
 
                             <span class="record-percent type-label-lg">
@@ -245,6 +249,10 @@ export default {
     methods: {
         embed,
         score,
+
+        playerUrl(player) {
+            return `#/leaderboard?player=${encodeURIComponent(player)}`;
+        },
 
         selectLevel(index) {
             this.selected = index;

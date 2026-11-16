@@ -1,3 +1,4 @@
+
 import { store } from "../main.js";
 import { embed } from "../util.js";
 import { score } from "../score.js";
@@ -30,7 +31,7 @@ export default {
                             <p v-else class="type-label-lg">Legacy</p>
                         </td>
                         <td class="level" :class="{ 'active': selected == i, 'error': !level }">
-                            <button @click="selected = i">
+                            <button @click="selectLevel(i)">
                                 <span class="type-label-lg">{{ level?.name || \`Error (\${err}.json)\` }}</span>
                             </button>
                         </td>
@@ -208,6 +209,13 @@ export default {
             );
         },
     },
+    watch: {
+        '$route.fullPath'() {
+            if (!this.loading) {
+                this.selectLevelFromRoute();
+            }
+        },
+    },
     async mounted() {
         this.list = await fetchList(this.indexFile || '_list.json');
         this.editors = await fetchEditors();
@@ -228,6 +236,8 @@ export default {
             if (!this.editors) {
                 this.errors.push("Failed to load list editors.");
             }
+
+            this.selectLevelFromRoute();
         }
 
         this.loading = false;
@@ -235,5 +245,36 @@ export default {
     methods: {
         embed,
         score,
+
+        selectLevel(index) {
+            this.selected = index;
+
+            const path = this.list[index]?.[0]?.path;
+
+            if (path) {
+                this.$router.replace({
+                    query: {
+                        ...this.$route.query,
+                        level: path,
+                    },
+                });
+            }
+        },
+
+        selectLevelFromRoute() {
+            const path = this.$route.query.level;
+
+            if (!path || !this.list?.length) {
+                return;
+            }
+
+            const index = this.list.findIndex(
+                ([level]) => level?.path === path,
+            );
+
+            if (index !== -1) {
+                this.selected = index;
+            }
+        },
     },
 };

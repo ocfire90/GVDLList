@@ -1,6 +1,7 @@
 .page-leaderboard-container {
     display: block;
 }
+
 .page-leaderboard {
     height: 100%;
     display: grid;
@@ -10,42 +11,52 @@
     max-width: 80rem;
     margin: 0 auto;
 }
+
 .page-leaderboard > div {
     overflow-y: auto;
 }
+
 .page-leaderboard .error-container {
     grid-row: 1;
     grid-column: 1 / span 2;
 }
+
 .page-leaderboard .error-container .error {
     padding: 1rem;
     background-color: var(--color-error);
     color: var(--color-on-error);
 }
+
 .page-leaderboard .board-container,
 .page-leaderboard .player-container {
     grid-row: 2;
     padding-block: 2rem;
 }
+
 .page-leaderboard .board-container {
     padding-inline: 1rem;
 }
+
 .page-leaderboard .board {
     table-layout: auto;
     display: block;
     width: 100%;
 }
+
 .page-leaderboard .board .rank {
     padding-block: 1rem;
     text-align: end;
 }
+
 .page-leaderboard .board .total {
     padding: 1rem;
     text-align: end;
 }
+
 .page-leaderboard .board .user {
     width: 100%;
 }
+
 .page-leaderboard .board .user button {
     background-color: var(--color-background);
     color: var(--color-on-background);
@@ -56,38 +67,139 @@
     word-break: normal;
     overflow-wrap: anywhere;
 }
+
 .page-leaderboard .board .user button:hover {
     background-color: var(--color-background-hover);
     color: var(--color-on-background-hover);
     cursor: pointer;
 }
+
 .page-leaderboard .board .user.active button {
     background-color: var(--color-primary);
     color: var(--color-on-primary);
 }
+
 .page-leaderboard .player {
     display: flex;
     flex-direction: column;
     gap: 2rem;
     padding-right: 2rem;
 }
-.page-leaderboard .player .table {
+
+.page-leaderboard .player .records-table {
     table-layout: fixed;
-}
-.page-leaderboard .player .table tr td:not(:last-child) {
-    padding-right: 2rem;
-}
-.page-leaderboard .player .table p,
-.page-leaderboard .player .table a {
-    padding-block: 1rem;
-}
-.page-leaderboard .player .table .rank p,
-.page-leaderboard .player .table .score p {
-    text-align: end;
-}
-.page-leaderboard .player .table .level {
     width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
 }
-.page-leaderboard .player .table a:hover {
+
+.page-leaderboard .player .records-table .record-row td {
+    padding: 0.9rem 1rem;
+    vertical-align: middle;
+    background: rgba(156, 163, 175, 0.12);
+}
+
+.page-leaderboard .player .records-table .record-row td:first-child {
+    border-left: 4px solid #9ca3af;
+    border-radius: 6px 0 0 6px;
+}
+
+.page-leaderboard .player .records-table .record-row td:last-child {
+    border-radius: 0 6px 6px 0;
+}
+
+.page-leaderboard .player .records-table .rank {
+    width: 3.5rem;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.page-leaderboard .player .records-table .level {
+    width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.page-leaderboard .player .records-table .score {
+    width: 6rem;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.page-leaderboard .player .records-table .rank p,
+.page-leaderboard .player .records-table .score p {
+    margin: 0;
+    padding: 0;
+    text-align: right;
+}
+
+.page-leaderboard .player .records-table .level a {
+    display: inline-block;
+    padding: 0;
+}
+
+.page-leaderboard .player .records-table a:hover {
     text-decoration: underline;
+}
+
+/* Normal completions: Gray */
+
+.page-leaderboard .player .records-table .completion-record td {
+    background: rgba(156, 163, 175, 0.12);
+}
+
+.page-leaderboard .player .records-table .completion-record td:first-child {
+    border-left-color: #9ca3af;
+}
+
+/* Percentage progress: Gray */
+
+.page-leaderboard .player .records-table .progress-record td {
+    background: rgba(156, 163, 175, 0.12);
+}
+
+.page-leaderboard .player .records-table .progress-record td:first-child {
+    border-left-color: #9ca3af;
+}
+
+/* Verifications: Yellow */
+
+.page-leaderboard .player .records-table .verification-record td {
+    background: rgba(229, 179, 65, 0.12);
+}
+
+.page-leaderboard .player .records-table .verification-record td:first-child {
+    border-left-color: #e5b341;
+}
+
+.page-leaderboard .player .records-table .verification-record .achievement-label {
+    color: #ffe5a0;
+    background: #765414;
+}
+
+/* First victor completions: Green */
+
+.page-leaderboard .player .records-table .first-victor-record td {
+    background: rgba(22, 163, 74, 0.12);
+}
+
+.page-leaderboard .player .records-table .first-victor-record td:first-child {
+    border-left-color: #16a34a;
+}
+
+.page-leaderboard .player .records-table .first-victor-record .achievement-label {
+    color: #b9f6ca;
+    background: #176b36;
+}
+
+/* Achievement labels */
+
+.page-leaderboard .player .records-table .achievement-label {
+    display: inline-block;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    font-family: "Manrope", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.2;
 }

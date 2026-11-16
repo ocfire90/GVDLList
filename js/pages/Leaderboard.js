@@ -37,7 +37,7 @@ export default {
                                 <p class="type-label-lg">{{ localize(ientry.total) }}</p>
                             </td>
                             <td class="user" :class="{ 'active': selected == i }">
-                                <button @click="selected = i">
+                                <button @click="selectPlayer(i)">
                                     <span class="type-label-lg">{{ ientry.user }}</span>
                                 </button>
                             </td>
@@ -69,15 +69,22 @@ export default {
                                 <td class="level">
                                     <div class="level-name-group">
                                         <a
-                                            v-if="item.link"
+                                            v-if="item.path"
                                             class="type-label-lg"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            :href="item.link"
+                                            :href="levelUrl(item)"
                                         >{{ item.level }}</a>
                                         <span v-else class="type-label-lg">
                                             {{ item.level }}
                                         </span>
+
+                                        <a
+                                            v-if="item.link"
+                                            class="record-video-link"
+                                            :href="item.link"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >Video</a>
+
                                         <span
                                             v-if="item.type === 'verifier'"
                                             class="achievement-label verifier-label"
@@ -108,15 +115,21 @@ export default {
                                 </td>
                                 <td class="level">
                                     <a
-                                        v-if="item.link"
+                                        v-if="item.path"
                                         class="type-label-lg"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        :href="item.link"
+                                        :href="levelUrl(item)"
                                     >{{ item.percent }}% {{ item.level }}</a>
                                     <span v-else class="type-label-lg">
                                         {{ item.percent }}% {{ item.level }}
                                     </span>
+
+                                    <a
+                                        v-if="item.link"
+                                        class="record-video-link"
+                                        :href="item.link"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >Video</a>
                                 </td>
                                 <td class="score">
                                     <p>+{{ localize(item.score) }}</p>
@@ -130,10 +143,59 @@ export default {
     `,
     methods: {
         localize,
+
+        selectPlayer(index) {
+            this.selected = index;
+
+            const user = this.leaderboard[index]?.user;
+
+            if (user) {
+                this.$router.replace({
+                    query: {
+                        ...this.$route.query,
+                        player: user,
+                    },
+                });
+            }
+        },
+
+        levelUrl(item) {
+            const routes = {
+                main: '/',
+                created: '/created',
+                challenge: '/challenge',
+                platformer: '/platformer',
+            };
+
+            const route = routes[this.store.activeList] || '/';
+
+            return `#${route}?level=${encodeURIComponent(item.path)}`;
+        },
+
+        selectPlayerFromRoute() {
+            const player = this.$route.query.player;
+
+            if (!player || !this.leaderboard.length) {
+                return;
+            }
+
+            const index = this.leaderboard.findIndex(
+                (item) => item.user.toLowerCase() === String(player).toLowerCase(),
+            );
+
+            if (index !== -1) {
+                this.selected = index;
+            }
+        },
     },
     computed: {
         entry() {
             return this.leaderboard[this.selected];
+        },
+    },
+    watch: {
+        '$route.query.player'() {
+            this.selectPlayerFromRoute();
         },
     },
     async mounted() {
@@ -157,6 +219,8 @@ export default {
             const [leaderboard, err] = await fetchLeaderboard(indexFile);
             this.leaderboard = leaderboard;
             this.err = err;
+
+            this.selectPlayerFromRoute();
         } catch (error) {
             console.error('Failed to load leaderboard:', error);
             this.leaderboard = [];

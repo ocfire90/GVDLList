@@ -1,4 +1,3 @@
-
 import { fetchLeaderboard } from '../content.js';
 import { localize } from '../util.js';
 import { store } from '../main.js';
@@ -52,10 +51,16 @@ export default {
                         <h2 v-if="entry.completed.length > 0">
                             Completions ({{ entry.completed.length }})
                         </h2>
-                        <table class="table">
+                        <table class="table records-table">
                             <tr
                                 v-for="(item, index) in entry.completed"
                                 :key="item.rank + '-' + item.type + '-' + index"
+                                class="record-row"
+                                :class="{
+                                    'verification-record': item.type === 'verifier',
+                                    'first-victor-record': item.type === 'first-victor',
+                                    'completion-record': item.type !== 'verifier' && item.type !== 'first-victor'
+                                }"
                             >
                                 <td class="rank">
                                     <p>#{{ item.rank }}</p>
@@ -89,10 +94,11 @@ export default {
                         <h2 v-if="entry.progressed.length > 0">
                             Progressed ({{ entry.progressed.length }})
                         </h2>
-                        <table class="table">
+                        <table class="table records-table">
                             <tr
                                 v-for="item in entry.progressed"
                                 :key="item.rank + '-' + item.percent"
+                                class="record-row progress-record"
                             >
                                 <td class="rank">
                                     <p>#{{ item.rank }}</p>

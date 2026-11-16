@@ -1,3 +1,4 @@
+
 import { fetchLeaderboard } from '../content.js';
 import { localize } from '../util.js';
 import { store } from '../main.js';
@@ -66,24 +67,26 @@ export default {
                                     <p>#{{ item.rank }}</p>
                                 </td>
                                 <td class="level">
-                                    <a
-                                        v-if="item.link"
-                                        class="type-label-lg"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        :href="item.link"
-                                    >{{ item.level }}</a>
-                                    <span v-else class="type-label-lg">
-                                        {{ item.level }}
-                                    </span>
-                                    <span
-                                        v-if="item.type === 'verifier'"
-                                        class="achievement-label verifier-label"
-                                    >Verifier</span>
-                                    <span
-                                        v-if="item.type === 'first-victor'"
-                                        class="achievement-label first-victor-label"
-                                    >First Victor</span>
+                                    <div class="level-name-group">
+                                        <a
+                                            v-if="item.link"
+                                            class="type-label-lg"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            :href="item.link"
+                                        >{{ item.level }}</a>
+                                        <span v-else class="type-label-lg">
+                                            {{ item.level }}
+                                        </span>
+                                        <span
+                                            v-if="item.type === 'verifier'"
+                                            class="achievement-label verifier-label"
+                                        >Verifier</span>
+                                        <span
+                                            v-if="item.type === 'first-victor'"
+                                            class="achievement-label first-victor-label"
+                                        >First Victor</span>
+                                    </div>
                                 </td>
                                 <td class="score">
                                     <p>+{{ localize(item.score) }}</p>

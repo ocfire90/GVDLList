@@ -1,3 +1,4 @@
+
 import { round, score } from './score.js';
 
 /**
@@ -101,6 +102,7 @@ export async function fetchLeaderboard(indexFile = '_list.json') {
             verifierScores.completed.push({
                 rank: levelRank,
                 level: level.name,
+                path: level.path,
                 score: levelScore,
                 link: level.verification,
                 type: 'verifier',
@@ -114,6 +116,7 @@ export async function fetchLeaderboard(indexFile = '_list.json') {
             firstVictorScores.completed.push({
                 rank: levelRank,
                 level: level.name,
+                path: level.path,
                 score: levelScore,
                 link: '',
                 type: 'first-victor',
@@ -129,6 +132,7 @@ export async function fetchLeaderboard(indexFile = '_list.json') {
                 playerScores.completed.push({
                     rank: levelRank,
                     level: level.name,
+                    path: level.path,
                     score: levelScore,
                     link: '',
                     type: 'completion',
@@ -143,6 +147,7 @@ export async function fetchLeaderboard(indexFile = '_list.json') {
             playerScores.progressed.push({
                 rank: levelRank,
                 level: level.name,
+                path: level.path,
                 percent: record.percent,
                 score: score(
                     levelRank,

@@ -1,3 +1,4 @@
+
 .page-leaderboard-container {
     display: block;
 }
@@ -134,9 +135,20 @@
     text-align: right;
 }
 
-.page-leaderboard .player .records-table .level a {
+.page-leaderboard .player .records-table .level-name-group {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.45rem;
+    max-width: 100%;
+}
+
+.page-leaderboard .player .records-table .level-name-group a,
+.page-leaderboard .player .records-table .level-name-group > span:not(.achievement-label) {
     display: inline;
     padding: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .page-leaderboard .player .records-table a:hover {
@@ -197,9 +209,8 @@
 
 .page-leaderboard .player .records-table .achievement-label {
     display: inline-block;
-    vertical-align: middle;
+    flex: 0 0 auto;
     padding: 2px 6px;
-    margin-left: 0.45rem;
     border-radius: 4px;
     font-family: "Manrope", sans-serif;
     font-size: 0.7rem;

@@ -102,7 +102,6 @@
 }
 
 .page-leaderboard .player .records-table .record-row td:first-child {
-    border-left: 4px solid #9ca3af;
     border-radius: 6px 0 0 6px;
 }
 
@@ -112,7 +111,7 @@
 
 .page-leaderboard .player .records-table .rank {
     width: 3.5rem;
-    text-align: right;
+    text-align: center;
     white-space: nowrap;
 }
 
@@ -135,7 +134,25 @@
     text-align: right;
 }
 
-/* Keep the level name and achievement tag on the same line */
+/* Rank badge */
+
+.page-leaderboard .player .records-table .rank p {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2rem;
+    padding: 0 0.4rem;
+    border-radius: 6px;
+    background: #30343d;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1;
+}
+
+/* Level name and achievement tag alignment */
 
 .page-leaderboard .player .records-table .level-name-group {
     display: inline-flex;
@@ -166,28 +183,16 @@
     background: rgba(156, 163, 175, 0.12);
 }
 
-.page-leaderboard .player .records-table .completion-record td:first-child {
-    border-left-color: #9ca3af;
-}
-
 /* Percentage progress: Gray */
 
 .page-leaderboard .player .records-table .progress-record td {
     background: rgba(156, 163, 175, 0.12);
 }
 
-.page-leaderboard .player .records-table .progress-record td:first-child {
-    border-left-color: #9ca3af;
-}
-
 /* Verifications: Yellow */
 
 .page-leaderboard .player .records-table .verification-record td {
     background: rgba(229, 179, 65, 0.12);
-}
-
-.page-leaderboard .player .records-table .verification-record td:first-child {
-    border-left-color: #e5b341;
 }
 
 .page-leaderboard .player .records-table .verification-record .achievement-label {
@@ -199,10 +204,6 @@
 
 .page-leaderboard .player .records-table .first-victor-record td {
     background: rgba(22, 163, 74, 0.12);
-}
-
-.page-leaderboard .player .records-table .first-victor-record td:first-child {
-    border-left-color: #16a34a;
 }
 
 .page-leaderboard .player .records-table .first-victor-record .achievement-label {

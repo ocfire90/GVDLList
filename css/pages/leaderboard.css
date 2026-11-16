@@ -134,7 +134,7 @@
     text-align: right;
 }
 
-/* Rank badge */
+/* Rank badges */
 
 .page-leaderboard .player .records-table .rank p {
     display: inline-flex;
@@ -144,7 +144,7 @@
     height: 2rem;
     padding: 0 0.4rem;
     border-radius: 6px;
-    background: #30343d;
+    background: #454b55;
     color: #ffffff;
     font-size: 0.85rem;
     font-weight: 700;
@@ -183,16 +183,29 @@
     background: rgba(156, 163, 175, 0.12);
 }
 
+.page-leaderboard .player .records-table .completion-record .rank p {
+    background: #454b55;
+}
+
 /* Percentage progress: Gray */
 
 .page-leaderboard .player .records-table .progress-record td {
     background: rgba(156, 163, 175, 0.12);
 }
 
+.page-leaderboard .player .records-table .progress-record .rank p {
+    background: #454b55;
+}
+
 /* Verifications: Yellow */
 
 .page-leaderboard .player .records-table .verification-record td {
     background: rgba(229, 179, 65, 0.12);
+}
+
+.page-leaderboard .player .records-table .verification-record .rank p {
+    background: #765414;
+    color: #ffe5a0;
 }
 
 .page-leaderboard .player .records-table .verification-record .achievement-label {
@@ -204,6 +217,11 @@
 
 .page-leaderboard .player .records-table .first-victor-record td {
     background: rgba(22, 163, 74, 0.12);
+}
+
+.page-leaderboard .player .records-table .first-victor-record .rank p {
+    background: #176b36;
+    color: #b9f6ca;
 }
 
 .page-leaderboard .player .records-table .first-victor-record .achievement-label {

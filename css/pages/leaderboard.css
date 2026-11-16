@@ -137,7 +137,7 @@
 
 .page-leaderboard .player .records-table .level-name-group {
     display: inline-flex;
-    align-items: center;
+    align-items: baseline;
     flex-wrap: nowrap;
     gap: 0.45rem;
     max-width: 100%;

@@ -38,6 +38,22 @@ export default {
             return this.store.profile;
         },
 
+        previewUsername() {
+            if (this.editingProfile) {
+                return this.editUsername.trim() || 'Username';
+            }
+
+            return this.profile?.username || 'Username';
+        },
+
+        previewBio() {
+            if (this.editingProfile) {
+                return this.editBio.trim();
+            }
+
+            return this.profile?.bio || '';
+        },
+
         usernameCooldown() {
             const changedAt = this.profile?.username_changed_at;
 
@@ -703,13 +719,13 @@ export default {
                                             alt="Player avatar"
                                         />
                                         <span v-else>
-                                            {{ profile.username.charAt(0).toUpperCase() }}
+                                            {{ previewUsername.charAt(0).toUpperCase() }}
                                         </span>
                                     </div>
 
                                     <div class="player-profile-identity">
                                         <div class="player-profile-name">
-                                            <h2>{{ profile.username }}</h2>
+                                            <h2>{{ previewUsername }}</h2>
                                             <span class="player-role">
                                                 {{ profile.role || 'Player' }}
                                             </span>
@@ -723,8 +739,8 @@ export default {
                                     <div class="player-profile-bio">
                                         <h3>ABOUT</h3>
 
-                                        <p v-if="profile.bio">
-                                            {{ profile.bio }}
+                                        <p v-if="previewBio">
+                                            {{ previewBio }}
                                         </p>
 
                                         <p v-else class="player-no-bio">

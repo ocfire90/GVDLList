@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>GVDL - Demonlist</title>
+        <title>GVDL - GRAB VR Demon List</title>
 
         <link rel="icon" href="./list_icon.png" />
         <link rel="icon" href="./list_icon.png" />
@@ -21,6 +21,7 @@
             href="./css/pages/leaderboard.css"
         />
         <link rel="stylesheet" type="text/css" href="./css/pages/roulette.css" />
+        <link rel="stylesheet" type="text/css" href="./css/pages/account.css" />
         <link rel="stylesheet" type="text/css" href="./css/components/nav.css" />
         <link rel="stylesheet" type="text/css" href="./css/components/btn.css" />
         <link
@@ -46,7 +47,7 @@
                     <select
                         id="list-selector"
                         class="nav__dropdown"
-                        :value="['/leaderboard', '/roulette'].includes($route.path) ? '' : store.activeList"
+                        :value="['/leaderboard', '/roulette', '/account'].includes($route.path) ? '' : store.activeList"
                         @change="store.setActiveList($event.target.value); $router.push(({ main: '/', platformer: '/platformer', challenge: '/challenge', created: '/created', upcoming: '/upcoming', legacy: '/legacy' })[$event.target.value])"
                     >
                         <option value="" disabled hidden>
@@ -71,6 +72,12 @@
 
                 <router-link class="nav__tab" to="/roulette">
                     <span class="type-label-lg">Roulette</span>
+                </router-link>
+
+                <router-link class="nav__tab" to="/account">
+                    <span class="type-label-lg">
+                        {{ store.user ? 'My Account' : 'Account' }}
+                    </span>
                 </router-link>
 
                 <div class="nav__actions">

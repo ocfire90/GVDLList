@@ -10,7 +10,13 @@ export default {
         email: '',
         password: '',
 
+        editUsername: '',
+        editBio: '',
+        editingProfile: false,
+
         loading: false,
+        uploadingAvatar: false,
+
         message: '',
         messageType: '',
     }),
@@ -18,6 +24,75 @@ export default {
     computed: {
         loggedIn() {
             return !!this.store.user;
+        },
+
+        profile() {
+            return this.store.profile;
+        },
+
+        usernameCooldown() {
+            const changedAt = this.profile?.username_changed_at;
+
+            if (!changedAt) return 0;
+
+            const elapsed = Date.now() - new Date(changedAt).getTime();
+            const remaining = 7 * 24 * 60 * 60 * 1000 - elapsed;
+
+            return Math.max(0, remaining);
+        },
+
+        canChangeUsername() {
+            return this.usernameCooldown === 0;
+        },
+
+        usernameCooldownText() {
+            if (this.canChangeUsername) {
+                return 'You can change your username.';
+            }
+
+            const days = Math.floor(
+                this.usernameCooldown / (24 * 60 * 60 * 1000)
+            );
+
+            const hours = Math.floor(
+                (this.usernameCooldown % (24 * 60 * 60 * 1000)) /
+                (60 * 60 * 1000)
+            );
+
+            if (days > 0) {
+                return `You can change your username again in ${days} day${days === 1 ? '' : 's'} and ${hours} hour${hours === 1 ? '' : 's'}.`;
+            }
+
+            return `You can change your username again in ${hours} hour${hours === 1 ? '' : 's'}.`;
+        },
+
+        registrationDate() {
+            if (!this.profile?.created_at) return 'Not available';
+
+            return new Date(this.profile.created_at).toLocaleDateString(
+                'en-AU',
+                {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                }
+            );
+        },
+
+        avatarUrl() {
+            return this.profile?.avatar_url || '';
+        },
+    },
+
+    watch: {
+        profile: {
+            immediate: true,
+            handler(profile) {
+                if (!profile) return;
+
+                this.editUsername = profile.username || '';
+                this.editBio = profile.bio || '';
+            },
         },
     },
 
@@ -88,6 +163,7 @@ export default {
                     'Registration successful! Please check your email for a verification link before logging in.',
                     'success'
                 );
+
                 this.activeTab = 'login';
             }
         },
@@ -135,7 +211,180 @@ export default {
                 return;
             }
 
+            this.editingProfile = false;
             this.showMessage('You have been logged out.', 'success');
+        },
+
+        startEditingProfile() {
+            this.editUsername = this.profile?.username || '';
+            this.editBio = this.profile?.bio || '';
+            this.editingProfile = true;
+
+            this.message = '';
+            this.messageType = '';
+        },
+
+        cancelEditingProfile() {
+            this.editUsername = this.profile?.username || '';
+            this.editBio = this.profile?.bio || '';
+            this.editingProfile = false;
+        },
+
+        async saveProfile() {
+            this.message = '';
+            this.messageType = '';
+
+            const username = this.editUsername.trim();
+            const bio = this.editBio.trim();
+
+            if (!username) {
+                this.showMessage('Please enter a username.', 'error');
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+                this.showMessage(
+                    'Usernames must be 3–20 characters and can only contain letters, numbers and underscores.',
+                    'error'
+                );
+                return;
+            }
+
+            if (bio.length > 160) {
+                this.showMessage(
+                    'Your biography cannot exceed 160 characters.',
+                    'error'
+                );
+                return;
+            }
+
+            const usernameChanged = username !== this.profile.username;
+            const bioChanged = bio !== (this.profile.bio || '');
+
+            if (!usernameChanged && !bioChanged) {
+                this.editingProfile = false;
+                this.showMessage('No changes to save.', 'success');
+                return;
+            }
+
+            if (usernameChanged && !this.canChangeUsername) {
+                this.showMessage(this.usernameCooldownText, 'error');
+                return;
+            }
+
+            const updates = {
+                bio: bio || null,
+            };
+
+            if (usernameChanged) {
+                updates.username = username;
+            }
+
+            this.loading = true;
+
+            const { data, error } = await supabase
+                .from('profiles')
+                .update(updates)
+                .eq('id', this.store.user.id)
+                .select()
+                .single();
+
+            this.loading = false;
+
+            if (error) {
+                if (error.message.includes('7 days')) {
+                    this.showMessage(
+                        'You can only change your username once every 7 days.',
+                        'error'
+                    );
+                } else if (
+                    error.code === '23505' ||
+                    error.message.toLowerCase().includes('unique')
+                ) {
+                    this.showMessage(
+                        'That username is already taken.',
+                        'error'
+                    );
+                } else {
+                    this.showMessage(error.message, 'error');
+                }
+
+                return;
+            }
+
+            this.store.profile = data;
+            this.editingProfile = false;
+
+            this.showMessage('Your profile has been updated!', 'success');
+        },
+
+        async uploadAvatar(event) {
+            const file = event.target.files?.[0];
+
+            if (!file) return;
+
+            event.target.value = '';
+
+            if (!file.type.startsWith('image/')) {
+                this.showMessage(
+                    'Please select a valid image file.',
+                    'error'
+                );
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                this.showMessage(
+                    'Your avatar must be smaller than 2 MB.',
+                    'error'
+                );
+                return;
+            }
+
+            this.uploadingAvatar = true;
+            this.message = '';
+
+            const filePath = `${this.store.user.id}/avatar`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('avatars')
+                .upload(filePath, file, {
+                    upsert: true,
+                    contentType: file.type,
+                    cacheControl: '3600',
+                });
+
+            if (uploadError) {
+                this.uploadingAvatar = false;
+                this.showMessage(uploadError.message, 'error');
+                return;
+            }
+
+            const { data: publicData } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(filePath);
+
+            const avatarUrl = `${publicData.publicUrl}?v=${Date.now()}`;
+
+            const { data, error: updateError } = await supabase
+                .from('profiles')
+                .update({
+                    avatar_url: avatarUrl,
+                })
+                .eq('id', this.store.user.id)
+                .select()
+                .single();
+
+            this.uploadingAvatar = false;
+
+            if (updateError) {
+                this.showMessage(updateError.message, 'error');
+                return;
+            }
+
+            this.store.profile = data;
+
+            this.showMessage('Your avatar has been updated!', 'success');
         },
 
         showMessage(message, type) {
@@ -156,66 +405,188 @@ export default {
 
                 <template v-else-if="loggedIn">
                     <div class="account-card">
+
                         <div class="account-heading">
                             <h1>Your Account</h1>
-                            <p>Welcome to GVDL.</p>
+                            <p>Manage your GVDL player profile.</p>
                         </div>
 
-                        <div class="account-profile">
-                            <div class="account-avatar">
-                                {{ (store.profile?.username || store.user.email || '?').charAt(0).toUpperCase() }}
+                        <template v-if="!profile">
+                            <p class="account-loading">
+                                Loading your profile...
+                            </p>
+                        </template>
+
+                        <template v-else>
+
+                            <div class="account-profile">
+                                <div class="account-avatar">
+                                    <img
+                                        v-if="avatarUrl"
+                                        :src="avatarUrl"
+                                        alt="Profile avatar"
+                                    />
+
+                                    <span v-else>
+                                        {{ (profile.username || store.user.email || '?').charAt(0).toUpperCase() }}
+                                    </span>
+                                </div>
+
+                                <div class="account-profile-info">
+                                    <h2>{{ profile.username }}</h2>
+                                    <p>{{ store.user.email }}</p>
+                                </div>
                             </div>
 
-                            <div class="account-profile-info">
-                                <h2>
-                                    {{ store.profile?.username || 'Loading profile...' }}
-                                </h2>
-                                <p>{{ store.user.email }}</p>
+                            <div class="account-avatar-controls">
+                                <label
+                                    class="account-avatar-button"
+                                    for="account-avatar-input"
+                                >
+                                    {{ uploadingAvatar ? 'Uploading...' : 'Change Avatar' }}
+                                </label>
+
+                                <input
+                                    id="account-avatar-input"
+                                    class="account-file-input"
+                                    type="file"
+                                    accept="image/*"
+                                    :disabled="uploadingAvatar"
+                                    @change="uploadAvatar"
+                                />
+
+                                <p class="account-hint">
+                                    Images only. Maximum size: 2 MB.
+                                </p>
                             </div>
-                        </div>
 
-                        <div class="account-details">
-                            <div class="account-detail">
-                                <span>Username</span>
-                                <strong>
-                                    {{ store.profile?.username || 'Not available' }}
-                                </strong>
+                            <div class="account-bio">
+                                <span>Biography</span>
+
+                                <p v-if="profile.bio">
+                                    {{ profile.bio }}
+                                </p>
+
+                                <p v-else class="account-empty-bio">
+                                    This player hasn't written a biography yet.
+                                </p>
                             </div>
 
-                            <div class="account-detail">
-                                <span>Account role</span>
-                                <strong>
-                                    {{ store.profile?.role || 'Player' }}
-                                </strong>
+                            <div class="account-details">
+                                <div class="account-detail">
+                                    <span>Username</span>
+                                    <strong>{{ profile.username }}</strong>
+                                </div>
+
+                                <div class="account-detail">
+                                    <span>Account role</span>
+                                    <strong>{{ profile.role || 'Player' }}</strong>
+                                </div>
+
+                                <div class="account-detail">
+                                    <span>Joined GVDL</span>
+                                    <strong>{{ registrationDate }}</strong>
+                                </div>
+
+                                <div class="account-detail">
+                                    <span>Account status</span>
+                                    <strong>Logged in</strong>
+                                </div>
                             </div>
 
-                            <div class="account-detail">
-                                <span>Account status</span>
-                                <strong>Logged in</strong>
-                            </div>
-                        </div>
+                            <template v-if="editingProfile">
+                                <form
+                                    class="account-form account-edit-form"
+                                    @submit.prevent="saveProfile"
+                                >
+                                    <h2>Edit Profile</h2>
 
-                        <p
-                            v-if="message"
-                            class="account-message"
-                            :class="messageType"
-                        >
-                            {{ message }}
-                        </p>
+                                    <label for="edit-username">
+                                        Username
+                                    </label>
 
-                        <button
-                            class="account-submit"
-                            type="button"
-                            :disabled="loading"
-                            @click="logout"
-                        >
-                            {{ loading ? 'Logging out...' : 'Log Out' }}
-                        </button>
+                                    <input
+                                        id="edit-username"
+                                        v-model="editUsername"
+                                        type="text"
+                                        minlength="3"
+                                        maxlength="20"
+                                        autocomplete="username"
+                                        required
+                                    />
+
+                                    <p class="account-hint">
+                                        {{ usernameCooldownText }}
+                                    </p>
+
+                                    <label for="edit-bio">
+                                        Biography
+                                    </label>
+
+                                    <textarea
+                                        id="edit-bio"
+                                        v-model="editBio"
+                                        maxlength="160"
+                                        rows="4"
+                                        placeholder="Tell the GVDL community a little about yourself..."
+                                    ></textarea>
+
+                                    <p class="account-hint account-character-count">
+                                        {{ editBio.length }}/160 characters
+                                    </p>
+
+                                    <button
+                                        class="account-submit"
+                                        type="submit"
+                                        :disabled="loading"
+                                    >
+                                        {{ loading ? 'Saving...' : 'Save Changes' }}
+                                    </button>
+
+                                    <button
+                                        class="account-secondary"
+                                        type="button"
+                                        :disabled="loading"
+                                        @click="cancelEditingProfile"
+                                    >
+                                        Cancel
+                                    </button>
+                                </form>
+                            </template>
+
+                            <button
+                                v-else
+                                class="account-submit"
+                                type="button"
+                                @click="startEditingProfile"
+                            >
+                                Edit Profile
+                            </button>
+
+                            <p
+                                v-if="message"
+                                class="account-message"
+                                :class="messageType"
+                            >
+                                {{ message }}
+                            </p>
+
+                            <button
+                                class="account-submit account-logout"
+                                type="button"
+                                :disabled="loading || uploadingAvatar"
+                                @click="logout"
+                            >
+                                {{ loading ? 'Please wait...' : 'Log Out' }}
+                            </button>
+
+                        </template>
                     </div>
                 </template>
 
                 <template v-else>
                     <div class="account-card">
+
                         <div class="account-heading">
                             <h1>GVDL Account</h1>
                             <p>Access your GVDL player account.</p>
@@ -249,6 +620,7 @@ export default {
                             <label for="account-email">
                                 Email Address
                             </label>
+
                             <input
                                 id="account-email"
                                 v-model="email"
@@ -261,6 +633,7 @@ export default {
                             <label for="account-password">
                                 Password
                             </label>
+
                             <input
                                 id="account-password"
                                 v-model="password"
@@ -289,6 +662,7 @@ export default {
                             <label for="account-username">
                                 Username
                             </label>
+
                             <input
                                 id="account-username"
                                 v-model="username"
@@ -307,6 +681,7 @@ export default {
                             <label for="register-email">
                                 Email Address
                             </label>
+
                             <input
                                 id="register-email"
                                 v-model="email"
@@ -319,6 +694,7 @@ export default {
                             <label for="register-password">
                                 Password
                             </label>
+
                             <input
                                 id="register-password"
                                 v-model="password"
@@ -353,6 +729,7 @@ export default {
                         <p class="account-footer">
                             GRAB VR Demon List
                         </p>
+
                     </div>
                 </template>
 

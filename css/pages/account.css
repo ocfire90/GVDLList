@@ -1,0 +1,233 @@
+.page-account {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 64px 20px;
+}
+
+.account-container {
+    width: 100%;
+    max-width: 440px;
+}
+
+.account-card {
+    background: var(--background-secondary, #17191f);
+    border: 1px solid var(--border, #30343d);
+    border-radius: 14px;
+    padding: 32px;
+}
+
+.account-heading {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.account-heading h1 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.account-heading p {
+    color: var(--text-secondary, #a0a5b0);
+    font-size: 14px;
+}
+
+.account-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 5px;
+    border-radius: 9px;
+    background: var(--background-primary, #101217);
+    margin-bottom: 28px;
+}
+
+.account-tabs button {
+    border: none;
+    border-radius: 7px;
+    padding: 11px;
+    background: transparent;
+    color: var(--text-secondary, #a0a5b0);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.account-tabs button.active {
+    background: #303b50;
+    color: #ffffff;
+}
+
+.account-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.account-form h2 {
+    font-size: 19px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.account-form label {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 5px;
+}
+
+.account-form input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid var(--border, #30343d);
+    border-radius: 8px;
+    background: var(--background-primary, #101217);
+    color: inherit;
+    font: inherit;
+    outline: none;
+}
+
+.account-form input:focus {
+    border-color: #647da5;
+}
+
+.account-form input::placeholder {
+    color: #777e8b;
+}
+
+.account-hint {
+    color: var(--text-secondary, #a0a5b0);
+    font-size: 12px;
+    margin-top: -7px;
+}
+
+.account-submit {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 13px;
+    margin-top: 12px;
+    background: #303b50;
+    color: #ffffff;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+}
+
+.account-submit:hover {
+    background: #40516d;
+}
+
+.account-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.account-message {
+    margin-top: 18px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.account-message.success {
+    background: rgba(55, 150, 100, 0.12);
+    color: #65ce96;
+}
+
+.account-message.error {
+    background: rgba(200, 70, 70, 0.12);
+    color: #f08080;
+}
+
+.account-footer {
+    text-align: center;
+    margin-top: 28px;
+    color: var(--text-secondary, #a0a5b0);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.account-loading {
+    text-align: center;
+    color: var(--text-secondary, #a0a5b0);
+}
+
+.account-profile {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border, #30343d);
+}
+
+.account-avatar {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #303b50;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.account-profile-info h2 {
+    font-size: 18px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.account-profile-info p {
+    color: var(--text-secondary, #a0a5b0);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 22px 0;
+}
+
+.account-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+}
+
+.account-detail span {
+    color: var(--text-secondary, #a0a5b0);
+}
+
+.account-detail strong {
+    text-align: right;
+    text-transform: capitalize;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+    .page-account {
+        padding: 32px 14px;
+    }
+
+    .account-card {
+        padding: 24px 18px;
+    }
+}

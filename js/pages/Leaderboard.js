@@ -1,4 +1,3 @@
-
 import { fetchLeaderboard } from '../content.js';
 import { localize } from '../util.js';
 import { store } from '../main.js';
@@ -77,14 +76,6 @@ export default {
                                             {{ item.level }}
                                         </span>
 
-                                        <a
-                                            v-if="item.link"
-                                            class="record-video-link"
-                                            :href="item.link"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >Video</a>
-
                                         <span
                                             v-if="item.type === 'verifier'"
                                             class="achievement-label verifier-label"
@@ -122,14 +113,6 @@ export default {
                                     <span v-else class="type-label-lg">
                                         {{ item.percent }}% {{ item.level }}
                                     </span>
-
-                                    <a
-                                        v-if="item.link"
-                                        class="record-video-link"
-                                        :href="item.link"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >Video</a>
                                 </td>
                                 <td class="score">
                                     <p>+{{ localize(item.score) }}</p>

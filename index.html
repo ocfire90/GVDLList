@@ -97,12 +97,19 @@
                         <img src="./assets/discord.svg" alt="Discord Logo" />
                     </a>
 
-                    <!-- Add your record submission form link here -->
+                    <!-- Account-dependent navigation button -->
+                    <router-link
+                        v-if="!store.user"
+                        class="nav__cta type-label-lg"
+                        to="/account"
+                    >
+                        Login
+                    </router-link>
+
                     <a
+                        v-else
                         class="nav__cta type-label-lg"
                         href="#"
-                        target="_blank"
-                        rel="noopener noreferrer"
                     >
                         Submit Record
                     </a>

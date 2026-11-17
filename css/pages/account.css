@@ -1,4 +1,6 @@
 .page-account {
+    width: 100%;
+    max-width: none;
     min-height: calc(100vh - 80px);
     padding: 42px 28px 64px;
     box-sizing: border-box;
@@ -6,17 +8,20 @@
 
 .account-dashboard {
     width: 100%;
-    max-width: 1320px;
+    max-width: 1700px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: minmax(320px, 0.85fr) minmax(420px, 1.15fr);
+    grid-template-columns: minmax(280px, 3fr) minmax(0, 7fr);
     align-items: start;
-    gap: 28px;
+    gap: 24px;
+    box-sizing: border-box;
 }
 
 .account-settings,
 .account-preview {
     min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
     background: var(--background-secondary, #17191f);
     border: 1px solid var(--border, #30343d);
     border-radius: 14px;
@@ -43,6 +48,7 @@
 .preview-heading p {
     color: var(--text-secondary, #a0a5b0);
     font-size: 13px;
+    line-height: 1.5;
 }
 
 .settings-indicator,
@@ -63,6 +69,7 @@
     height: 7px;
     border-radius: 50%;
     background: #58bd83;
+    flex-shrink: 0;
 }
 
 .settings-section {
@@ -102,6 +109,7 @@
     margin-top: 3px;
     color: var(--text-secondary, #a0a5b0);
     font-size: 12px;
+    line-height: 1.5;
 }
 
 .account-avatar-editor {
@@ -340,6 +348,20 @@
 
 /* PUBLIC PLAYER PROFILE */
 
+.account-preview {
+    min-height: 600px;
+}
+
+.preview-heading {
+    margin-bottom: 26px;
+}
+
+.preview-public-label {
+    padding: 8px 11px;
+    border: 1px solid var(--border, #30343d);
+    border-radius: 6px;
+}
+
 .player-profile-card {
     overflow: hidden;
     border: 1px solid var(--border, #30343d);
@@ -348,7 +370,7 @@
 }
 
 .player-profile-banner {
-    height: 145px;
+    height: 190px;
     position: relative;
     overflow: hidden;
     background: linear-gradient(125deg, #182638, #263d58 55%, #18202c);
@@ -366,33 +388,33 @@
 
 .banner-label {
     position: absolute;
-    right: 17px;
-    bottom: 14px;
+    right: 22px;
+    bottom: 18px;
     color: rgba(255, 255, 255, 0.55);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 800;
     letter-spacing: 2px;
 }
 
 .player-profile-main {
     position: relative;
-    padding: 0 25px 20px;
+    padding: 0 34px 28px;
 }
 
 .player-profile-avatar {
-    width: 94px;
-    height: 94px;
+    width: 112px;
+    height: 112px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    margin-top: -47px;
+    margin-top: -56px;
     position: relative;
-    border: 5px solid var(--background-primary, #101217);
+    border: 6px solid var(--background-primary, #101217);
     border-radius: 50%;
     background: #303b50;
     color: white;
-    font-size: 38px;
+    font-size: 44px;
     font-weight: 800;
 }
 
@@ -403,24 +425,24 @@
 }
 
 .player-profile-identity {
-    padding-top: 13px;
+    padding-top: 16px;
 }
 
 .player-profile-name {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
 }
 
 .player-profile-name h2 {
-    font-size: 25px;
+    font-size: 30px;
     font-weight: 800;
     overflow-wrap: anywhere;
 }
 
 .player-role {
-    padding: 4px 9px;
+    padding: 5px 10px;
     border-radius: 5px;
     background: rgba(100, 125, 165, 0.18);
     color: #9eb4d7;
@@ -431,27 +453,28 @@
 }
 
 .player-joined {
-    margin-top: 5px;
+    margin-top: 7px;
     color: var(--text-secondary, #a0a5b0);
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .player-profile-bio {
-    padding: 27px 0 22px;
+    padding: 32px 0 27px;
+    max-width: 900px;
 }
 
 .player-profile-bio h3,
 .player-stats-heading h3 {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     color: var(--text-secondary, #a0a5b0);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 800;
     letter-spacing: 1.2px;
 }
 
 .player-profile-bio p {
-    font-size: 13px;
-    line-height: 1.7;
+    font-size: 14px;
+    line-height: 1.8;
     overflow-wrap: anywhere;
 }
 
@@ -470,7 +493,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    padding: 22px 0 16px;
+    padding: 26px 0 18px;
 }
 
 .player-stats-heading h3 {
@@ -479,42 +502,42 @@
 
 .player-stats-heading span {
     color: var(--text-secondary, #a0a5b0);
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.8px;
 }
 
 .player-stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
 }
 
 .player-stat {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    padding: 17px;
+    gap: 7px;
+    padding: 22px;
     border: 1px solid var(--border, #30343d);
     border-radius: 9px;
     background: var(--background-secondary, #17191f);
 }
 
 .player-stat strong {
-    font-size: 25px;
+    font-size: 30px;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
 }
 
 .player-stat span {
     color: var(--text-secondary, #a0a5b0);
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .player-stats-loading {
-    padding: 20px 0;
+    padding: 24px 0;
     color: var(--text-secondary, #a0a5b0);
-    font-size: 12px;
+    font-size: 13px;
     text-align: center;
 }
 
@@ -522,11 +545,11 @@
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    margin-top: 22px;
-    padding-top: 14px;
+    margin-top: 26px;
+    padding-top: 16px;
     border-top: 1px solid var(--border, #30343d);
     color: var(--text-secondary, #a0a5b0);
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
     letter-spacing: 1px;
 }
@@ -535,15 +558,15 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    margin-top: 15px;
+    margin-top: 17px;
     color: var(--text-secondary, #a0a5b0);
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.6;
 }
 
 .preview-note-icon {
-    width: 17px;
-    height: 17px;
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -559,6 +582,8 @@
     color: var(--text-secondary, #a0a5b0);
     text-align: center;
 }
+
+/* LOGIN AND REGISTRATION */
 
 .account-login-card {
     width: 100%;
@@ -634,19 +659,26 @@
     text-transform: uppercase;
 }
 
+/* RESPONSIVE LAYOUT */
+
 @media (max-width: 900px) {
     .account-dashboard {
         grid-template-columns: 1fr;
-        max-width: 650px;
+        max-width: 700px;
     }
 
     .account-preview {
         grid-row: 1;
     }
+
+    .player-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 520px) {
     .page-account {
+        width: 100%;
         padding: 22px 12px 40px;
     }
 
@@ -675,10 +707,29 @@
     }
 
     .player-profile-banner {
-        height: 115px;
+        height: 125px;
     }
 
     .player-profile-name h2 {
-        font-size: 21px;
+        font-size: 23px;
+    }
+
+    .player-profile-avatar {
+        width: 88px;
+        height: 88px;
+        margin-top: -44px;
+        font-size: 34px;
+    }
+
+    .player-stat {
+        padding: 15px;
+    }
+
+    .player-stat strong {
+        font-size: 24px;
+    }
+
+    .player-profile-footer {
+        font-size: 8px;
     }
 }

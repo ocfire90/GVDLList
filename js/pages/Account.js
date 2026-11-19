@@ -6,6 +6,7 @@ export default {
 
         activeTab: 'login',
         activeSection: 'profile',
+        activeAdminTab: 'overview',
 
         username: '',
         email: '',
@@ -26,6 +27,15 @@ export default {
         submissions: [],
         submissionsLoading: false,
 
+        adminLoading: false,
+        adminError: '',
+
+        adminSubmissions: [],
+        adminLevels: [],
+        adminPlayers: [],
+        adminLogs: [],
+        adminRecords: [],
+
         stats: {
             records: 0,
             completed: 0,
@@ -42,6 +52,40 @@ export default {
 
         profile() {
             return this.store.profile;
+        },
+
+        isAdmin() {
+            return ['admin', 'owner'].includes(
+                this.profile?.role?.toLowerCase()
+            );
+        },
+
+        isOwner() {
+            return this.profile?.role?.toLowerCase() === 'owner';
+        },
+
+        adminStats() {
+            return {
+                players: this.adminPlayers.length,
+                levels: this.adminLevels.length,
+                submissions: this.adminSubmissions.length,
+                pending: this.adminSubmissions.filter(
+                    item => item.status === 'pending'
+                ).length,
+                approved: this.adminSubmissions.filter(
+                    item => item.status === 'approved'
+                ).length,
+                rejected: this.adminSubmissions.filter(
+                    item => item.status === 'rejected'
+                ).length,
+                records: this.adminRecords.length,
+            };
+        },
+
+        pendingSubmissions() {
+            return this.adminSubmissions.filter(
+                item => item.status === 'pending'
+            );
         },
 
         previewUsername() {
@@ -126,6 +170,12 @@ export default {
 
                 this.editUsername = profile.username || '';
                 this.editBio = profile.bio || '';
+
+                if (['admin', 'owner'].includes(profile.role?.toLowerCase())) {
+                    this.loadAdminData();
+                } else {
+                    this.clearAdminData();
+                }
             },
         },
 
@@ -144,6 +194,8 @@ export default {
                     };
 
                     this.submissions = [];
+                    this.clearAdminData();
+
                     this.statsLoading = false;
                     this.submissionsLoading = false;
                 }
@@ -159,10 +211,137 @@ export default {
 
     methods: {
         setSection(section) {
+            if (section === 'admin' && !this.isAdmin) return;
+
             this.activeSection = section;
             this.message = '';
             this.messageType = '';
             this.editingProfile = false;
+
+            if (section === 'admin') {
+                this.loadAdminData();
+            }
+        },
+
+        setAdminTab(tab) {
+            const allowedTabs = [
+                'overview',
+                'submissions',
+                'levels',
+                'players',
+                'admins',
+                'logs',
+            ];
+
+            if (!allowedTabs.includes(tab)) return;
+            if (tab === 'admins' && !this.isOwner) return;
+
+            this.activeAdminTab = tab;
+        },
+
+        clearAdminData() {
+            this.adminSubmissions = [];
+            this.adminLevels = [];
+            this.adminPlayers = [];
+            this.adminLogs = [];
+            this.adminRecords = [];
+            this.adminError = '';
+            this.adminLoading = false;
+
+            if (this.activeSection === 'admin') {
+                this.activeSection = 'profile';
+            }
+        },
+
+        async loadAdminData() {
+            if (!this.isAdmin || !this.store.user) return;
+
+            this.adminLoading = true;
+            this.adminError = '';
+
+            const [
+                submissionsResult,
+                levelsResult,
+                playersResult,
+                logsResult,
+                recordsResult,
+            ] = await Promise.all([
+                supabase
+                    .from('record_submissions')
+                    .select('id, submitted_by, level_id, percentage, video_url, status, moderator_note, submitted_at, reviewed_at')
+                    .order('submitted_at', { ascending: false }),
+
+                supabase
+                    .from('levels')
+                    .select('id, name, author, verifier, game_id, created_at')
+                    .order('name', { ascending: true }),
+
+                supabase
+                    .from('profiles')
+                    .select('id, username, role, created_at')
+                    .order('username', { ascending: true }),
+
+                supabase
+                    .from('moderation_logs')
+                    .select('action, target_type, target_id, details, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(30),
+
+                supabase
+                    .from('player_records')
+                    .select('id'),
+            ]);
+
+            const errors = [
+                submissionsResult.error,
+                levelsResult.error,
+                playersResult.error,
+                logsResult.error,
+                recordsResult.error,
+            ].filter(Boolean);
+
+            this.adminSubmissions = submissionsResult.data || [];
+            this.adminLevels = levelsResult.data || [];
+            this.adminPlayers = playersResult.data || [];
+            this.adminLogs = logsResult.data || [];
+            this.adminRecords = recordsResult.data || [];
+
+            if (errors.length) {
+                console.error('Some Admin Panel data could not be loaded:', errors);
+
+                this.adminError =
+                    'Some dashboard information could not be loaded. Check your Supabase permissions and browser console.';
+            }
+
+            this.adminLoading = false;
+        },
+
+        formatDate(date) {
+            if (!date) return 'Not available';
+
+            return new Date(date).toLocaleDateString('en-AU', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+            });
+        },
+
+        formatDateTime(date) {
+            if (!date) return 'Not available';
+
+            return new Date(date).toLocaleString('en-AU', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        },
+
+        shortId(id) {
+            if (!id) return 'Unknown';
+
+            return `${id.slice(0, 8)}...`;
         },
 
         async loadPlayerStats(userId) {
@@ -225,16 +404,6 @@ export default {
 
             this.submissions = data || [];
             this.submissionsLoading = false;
-        },
-
-        formatDate(date) {
-            if (!date) return 'Not available';
-
-            return new Date(date).toLocaleDateString('en-AU', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-            });
         },
 
         switchTab(tab) {
@@ -643,7 +812,6 @@ export default {
 
                     <template v-else>
 
-                        <!-- ACCOUNT NAVIGATION -->
                         <aside class="account-sidebar">
                             <div class="account-sidebar-heading">
                                 <h1>My Account</h1>
@@ -723,6 +891,28 @@ export default {
                                     </span>
                                 </button>
 
+                                <button
+                                    v-if="isAdmin"
+                                    type="button"
+                                    class="account-admin-nav"
+                                    :class="{ active: activeSection === 'admin' }"
+                                    @click="setSection('admin')"
+                                >
+                                    <span class="account-nav-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M12 3 4 6v5c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-3Z"></path>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="account-nav-text">
+                                        <strong>Admin Panel</strong>
+                                        <small>Manage GVDL</small>
+                                    </span>
+                                    <span class="admin-nav-role">
+                                        {{ isOwner ? 'OWNER' : 'ADMIN' }}
+                                    </span>
+                                </button>
+
                             </nav>
 
                             <div class="account-sidebar-footer">
@@ -754,7 +944,6 @@ export default {
                             </div>
                         </aside>
 
-                        <!-- RIGHT CONTENT PANEL -->
                         <section class="account-content">
 
                             <!-- PLAYER PROFILE -->
@@ -1150,6 +1339,448 @@ export default {
                                         More display preferences and profile customisation options are planned for a future update.
                                     </div>
                                 </div>
+
+                            </template>
+
+                            <!-- ADMIN PANEL -->
+                            <template v-else-if="activeSection === 'admin' && isAdmin">
+
+                                <div class="content-heading admin-heading">
+                                    <div>
+                                        <h1>Admin Panel</h1>
+                                        <p>Manage the GVDL community and its competitive records.</p>
+                                    </div>
+
+                                    <div class="admin-heading-actions">
+                                        <span class="admin-role-tag">
+                                            {{ isOwner ? 'OWNER ACCESS' : 'ADMIN ACCESS' }}
+                                        </span>
+
+                                        <button
+                                            type="button"
+                                            class="admin-refresh-button"
+                                            :disabled="adminLoading"
+                                            @click="loadAdminData"
+                                        >
+                                            {{ adminLoading ? 'Refreshing...' : 'Refresh' }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div v-if="adminError" class="admin-error">
+                                    {{ adminError }}
+                                </div>
+
+                                <div class="admin-tabs">
+                                    <button
+                                        v-for="tab in [
+                                            { id: 'overview', label: 'Overview' },
+                                            { id: 'submissions', label: 'Submissions' },
+                                            { id: 'levels', label: 'Levels' },
+                                            { id: 'players', label: 'Players' },
+                                            ...(isOwner ? [{ id: 'admins', label: 'Admins' }] : []),
+                                            { id: 'logs', label: 'Activity Logs' },
+                                        ]"
+                                        :key="tab.id"
+                                        type="button"
+                                        :class="{ active: activeAdminTab === tab.id }"
+                                        @click="setAdminTab(tab.id)"
+                                    >
+                                        {{ tab.label }}
+                                        <span v-if="tab.id === 'submissions' && adminStats.pending">
+                                            {{ adminStats.pending }}
+                                        </span>
+                                    </button>
+                                </div>
+
+                                <div v-if="adminLoading" class="admin-loading">
+                                    Loading administration data...
+                                </div>
+
+                                <template v-else>
+
+                                    <!-- ADMIN OVERVIEW -->
+                                    <template v-if="activeAdminTab === 'overview'">
+
+                                        <div class="admin-welcome">
+                                            <div>
+                                                <span class="admin-eyebrow">GVDL ADMINISTRATION</span>
+                                                <h2>Welcome back, {{ profile.username }}.</h2>
+                                                <p>
+                                                    You have {{ isOwner ? 'full owner' : 'administrator' }}
+                                                    access to the GVDL management system.
+                                                </p>
+                                            </div>
+                                            <div class="admin-welcome-icon">
+                                                <svg viewBox="0 0 24 24">
+                                                    <path d="M12 3 4 6v5c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-3Z"></path>
+                                                    <path d="m9 12 2 2 4-4"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        <div class="admin-stat-grid">
+                                            <div class="admin-stat-card">
+                                                <span>Total Players</span>
+                                                <strong>{{ adminStats.players }}</strong>
+                                                <small>Registered accounts</small>
+                                            </div>
+
+                                            <div class="admin-stat-card">
+                                                <span>Total Levels</span>
+                                                <strong>{{ adminStats.levels }}</strong>
+                                                <small>Levels in database</small>
+                                            </div>
+
+                                            <div class="admin-stat-card">
+                                                <span>Pending Submissions</span>
+                                                <strong>{{ adminStats.pending }}</strong>
+                                                <small>Awaiting review</small>
+                                            </div>
+
+                                            <div class="admin-stat-card">
+                                                <span>Player Records</span>
+                                                <strong>{{ adminStats.records }}</strong>
+                                                <small>Stored records</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="admin-overview-grid">
+                                            <div class="admin-overview-card">
+                                                <div class="admin-card-heading">
+                                                    <div>
+                                                        <h2>Submission Overview</h2>
+                                                        <p>Current record submission statuses.</p>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        @click="setAdminTab('submissions')"
+                                                    >
+                                                        View all
+                                                    </button>
+                                                </div>
+
+                                                <div class="admin-status-row">
+                                                    <span>Pending</span>
+                                                    <strong>{{ adminStats.pending }}</strong>
+                                                </div>
+                                                <div class="admin-status-row">
+                                                    <span>Approved</span>
+                                                    <strong>{{ adminStats.approved }}</strong>
+                                                </div>
+                                                <div class="admin-status-row">
+                                                    <span>Rejected</span>
+                                                    <strong>{{ adminStats.rejected }}</strong>
+                                                </div>
+                                            </div>
+
+                                            <div class="admin-overview-card">
+                                                <div class="admin-card-heading">
+                                                    <div>
+                                                        <h2>Administration</h2>
+                                                        <p>Your current access level.</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-access-detail">
+                                                    <span>Signed in as</span>
+                                                    <strong>{{ profile.username }}</strong>
+                                                </div>
+
+                                                <div class="admin-access-detail">
+                                                    <span>Permission level</span>
+                                                    <strong class="admin-access-role">
+                                                        {{ profile.role }}
+                                                    </strong>
+                                                </div>
+
+                                                <div class="admin-access-detail">
+                                                    <span>Admin accounts</span>
+                                                    <strong>
+                                                        {{ adminPlayers.filter(player => ['admin', 'owner'].includes(player.role?.toLowerCase())).length }}
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="admin-overview-card admin-recent-activity">
+                                            <div class="admin-card-heading">
+                                                <div>
+                                                    <h2>Recent Activity</h2>
+                                                    <p>Latest recorded moderation actions.</p>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    @click="setAdminTab('logs')"
+                                                >
+                                                    View logs
+                                                </button>
+                                            </div>
+
+                                            <div v-if="adminLogs.length" class="admin-log-list">
+                                                <div
+                                                    v-for="(log, index) in adminLogs.slice(0, 5)"
+                                                    :key="`${log.created_at}-${index}`"
+                                                    class="admin-log-row"
+                                                >
+                                                    <div>
+                                                        <strong>{{ log.action }}</strong>
+                                                        <small>
+                                                            {{ log.target_type || 'System' }}
+                                                            <template v-if="log.target_id">
+                                                                · {{ shortId(log.target_id) }}
+                                                            </template>
+                                                        </small>
+                                                    </div>
+                                                    <time>{{ formatDateTime(log.created_at) }}</time>
+                                                </div>
+                                            </div>
+
+                                            <div v-else class="admin-empty-inline">
+                                                No moderation activity has been recorded yet.
+                                            </div>
+                                        </div>
+
+                                    </template>
+
+                                    <!-- ADMIN SUBMISSIONS -->
+                                    <template v-else-if="activeAdminTab === 'submissions'">
+
+                                        <div class="admin-section-intro">
+                                            <h2>Record Submissions</h2>
+                                            <p>Review the records submitted by GVDL players.</p>
+                                        </div>
+
+                                        <div class="admin-filter-summary">
+                                            <span>{{ adminSubmissions.length }} total</span>
+                                            <span>{{ adminStats.pending }} pending</span>
+                                            <span>{{ adminStats.approved }} approved</span>
+                                            <span>{{ adminStats.rejected }} rejected</span>
+                                        </div>
+
+                                        <div v-if="adminSubmissions.length" class="admin-table-list">
+                                            <article
+                                                v-for="submission in adminSubmissions"
+                                                :key="submission.id"
+                                                class="admin-submission-card"
+                                            >
+                                                <div class="admin-submission-top">
+                                                    <div>
+                                                        <strong>{{ shortId(submission.id) }}</strong>
+                                                        <small>Submitted {{ formatDateTime(submission.submitted_at) }}</small>
+                                                    </div>
+
+                                                    <span
+                                                        class="submission-status"
+                                                        :class="submission.status"
+                                                    >
+                                                        {{ submission.status }}
+                                                    </span>
+                                                </div>
+
+                                                <div class="admin-submission-details">
+                                                    <div>
+                                                        <span>Player ID</span>
+                                                        <strong>{{ shortId(submission.submitted_by) }}</strong>
+                                                    </div>
+                                                    <div>
+                                                        <span>Level ID</span>
+                                                        <strong>{{ shortId(submission.level_id) }}</strong>
+                                                    </div>
+                                                    <div>
+                                                        <span>Progress</span>
+                                                        <strong>{{ submission.percentage }}%</strong>
+                                                    </div>
+                                                </div>
+
+                                                <div class="admin-submission-actions">
+                                                    <a
+                                                        v-if="submission.video_url"
+                                                        :href="submission.video_url"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        View Evidence
+                                                    </a>
+                                                    <span v-else>No evidence link</span>
+
+                                                    <small>
+                                                        Review actions will be enabled after secure database review functions are installed.
+                                                    </small>
+                                                </div>
+                                            </article>
+                                        </div>
+
+                                        <div v-else class="empty-state">
+                                            <h2>No submissions found</h2>
+                                            <p>Player record submissions will appear here.</p>
+                                        </div>
+
+                                    </template>
+
+                                    <!-- ADMIN LEVEL MANAGEMENT -->
+                                    <template v-else-if="activeAdminTab === 'levels'">
+
+                                        <div class="admin-section-intro">
+                                            <h2>Level Management</h2>
+                                            <p>Browse the levels currently stored in the GVDL database.</p>
+                                        </div>
+
+                                        <div class="admin-management-notice">
+                                            Level creation, editing, deletion and list placement controls will be connected after the database management safeguards are in place.
+                                        </div>
+
+                                        <div v-if="adminLevels.length" class="admin-data-list">
+                                            <article
+                                                v-for="level in adminLevels"
+                                                :key="level.id"
+                                                class="admin-data-row"
+                                            >
+                                                <div class="admin-data-main">
+                                                    <strong>{{ level.name || 'Unnamed level' }}</strong>
+                                                    <small>
+                                                        Author: {{ level.author || 'Unknown' }}
+                                                        <template v-if="level.verifier">
+                                                            · Verifier: {{ level.verifier }}
+                                                        </template>
+                                                    </small>
+                                                </div>
+                                                <div class="admin-data-meta">
+                                                    <span>{{ level.game_id || 'No game ID' }}</span>
+                                                    <small>{{ formatDate(level.created_at) }}</small>
+                                                </div>
+                                            </article>
+                                        </div>
+
+                                        <div v-else class="empty-state">
+                                            <h2>No levels found</h2>
+                                            <p>Levels stored in the database will appear here.</p>
+                                        </div>
+
+                                    </template>
+
+                                    <!-- ADMIN PLAYER MANAGEMENT -->
+                                    <template v-else-if="activeAdminTab === 'players'">
+
+                                        <div class="admin-section-intro">
+                                            <h2>Player Management</h2>
+                                            <p>View registered GVDL accounts and their current roles.</p>
+                                        </div>
+
+                                        <div class="admin-management-notice">
+                                            Player bans, timeouts and account restrictions are not enabled yet. These need database-enforced expiry and permission checks before they can be safely applied.
+                                        </div>
+
+                                        <div v-if="adminPlayers.length" class="admin-data-list">
+                                            <article
+                                                v-for="player in adminPlayers"
+                                                :key="player.id"
+                                                class="admin-data-row"
+                                            >
+                                                <div class="admin-data-main">
+                                                    <strong>{{ player.username || 'Unknown player' }}</strong>
+                                                    <small>{{ shortId(player.id) }}</small>
+                                                </div>
+                                                <div class="admin-data-meta">
+                                                    <span
+                                                        class="admin-player-role"
+                                                        :class="player.role"
+                                                    >
+                                                        {{ player.role || 'player' }}
+                                                    </span>
+                                                    <small>Joined {{ formatDate(player.created_at) }}</small>
+                                                </div>
+                                            </article>
+                                        </div>
+
+                                        <div v-else class="empty-state">
+                                            <h2>No players found</h2>
+                                            <p>Registered accounts will appear here.</p>
+                                        </div>
+
+                                    </template>
+
+                                    <!-- OWNER ADMIN MANAGEMENT -->
+                                    <template v-else-if="activeAdminTab === 'admins' && isOwner">
+
+                                        <div class="admin-section-intro">
+                                            <h2>Admin Management</h2>
+                                            <p>View the accounts that currently have administrative permissions.</p>
+                                        </div>
+
+                                        <div class="admin-management-notice">
+                                            Only the Owner can manage administrator roles. Role changes will be connected after the owner-only database operation is fully tested.
+                                        </div>
+
+                                        <div class="admin-data-list">
+                                            <article
+                                                v-for="player in adminPlayers.filter(item => ['admin', 'owner'].includes(item.role?.toLowerCase()))"
+                                                :key="player.id"
+                                                class="admin-data-row"
+                                            >
+                                                <div class="admin-data-main">
+                                                    <strong>{{ player.username }}</strong>
+                                                    <small>{{ shortId(player.id) }}</small>
+                                                </div>
+                                                <div class="admin-data-meta">
+                                                    <span
+                                                        class="admin-player-role"
+                                                        :class="player.role"
+                                                    >
+                                                        {{ player.role }}
+                                                    </span>
+                                                    <small>Joined {{ formatDate(player.created_at) }}</small>
+                                                </div>
+                                            </article>
+
+                                            <div
+                                                v-if="!adminPlayers.some(item => ['admin', 'owner'].includes(item.role?.toLowerCase()))"
+                                                class="admin-empty-inline"
+                                            >
+                                                No administrator accounts found.
+                                            </div>
+                                        </div>
+
+                                    </template>
+
+                                    <!-- MODERATION LOGS -->
+                                    <template v-else-if="activeAdminTab === 'logs'">
+
+                                        <div class="admin-section-intro">
+                                            <h2>Moderation Activity Logs</h2>
+                                            <p>Review the latest administrative actions recorded by GVDL.</p>
+                                        </div>
+
+                                        <div v-if="adminLogs.length" class="admin-log-list admin-full-log-list">
+                                            <article
+                                                v-for="(log, index) in adminLogs"
+                                                :key="`${log.created_at}-${index}`"
+                                                class="admin-log-row"
+                                            >
+                                                <div>
+                                                    <strong>{{ log.action }}</strong>
+                                                    <small>
+                                                        {{ log.target_type || 'System' }}
+                                                        <template v-if="log.target_id">
+                                                            · {{ shortId(log.target_id) }}
+                                                        </template>
+                                                    </small>
+                                                    <small v-if="log.details">
+                                                        {{ JSON.stringify(log.details) }}
+                                                    </small>
+                                                </div>
+                                                <time>{{ formatDateTime(log.created_at) }}</time>
+                                            </article>
+                                        </div>
+
+                                        <div v-else class="empty-state">
+                                            <h2>No activity recorded</h2>
+                                            <p>Future moderation actions will appear here.</p>
+                                        </div>
+
+                                    </template>
+
+                                </template>
 
                             </template>
 

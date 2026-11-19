@@ -5,6 +5,7 @@ export default {
         store,
 
         activeTab: 'login',
+        activeSection: 'profile',
 
         username: '',
         email: '',
@@ -21,6 +22,9 @@ export default {
 
         message: '',
         messageType: '',
+
+        submissions: [],
+        submissionsLoading: false,
 
         stats: {
             records: 0,
@@ -130,6 +134,7 @@ export default {
             handler(user) {
                 if (user) {
                     this.loadPlayerStats(user.id);
+                    this.loadSubmissions(user.id);
                 } else {
                     this.stats = {
                         records: 0,
@@ -137,7 +142,10 @@ export default {
                         progress: 0,
                         firstVictories: 0,
                     };
+
+                    this.submissions = [];
                     this.statsLoading = false;
+                    this.submissionsLoading = false;
                 }
             },
         },
@@ -150,6 +158,13 @@ export default {
     },
 
     methods: {
+        setSection(section) {
+            this.activeSection = section;
+            this.message = '';
+            this.messageType = '';
+            this.editingProfile = false;
+        },
+
         async loadPlayerStats(userId) {
             this.statsLoading = true;
 
@@ -190,6 +205,36 @@ export default {
             };
 
             this.statsLoading = false;
+        },
+
+        async loadSubmissions(userId) {
+            this.submissionsLoading = true;
+
+            const { data, error } = await supabase
+                .from('record_submissions')
+                .select('id, level_id, percentage, status, moderator_note, submitted_at, reviewed_at, levels(name)')
+                .eq('submitted_by', userId)
+                .order('submitted_at', { ascending: false });
+
+            if (error) {
+                console.error('Failed to load record submissions:', error);
+                this.submissions = [];
+                this.submissionsLoading = false;
+                return;
+            }
+
+            this.submissions = data || [];
+            this.submissionsLoading = false;
+        },
+
+        formatDate(date) {
+            if (!date) return 'Not available';
+
+            return new Date(date).toLocaleDateString('en-AU', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+            });
         },
 
         switchTab(tab) {
@@ -592,216 +637,111 @@ export default {
 
                     <template v-if="!profile">
                         <div class="account-card">
-                            <p class="account-loading">
-                                Loading your profile...
-                            </p>
+                            <p class="account-loading">Loading your profile...</p>
                         </div>
                     </template>
 
                     <template v-else>
 
-                        <!-- LEFT: ACCOUNT SETTINGS -->
-                        <section class="account-settings">
-
-                            <div class="dashboard-heading">
-                                <div>
-                                    <h1>Account Settings</h1>
-                                    <p>Manage your GVDL account.</p>
-                                </div>
+                        <!-- ACCOUNT NAVIGATION -->
+                        <aside class="account-sidebar">
+                            <div class="account-sidebar-heading">
+                                <h1>My Account</h1>
+                                <p>Manage your GVDL account.</p>
                             </div>
 
-                            <div class="settings-section">
-                                <div class="settings-section-heading">
-                                    <div class="settings-icon" aria-hidden="true">
+                            <nav class="account-navigation">
+
+                                <button
+                                    type="button"
+                                    :class="{ active: activeSection === 'profile' }"
+                                    @click="setSection('profile')"
+                                >
+                                    <span class="account-nav-icon">
                                         <svg viewBox="0 0 24 24">
                                             <circle cx="12" cy="8" r="3.5"></circle>
                                             <path d="M5 20c.5-3.7 3.2-5.5 7-5.5s6.5 1.8 7 5.5"></path>
                                         </svg>
-                                    </div>
-                                    <div>
-                                        <h2>Profile</h2>
-                                        <p>Your public player information.</p>
-                                    </div>
-                                </div>
+                                    </span>
+                                    <span class="account-nav-text">
+                                        <strong>Player Profile</strong>
+                                        <small>Your public profile</small>
+                                    </span>
+                                </button>
 
-                                <div class="account-avatar-editor">
-                                    <div class="account-avatar">
+                                <button
+                                    type="button"
+                                    :class="{ active: activeSection === 'settings' }"
+                                    @click="setSection('settings')"
+                                >
+                                    <span class="account-nav-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 2.9-.2-.1a1.7 1.7 0 0 0-1.8.1l-.2.1h-3.4l-.1-.2a1.7 1.7 0 0 0-1.7-.9l-.2.1-2.9-1.7.1-.2a1.7 1.7 0 0 0-.1-1.8l-.1-.2v-3.4l.2-.1a1.7 1.7 0 0 0 .9-1.7l-.1-.2 1.7-2.9.2.1a1.7 1.7 0 0 0 1.8-.1l.2-.1h3.4l.1.2a1.7 1.7 0 0 0 1.7.9l.2-.1 2.9 1.7-.1.2a1.7 1.7 0 0 0 .1 1.8l.1.2z"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="account-nav-text">
+                                        <strong>Account Settings</strong>
+                                        <small>Personal information</small>
+                                    </span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    :class="{ active: activeSection === 'submissions' }"
+                                    @click="setSection('submissions')"
+                                >
+                                    <span class="account-nav-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M8 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"></path>
+                                            <rect x="8" y="2" width="8" height="5" rx="1"></rect>
+                                            <path d="m8 13 2.5 2.5L16 10"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="account-nav-text">
+                                        <strong>Record Submissions</strong>
+                                        <small>Track your submissions</small>
+                                    </span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    :class="{ active: activeSection === 'customization' }"
+                                    @click="setSection('customization')"
+                                >
+                                    <span class="account-nav-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M12 3a9 9 0 1 0 0 18h1.5a2 2 0 0 0 1.5-3.3 1.8 1.8 0 0 1 1.4-3h.6A4 4 0 0 0 21 10.6C21 6.4 17 3 12 3Z"></path>
+                                            <circle cx="7.5" cy="10" r="1"></circle>
+                                            <circle cx="11" cy="7" r="1"></circle>
+                                            <circle cx="15.5" cy="8" r="1"></circle>
+                                        </svg>
+                                    </span>
+                                    <span class="account-nav-text">
+                                        <strong>Website Customization</strong>
+                                        <small>Personalise your experience</small>
+                                    </span>
+                                </button>
+
+                            </nav>
+
+                            <div class="account-sidebar-footer">
+                                <div class="sidebar-user">
+                                    <div class="sidebar-user-avatar">
                                         <img
                                             v-if="avatarUrl"
                                             :src="avatarUrl"
-                                            alt="Profile avatar"
+                                            alt=""
                                         />
                                         <span v-else>
                                             {{ profile.username.charAt(0).toUpperCase() }}
                                         </span>
                                     </div>
-
                                     <div>
-                                        <label
-                                            class="account-avatar-button"
-                                            for="account-avatar-input"
-                                        >
-                                            {{ uploadingAvatar ? 'Uploading...' : 'Change Avatar' }}
-                                        </label>
-
-                                        <input
-                                            id="account-avatar-input"
-                                            class="account-file-input"
-                                            type="file"
-                                            accept="image/*"
-                                            :disabled="uploadingAvatar"
-                                            @change="uploadAvatar"
-                                        />
-
-                                        <p class="account-hint">
-                                            Maximum size: 2 MB
-                                        </p>
+                                        <strong>{{ profile.username }}</strong>
+                                        <small>{{ profile.role || 'Player' }}</small>
                                     </div>
                                 </div>
-
-                                <div class="account-banner-editor">
-                                    <div class="account-banner-editor-heading">
-                                        <strong>Profile Banner</strong>
-                                        <span>Maximum size: 5 MB</span>
-                                    </div>
-
-                                    <label
-                                        class="account-banner-button"
-                                        for="account-banner-input"
-                                    >
-                                        {{ uploadingBanner ? 'Uploading...' : 'Change Banner' }}
-                                    </label>
-
-                                    <input
-                                        id="account-banner-input"
-                                        class="account-file-input"
-                                        type="file"
-                                        accept="image/*"
-                                        :disabled="uploadingBanner"
-                                        @change="uploadBanner"
-                                    />
-
-                                    <p class="account-hint">
-                                        Choose an image to personalise the banner on your player profile.
-                                    </p>
-                                </div>
-
-                                <template v-if="editingProfile">
-                                    <form
-                                        class="account-form account-edit-form"
-                                        @submit.prevent="saveProfile"
-                                    >
-                                        <label for="edit-username">
-                                            Username
-                                        </label>
-
-                                        <input
-                                            id="edit-username"
-                                            v-model="editUsername"
-                                            type="text"
-                                            minlength="3"
-                                            maxlength="20"
-                                            autocomplete="username"
-                                            required
-                                        />
-
-                                        <p class="account-hint">
-                                            {{ usernameCooldownText }}
-                                        </p>
-
-                                        <label for="edit-bio">
-                                            Biography
-                                        </label>
-
-                                        <textarea
-                                            id="edit-bio"
-                                            v-model="editBio"
-                                            maxlength="160"
-                                            rows="4"
-                                            placeholder="Tell the GVDL community about yourself..."
-                                        ></textarea>
-
-                                        <p class="account-hint account-character-count">
-                                            {{ editBio.length }}/160 characters
-                                        </p>
-
-                                        <button
-                                            class="account-submit"
-                                            type="submit"
-                                            :disabled="loading"
-                                        >
-                                            {{ loading ? 'Saving...' : 'Save Changes' }}
-                                        </button>
-
-                                        <button
-                                            class="account-secondary"
-                                            type="button"
-                                            :disabled="loading"
-                                            @click="cancelEditingProfile"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </form>
-                                </template>
-
-                                <button
-                                    v-else
-                                    class="account-submit"
-                                    type="button"
-                                    @click="startEditingProfile"
-                                >
-                                    Edit Profile
-                                </button>
-                            </div>
-
-                            <div class="settings-section">
-                                <div class="settings-section-heading">
-                                    <div class="settings-icon" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24">
-                                            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-                                            <path d="m4 7 8 6 8-6"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h2>Account Information</h2>
-                                        <p>Your login details.</p>
-                                    </div>
-                                </div>
-
-                                <div class="settings-info">
-                                    <span>Email address</span>
-                                    <strong>{{ store.user.email }}</strong>
-                                </div>
-                            </div>
-
-                            <div class="settings-section settings-security">
-                                <div class="settings-section-heading">
-                                    <div class="settings-icon" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24">
-                                            <path d="M12 3 19 6v5c0 4.8-2.8 8-7 10-4.2-2-7-5.2-7-10V6l7-3Z"></path>
-                                            <path d="m9 12 2 2 4-4"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h2>Security</h2>
-                                        <p>Password and account protection.</p>
-                                    </div>
-                                </div>
-
-                                <p class="settings-coming-soon">
-                                    Password management and account deletion
-                                    will be available here.
-                                </p>
-                            </div>
-
-                            <div class="settings-bottom">
-                                <p
-                                    v-if="message"
-                                    class="account-message"
-                                    :class="messageType"
-                                >
-                                    {{ message }}
-                                </p>
 
                                 <button
                                     class="account-logout"
@@ -812,132 +752,406 @@ export default {
                                     Log Out
                                 </button>
                             </div>
+                        </aside>
 
-                        </section>
+                        <!-- RIGHT CONTENT PANEL -->
+                        <section class="account-content">
 
-                        <!-- RIGHT: PUBLIC PLAYER PROFILE -->
-                        <section class="account-preview">
+                            <!-- PLAYER PROFILE -->
+                            <template v-if="activeSection === 'profile'">
 
-                            <div class="preview-heading">
-                                <div>
-                                    <h1>Player Profile</h1>
-                                    <p>This is how your profile appears on GVDL.</p>
+                                <div class="content-heading">
+                                    <div>
+                                        <h1>Player Profile</h1>
+                                        <p>Your public identity and GVDL statistics.</p>
+                                    </div>
+                                    <span class="content-tag">PLAYER PROFILE</span>
                                 </div>
 
-                                <span class="preview-public-label">
-                                    <span></span>
-                                    PLAYER PROFILE
-                                </span>
-                            </div>
+                                <div class="player-profile-card">
 
-                            <div class="player-profile-card">
-
-                                <div class="player-profile-banner">
-                                    <img
-                                        v-if="bannerUrl"
-                                        class="player-profile-banner-image"
-                                        :src="bannerUrl"
-                                        alt="Player profile banner"
-                                    />
-                                    <div
-                                        v-else
-                                        class="banner-pattern"
-                                    ></div>
-                                    <span class="banner-label">GVDL PLAYER</span>
-                                </div>
-
-                                <div class="player-profile-main">
-
-                                    <div class="player-profile-avatar">
+                                    <div class="player-profile-banner">
                                         <img
-                                            v-if="avatarUrl"
-                                            :src="avatarUrl"
-                                            alt="Player avatar"
+                                            v-if="bannerUrl"
+                                            class="player-profile-banner-image"
+                                            :src="bannerUrl"
+                                            alt="Player profile banner"
                                         />
-                                        <span v-else>
-                                            {{ previewUsername.charAt(0).toUpperCase() }}
-                                        </span>
+                                        <div v-else class="banner-pattern"></div>
+                                        <span class="banner-label">GVDL PLAYER</span>
                                     </div>
 
-                                    <div class="player-profile-identity">
-                                        <div class="player-profile-name">
-                                            <h2>{{ previewUsername }}</h2>
-                                            <span class="player-role">
-                                                {{ profile.role || 'Player' }}
+                                    <div class="player-profile-main">
+
+                                        <div class="player-profile-avatar">
+                                            <img
+                                                v-if="avatarUrl"
+                                                :src="avatarUrl"
+                                                alt="Player avatar"
+                                            />
+                                            <span v-else>
+                                                {{ previewUsername.charAt(0).toUpperCase() }}
                                             </span>
                                         </div>
 
-                                        <p class="player-joined">
-                                            Member since {{ registrationDate }}
+                                        <div class="player-profile-identity">
+                                            <div class="player-profile-name">
+                                                <h2>{{ previewUsername }}</h2>
+                                                <span class="player-role">
+                                                    {{ profile.role || 'Player' }}
+                                                </span>
+                                            </div>
+
+                                            <p class="player-joined">
+                                                Member since {{ registrationDate }}
+                                            </p>
+                                        </div>
+
+                                        <div class="player-profile-bio">
+                                            <h3>ABOUT</h3>
+
+                                            <p v-if="previewBio">
+                                                {{ previewBio }}
+                                            </p>
+
+                                            <p v-else class="player-no-bio">
+                                                This player hasn't written a biography yet.
+                                            </p>
+                                        </div>
+
+                                        <div class="player-profile-divider"></div>
+
+                                        <div class="player-stats-heading">
+                                            <h3>PLAYER STATISTICS</h3>
+                                            <span>GVDL RECORDS</span>
+                                        </div>
+
+                                        <div v-if="statsLoading" class="player-stats-loading">
+                                            Loading statistics...
+                                        </div>
+
+                                        <div v-else class="player-stats-grid">
+                                            <div class="player-stat">
+                                                <strong>{{ stats.records }}</strong>
+                                                <span>Records</span>
+                                            </div>
+
+                                            <div class="player-stat">
+                                                <strong>{{ stats.completed }}</strong>
+                                                <span>Completed</span>
+                                            </div>
+
+                                            <div class="player-stat">
+                                                <strong>{{ stats.progress }}</strong>
+                                                <span>In Progress</span>
+                                            </div>
+
+                                            <div class="player-stat">
+                                                <strong>{{ stats.firstVictories }}</strong>
+                                                <span>First Victories</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="player-profile-footer">
+                                            <span>GRAB VR DEMON LIST</span>
+                                            <span>PLAYER PROFILE</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="content-note">
+                                    Your public profile will be accessible to other GVDL players once public player pages are implemented.
+                                </div>
+
+                            </template>
+
+                            <!-- ACCOUNT SETTINGS -->
+                            <template v-else-if="activeSection === 'settings'">
+
+                                <div class="content-heading">
+                                    <div>
+                                        <h1>Account Settings</h1>
+                                        <p>Manage your personal information and account security.</p>
+                                    </div>
+                                </div>
+
+                                <div class="account-content-section">
+                                    <div class="content-section-heading">
+                                        <h2>Profile Information</h2>
+                                        <p>Update your avatar, banner and personal details.</p>
+                                    </div>
+
+                                    <div class="account-avatar-editor">
+                                        <div class="account-avatar">
+                                            <img v-if="avatarUrl" :src="avatarUrl" alt="Profile avatar" />
+                                            <span v-else>
+                                                {{ profile.username.charAt(0).toUpperCase() }}
+                                            </span>
+                                        </div>
+
+                                        <div>
+                                            <label class="account-avatar-button" for="account-avatar-input">
+                                                {{ uploadingAvatar ? 'Uploading...' : 'Change Avatar' }}
+                                            </label>
+
+                                            <input
+                                                id="account-avatar-input"
+                                                class="account-file-input"
+                                                type="file"
+                                                accept="image/*"
+                                                :disabled="uploadingAvatar"
+                                                @change="uploadAvatar"
+                                            />
+
+                                            <p class="account-hint">Maximum size: 2 MB</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="account-banner-editor">
+                                        <div class="account-banner-editor-heading">
+                                            <strong>Profile Banner</strong>
+                                            <span>Maximum size: 5 MB</span>
+                                        </div>
+
+                                        <label class="account-banner-button" for="account-banner-input">
+                                            {{ uploadingBanner ? 'Uploading...' : 'Change Banner' }}
+                                        </label>
+
+                                        <input
+                                            id="account-banner-input"
+                                            class="account-file-input"
+                                            type="file"
+                                            accept="image/*"
+                                            :disabled="uploadingBanner"
+                                            @change="uploadBanner"
+                                        />
+
+                                        <p class="account-hint">
+                                            Choose an image to personalise your player profile.
                                         </p>
                                     </div>
 
-                                    <div class="player-profile-bio">
-                                        <h3>ABOUT</h3>
+                                    <template v-if="editingProfile">
+                                        <form class="account-form account-edit-form" @submit.prevent="saveProfile">
+                                            <label for="edit-username">Username</label>
 
-                                        <p v-if="previewBio">
-                                            {{ previewBio }}
-                                        </p>
+                                            <input
+                                                id="edit-username"
+                                                v-model="editUsername"
+                                                type="text"
+                                                minlength="3"
+                                                maxlength="20"
+                                                autocomplete="username"
+                                                required
+                                            />
 
-                                        <p v-else class="player-no-bio">
-                                            This player hasn't written a biography yet.
-                                        </p>
-                                    </div>
+                                            <p class="account-hint">{{ usernameCooldownText }}</p>
 
-                                    <div class="player-profile-divider"></div>
+                                            <label for="edit-bio">Biography</label>
 
-                                    <div class="player-stats-heading">
-                                        <h3>PLAYER STATISTICS</h3>
-                                        <span>GVDL RECORDS</span>
-                                    </div>
+                                            <textarea
+                                                id="edit-bio"
+                                                v-model="editBio"
+                                                maxlength="160"
+                                                rows="4"
+                                                placeholder="Tell the GVDL community about yourself..."
+                                            ></textarea>
 
-                                    <div
-                                        v-if="statsLoading"
-                                        class="player-stats-loading"
+                                            <p class="account-hint account-character-count">
+                                                {{ editBio.length }}/160 characters
+                                            </p>
+
+                                            <button class="account-submit" type="submit" :disabled="loading">
+                                                {{ loading ? 'Saving...' : 'Save Changes' }}
+                                            </button>
+
+                                            <button
+                                                class="account-secondary"
+                                                type="button"
+                                                :disabled="loading"
+                                                @click="cancelEditingProfile"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </form>
+                                    </template>
+
+                                    <button
+                                        v-else
+                                        class="account-submit account-edit-button"
+                                        type="button"
+                                        @click="startEditingProfile"
                                     >
-                                        Loading statistics...
+                                        Edit Profile Information
+                                    </button>
+                                </div>
+
+                                <div class="account-content-section">
+                                    <div class="content-section-heading">
+                                        <h2>Account Information</h2>
+                                        <p>Your login and registration details.</p>
                                     </div>
 
-                                    <div v-else class="player-stats-grid">
-
-                                        <div class="player-stat">
-                                            <strong>{{ stats.records }}</strong>
-                                            <span>Records</span>
-                                        </div>
-
-                                        <div class="player-stat">
-                                            <strong>{{ stats.completed }}</strong>
-                                            <span>Completed</span>
-                                        </div>
-
-                                        <div class="player-stat">
-                                            <strong>{{ stats.progress }}</strong>
-                                            <span>In Progress</span>
-                                        </div>
-
-                                        <div class="player-stat">
-                                            <strong>{{ stats.firstVictories }}</strong>
-                                            <span>First Victories</span>
-                                        </div>
-
+                                    <div class="settings-info">
+                                        <span>Email address</span>
+                                        <strong>{{ store.user.email }}</strong>
                                     </div>
 
-                                    <div class="player-profile-footer">
-                                        <span>GRAB VR DEMON LIST</span>
-                                        <span>PLAYER PROFILE</span>
+                                    <div class="settings-info">
+                                        <span>Member since</span>
+                                        <strong>{{ registrationDate }}</strong>
                                     </div>
+                                </div>
+
+                                <div class="account-content-section">
+                                    <div class="content-section-heading">
+                                        <h2>Security</h2>
+                                        <p>Password and account protection.</p>
+                                    </div>
+
+                                    <div class="settings-coming-soon">
+                                        Password management and account deletion will be available here.
+                                    </div>
+                                </div>
+
+                                <p v-if="message" class="account-message" :class="messageType">
+                                    {{ message }}
+                                </p>
+
+                            </template>
+
+                            <!-- RECORD SUBMISSIONS -->
+                            <template v-else-if="activeSection === 'submissions'">
+
+                                <div class="content-heading">
+                                    <div>
+                                        <h1>Record Submissions</h1>
+                                        <p>Track the progress of your submitted records.</p>
+                                    </div>
+                                </div>
+
+                                <div class="submission-summary">
+                                    <div>
+                                        <strong>{{ submissions.length }}</strong>
+                                        <span>Total Submissions</span>
+                                    </div>
+                                    <div>
+                                        <strong>{{ submissions.filter(item => item.status === 'pending').length }}</strong>
+                                        <span>Pending</span>
+                                    </div>
+                                    <div>
+                                        <strong>{{ submissions.filter(item => item.status === 'approved').length }}</strong>
+                                        <span>Approved</span>
+                                    </div>
+                                    <div>
+                                        <strong>{{ submissions.filter(item => item.status === 'rejected').length }}</strong>
+                                        <span>Rejected</span>
+                                    </div>
+                                </div>
+
+                                <div v-if="submissionsLoading" class="empty-state">
+                                    Loading your submissions...
+                                </div>
+
+                                <div v-else-if="submissions.length" class="submission-list">
+
+                                    <article
+                                        v-for="submission in submissions"
+                                        :key="submission.id"
+                                        class="submission-card"
+                                    >
+                                        <div class="submission-card-heading">
+                                            <div>
+                                                <h2>{{ submission.levels?.name || 'Level submission' }}</h2>
+                                                <p>Submitted {{ formatDate(submission.submitted_at) }}</p>
+                                            </div>
+
+                                            <span
+                                                class="submission-status"
+                                                :class="submission.status"
+                                            >
+                                                {{ submission.status }}
+                                            </span>
+                                        </div>
+
+                                        <div class="submission-details">
+                                            <span>Progress</span>
+                                            <strong>{{ submission.percentage }}%</strong>
+                                        </div>
+
+                                        <div
+                                            v-if="submission.moderator_note"
+                                            class="moderator-feedback"
+                                        >
+                                            <strong>Moderator feedback</strong>
+                                            <p>{{ submission.moderator_note }}</p>
+                                        </div>
+                                    </article>
 
                                 </div>
-                            </div>
 
-                            <div class="preview-note">
-                                <span class="preview-note-icon">i</span>
-                                <p>
-                                    Your public profile will be accessible to
-                                    other GVDL players once public player pages
-                                    are implemented.
-                                </p>
-                            </div>
+                                <div v-else class="empty-state">
+                                    <div class="empty-state-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M8 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"></path>
+                                            <rect x="8" y="2" width="8" height="5" rx="1"></rect>
+                                            <path d="M8 13h8M8 17h5"></path>
+                                        </svg>
+                                    </div>
+                                    <h2>No submissions yet</h2>
+                                    <p>Your record submissions will appear here once you submit one.</p>
+                                </div>
+
+                            </template>
+
+                            <!-- WEBSITE CUSTOMIZATION -->
+                            <template v-else-if="activeSection === 'customization'">
+
+                                <div class="content-heading">
+                                    <div>
+                                        <h1>Website Customization</h1>
+                                        <p>Personalise how GVDL looks and feels.</p>
+                                    </div>
+                                </div>
+
+                                <div class="account-content-section">
+                                    <div class="content-section-heading">
+                                        <h2>Appearance</h2>
+                                        <p>Choose the visual theme used across the website.</p>
+                                    </div>
+
+                                    <div class="customization-option">
+                                        <div class="customization-option-info">
+                                            <strong>Dark Mode</strong>
+                                            <p>Use the darker GVDL colour scheme.</p>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            class="theme-toggle"
+                                            :class="{ enabled: store.dark }"
+                                            :aria-pressed="store.dark"
+                                            @click="store.toggleDark()"
+                                        >
+                                            <span></span>
+                                            {{ store.dark ? 'On' : 'Off' }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="account-content-section">
+                                    <div class="content-section-heading">
+                                        <h2>More Customization</h2>
+                                        <p>Additional personalisation options will be added here.</p>
+                                    </div>
+
+                                    <div class="settings-coming-soon">
+                                        More display preferences and profile customisation options are planned for a future update.
+                                    </div>
+                                </div>
+
+                            </template>
 
                         </section>
 
@@ -978,10 +1192,7 @@ export default {
                         >
                             <h2>Welcome back!</h2>
 
-                            <label for="account-email">
-                                Email Address
-                            </label>
-
+                            <label for="account-email">Email Address</label>
                             <input
                                 id="account-email"
                                 v-model="email"
@@ -991,10 +1202,7 @@ export default {
                                 required
                             />
 
-                            <label for="account-password">
-                                Password
-                            </label>
-
+                            <label for="account-password">Password</label>
                             <input
                                 id="account-password"
                                 v-model="password"
@@ -1004,11 +1212,7 @@ export default {
                                 required
                             />
 
-                            <button
-                                class="account-submit"
-                                type="submit"
-                                :disabled="loading"
-                            >
+                            <button class="account-submit" type="submit" :disabled="loading">
                                 {{ loading ? 'Logging in...' : 'Login' }}
                             </button>
                         </form>
@@ -1020,10 +1224,7 @@ export default {
                         >
                             <h2>Create an account</h2>
 
-                            <label for="account-username">
-                                Username
-                            </label>
-
+                            <label for="account-username">Username</label>
                             <input
                                 id="account-username"
                                 v-model="username"
@@ -1039,10 +1240,7 @@ export default {
                                 3–20 characters. Letters, numbers and underscores only.
                             </p>
 
-                            <label for="register-email">
-                                Email Address
-                            </label>
-
+                            <label for="register-email">Email Address</label>
                             <input
                                 id="register-email"
                                 v-model="email"
@@ -1052,10 +1250,7 @@ export default {
                                 required
                             />
 
-                            <label for="register-password">
-                                Password
-                            </label>
-
+                            <label for="register-password">Password</label>
                             <input
                                 id="register-password"
                                 v-model="password"
@@ -1070,26 +1265,16 @@ export default {
                                 Your password must be at least 8 characters long.
                             </p>
 
-                            <button
-                                class="account-submit"
-                                type="submit"
-                                :disabled="loading"
-                            >
+                            <button class="account-submit" type="submit" :disabled="loading">
                                 {{ loading ? 'Creating account...' : 'Register' }}
                             </button>
                         </form>
 
-                        <p
-                            v-if="message"
-                            class="account-message"
-                            :class="messageType"
-                        >
+                        <p v-if="message" class="account-message" :class="messageType">
                             {{ message }}
                         </p>
 
-                        <p class="account-footer">
-                            GRAB VR Demon List
-                        </p>
+                        <p class="account-footer">GRAB VR Demon List</p>
                     </div>
                 </template>
 

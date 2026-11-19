@@ -16,6 +16,8 @@ export default {
 
         loading: false,
         uploadingAvatar: false,
+        uploadingBanner: false,
+        bannerPreview: '',
 
         message: '',
         messageType: '',
@@ -106,6 +108,10 @@ export default {
         avatarUrl() {
             return this.profile?.avatar_url || '';
         },
+
+        bannerUrl() {
+            return this.bannerPreview || this.profile?.banner_url || '';
+        },
     },
 
     watch: {
@@ -135,6 +141,12 @@ export default {
                 }
             },
         },
+    },
+
+    beforeUnmount() {
+        if (this.bannerPreview) {
+            URL.revokeObjectURL(this.bannerPreview);
+        }
     },
 
     methods: {
@@ -470,6 +482,96 @@ export default {
             this.showMessage('Your avatar has been updated!', 'success');
         },
 
+        async uploadBanner(event) {
+            const file = event.target.files?.[0];
+
+            if (!file) return;
+
+            event.target.value = '';
+
+            if (!file.type.startsWith('image/')) {
+                this.showMessage(
+                    'Please select a valid image file.',
+                    'error'
+                );
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                this.showMessage(
+                    'Your banner must be smaller than 5 MB.',
+                    'error'
+                );
+                return;
+            }
+
+            if (this.bannerPreview) {
+                URL.revokeObjectURL(this.bannerPreview);
+            }
+
+            this.bannerPreview = URL.createObjectURL(file);
+            this.uploadingBanner = true;
+            this.message = '';
+
+            const filePath = `${this.store.user.id}/banner`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('avatars')
+                .upload(filePath, file, {
+                    upsert: true,
+                    contentType: file.type,
+                    cacheControl: '3600',
+                });
+
+            if (uploadError) {
+                this.uploadingBanner = false;
+
+                if (this.bannerPreview) {
+                    URL.revokeObjectURL(this.bannerPreview);
+                    this.bannerPreview = '';
+                }
+
+                this.showMessage(uploadError.message, 'error');
+                return;
+            }
+
+            const { data: publicData } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(filePath);
+
+            const bannerUrl = `${publicData.publicUrl}?v=${Date.now()}`;
+
+            const { data, error: updateError } = await supabase
+                .from('profiles')
+                .update({
+                    banner_url: bannerUrl,
+                })
+                .eq('id', this.store.user.id)
+                .select()
+                .single();
+
+            this.uploadingBanner = false;
+
+            if (updateError) {
+                if (this.bannerPreview) {
+                    URL.revokeObjectURL(this.bannerPreview);
+                    this.bannerPreview = '';
+                }
+
+                this.showMessage(updateError.message, 'error');
+                return;
+            }
+
+            this.store.profile = data;
+
+            if (this.bannerPreview) {
+                URL.revokeObjectURL(this.bannerPreview);
+                this.bannerPreview = '';
+            }
+
+            this.showMessage('Your profile banner has been updated!', 'success');
+        },
+
         showMessage(message, type) {
             this.message = message;
             this.messageType = type;
@@ -514,8 +616,11 @@ export default {
 
                             <div class="settings-section">
                                 <div class="settings-section-heading">
-                                    <div class="settings-icon">
-                                        <span class="material-symbol">person</span>
+                                    <div class="settings-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <circle cx="12" cy="8" r="3.5"></circle>
+                                            <path d="M5 20c.5-3.7 3.2-5.5 7-5.5s6.5 1.8 7 5.5"></path>
+                                        </svg>
                                     </div>
                                     <div>
                                         <h2>Profile</h2>
@@ -556,6 +661,33 @@ export default {
                                             Maximum size: 2 MB
                                         </p>
                                     </div>
+                                </div>
+
+                                <div class="account-banner-editor">
+                                    <div class="account-banner-editor-heading">
+                                        <strong>Profile Banner</strong>
+                                        <span>Maximum size: 5 MB</span>
+                                    </div>
+
+                                    <label
+                                        class="account-banner-button"
+                                        for="account-banner-input"
+                                    >
+                                        {{ uploadingBanner ? 'Uploading...' : 'Change Banner' }}
+                                    </label>
+
+                                    <input
+                                        id="account-banner-input"
+                                        class="account-file-input"
+                                        type="file"
+                                        accept="image/*"
+                                        :disabled="uploadingBanner"
+                                        @change="uploadBanner"
+                                    />
+
+                                    <p class="account-hint">
+                                        Choose an image to personalise the banner on your player profile.
+                                    </p>
                                 </div>
 
                                 <template v-if="editingProfile">
@@ -628,8 +760,11 @@ export default {
 
                             <div class="settings-section">
                                 <div class="settings-section-heading">
-                                    <div class="settings-icon">
-                                        <span class="material-symbol">mail</span>
+                                    <div class="settings-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                                            <path d="m4 7 8 6 8-6"></path>
+                                        </svg>
                                     </div>
                                     <div>
                                         <h2>Account Information</h2>
@@ -641,19 +776,15 @@ export default {
                                     <span>Email address</span>
                                     <strong>{{ store.user.email }}</strong>
                                 </div>
-
-                                <div class="settings-info">
-                                    <span>Account ID</span>
-                                    <strong class="account-id">
-                                        {{ store.user.id.slice(0, 8) }}...
-                                    </strong>
-                                </div>
                             </div>
 
                             <div class="settings-section settings-security">
                                 <div class="settings-section-heading">
-                                    <div class="settings-icon">
-                                        <span class="material-symbol">shield</span>
+                                    <div class="settings-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M12 3 19 6v5c0 4.8-2.8 8-7 10-4.2-2-7-5.2-7-10V6l7-3Z"></path>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
                                     </div>
                                     <div>
                                         <h2>Security</h2>
@@ -679,7 +810,7 @@ export default {
                                 <button
                                     class="account-logout"
                                     type="button"
-                                    :disabled="loading || uploadingAvatar"
+                                    :disabled="loading || uploadingAvatar || uploadingBanner"
                                     @click="logout"
                                 >
                                     Log Out
@@ -706,7 +837,16 @@ export default {
                             <div class="player-profile-card">
 
                                 <div class="player-profile-banner">
-                                    <div class="banner-pattern"></div>
+                                    <img
+                                        v-if="bannerUrl"
+                                        class="player-profile-banner-image"
+                                        :src="bannerUrl"
+                                        alt="Player profile banner"
+                                    />
+                                    <div
+                                        v-else
+                                        class="banner-pattern"
+                                    ></div>
                                     <span class="banner-label">GVDL PLAYER</span>
                                 </div>
 

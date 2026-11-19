@@ -57,6 +57,7 @@
     align-items: center;
     gap: 7px;
     color: var(--text-secondary, #a0a5b0);
+    font-family: inherit;
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.7px;
@@ -96,8 +97,14 @@
     color: #91a9d0;
 }
 
-.settings-icon .material-symbol {
-    font-size: 19px;
+.settings-icon svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .settings-section-heading h2 {
@@ -140,7 +147,8 @@
     object-fit: cover;
 }
 
-.account-avatar-button {
+.account-avatar-button,
+.account-banner-button {
     display: inline-flex;
     padding: 9px 13px;
     border-radius: 7px;
@@ -152,8 +160,35 @@
     transition: background 0.2s;
 }
 
-.account-avatar-button:hover {
+.account-avatar-button:hover,
+.account-banner-button:hover {
     background: #40516d;
+}
+
+.account-banner-editor {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border, #30343d);
+    border-radius: 9px;
+    background: rgba(100, 125, 165, 0.06);
+}
+
+.account-banner-editor-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.account-banner-editor-heading strong {
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.account-banner-editor-heading span {
+    color: var(--text-secondary, #a0a5b0);
+    font-size: 10px;
 }
 
 .account-file-input {
@@ -286,10 +321,6 @@
     overflow-wrap: anywhere;
 }
 
-.account-id {
-    font-family: monospace;
-}
-
 .settings-coming-soon {
     padding: 13px;
     border-radius: 8px;
@@ -376,6 +407,14 @@
     background: linear-gradient(125deg, #182638, #263d58 55%, #18202c);
 }
 
+.player-profile-banner-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .banner-pattern {
     position: absolute;
     inset: 0;
@@ -390,10 +429,12 @@
     position: absolute;
     right: 22px;
     bottom: 18px;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.7);
+    font-family: inherit;
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 2px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 
 .player-profile-main {
@@ -502,6 +543,7 @@
 
 .player-stats-heading span {
     color: var(--text-secondary, #a0a5b0);
+    font-family: inherit;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.8px;
@@ -549,6 +591,7 @@
     padding-top: 16px;
     border-top: 1px solid var(--border, #30343d);
     color: var(--text-secondary, #a0a5b0);
+    font-family: inherit;
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 1px;
@@ -699,6 +742,11 @@
 
     .preview-public-label {
         font-size: 8px;
+    }
+
+    .account-banner-editor-heading {
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     .player-profile-main {

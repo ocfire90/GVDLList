@@ -20,6 +20,36 @@ export const store = Vue.reactive({
     profile: null,
     authReady: false,
 
+    // Current user's permission level
+    get role() {
+        return this.profile?.role || 'player';
+    },
+
+    // Permission checks
+    get isAdmin() {
+        return this.role === 'admin' || this.role === 'owner';
+    },
+
+    get isOwner() {
+        return this.role === 'owner';
+    },
+
+    get canManageLists() {
+        return this.isAdmin;
+    },
+
+    get canModerateUsers() {
+        return this.isAdmin;
+    },
+
+    get canReviewSubmissions() {
+        return this.isAdmin;
+    },
+
+    get canSubmitForOthers() {
+        return this.isAdmin;
+    },
+
     setActiveList(list) {
         this.activeList = list;
         localStorage.setItem('activeList', list);

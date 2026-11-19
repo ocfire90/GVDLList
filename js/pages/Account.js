@@ -608,10 +608,6 @@ export default {
                                     <h1>Account Settings</h1>
                                     <p>Manage your GVDL account.</p>
                                 </div>
-                                <span class="settings-indicator">
-                                    <span></span>
-                                    Online
-                                </span>
                             </div>
 
                             <div class="settings-section">

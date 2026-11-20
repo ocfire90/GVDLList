@@ -1520,7 +1520,7 @@ export default {
                                             <div v-if="adminLogs.length" class="admin-log-list">
                                                 <div
                                                     v-for="(log, index) in adminLogs.slice(0, 5)"
-                                                    :key="`${log.created_at}-${index}`"
+                                                    :key="log.created_at + '-' + index"
                                                     class="admin-log-row"
                                                 >
                                                     <div>
@@ -1754,7 +1754,7 @@ export default {
                                         <div v-if="adminLogs.length" class="admin-log-list admin-full-log-list">
                                             <article
                                                 v-for="(log, index) in adminLogs"
-                                                :key="`${log.created_at}-${index}`"
+                                                :key="log.created_at + '-' + index"
                                                 class="admin-log-row"
                                             >
                                                 <div>

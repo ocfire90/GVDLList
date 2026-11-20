@@ -36,6 +36,11 @@ export default {
         adminLogs: [],
         adminRecords: [],
 
+        importingLevels: false,
+        importProgress: 0,
+        importMessage: '',
+        importMessageType: '',
+
         stats: {
             records: 0,
             completed: 0,
@@ -216,7 +221,10 @@ export default {
             this.activeSection = section;
             this.message = '';
             this.messageType = '';
-            this.editingProfile = false;
+
+            if (section !== 'admin') {
+                this.editingProfile = false;
+            }
 
             if (section === 'admin') {
                 this.loadAdminData();
@@ -273,7 +281,7 @@ export default {
 
                 supabase
                     .from('levels')
-                    .select('id, name, author, verifier, game_id, created_at')
+                    .select('id, legacy_path, name, author, creators, verifier, game_id, verification_url, percent_to_qualify, password, first_victor_name, spreadsheet_rank, difficulty, enjoyment, points_reward, created_at')
                     .order('name', { ascending: true }),
 
                 supabase
@@ -314,6 +322,344 @@ export default {
             }
 
             this.adminLoading = false;
+        },
+
+        async importMainList() {
+            if (!this.isAdmin || !this.store.user) {
+                this.showImportMessage(
+                    'You must be logged in as an administrator to import levels.',
+                    'error'
+                );
+                return;
+            }
+
+            if (this.importingLevels) return;
+
+            this.importingLevels = true;
+            this.importProgress = 0;
+            this.importMessage = '';
+            this.importMessageType = '';
+
+            try {
+                this.showImportMessage(
+                    'Reading the Main List...',
+                    'info'
+                );
+
+                const listResponse = await fetch('./data/_list.json', {
+                    cache: 'no-store',
+                });
+
+                if (!listResponse.ok) {
+                    throw new Error(
+                        `Could not load data/_list.json. HTTP ${listResponse.status}.`
+                    );
+                }
+
+                const paths = await listResponse.json();
+
+                if (!Array.isArray(paths)) {
+                    throw new Error('The Main List index is not a valid array.');
+                }
+
+                if (paths.length !== 150) {
+                    throw new Error(
+                        `Expected 150 Main List levels, but found ${paths.length}. No data was imported.`
+                    );
+                }
+
+                this.showImportMessage(
+                    'Loading all 150 level files...',
+                    'info'
+                );
+
+                const levelRows = [];
+                const leaderboardNames = new Map();
+
+                for (let i = 0; i < paths.length; i += 1) {
+                    const path = paths[i];
+
+                    if (
+                        typeof path !== 'string' ||
+                        !/^[a-zA-Z0-9_-]+$/.test(path)
+                    ) {
+                        throw new Error(
+                            `Invalid level path at Main List position ${i + 1}.`
+                        );
+                    }
+
+                    const response = await fetch(`./data/${path}.json`, {
+                        cache: 'no-store',
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(
+                            `Could not load ${path}.json. HTTP ${response.status}. No data was imported.`
+                        );
+                    }
+
+                    let level;
+
+                    try {
+                        level = await response.json();
+                    } catch {
+                        throw new Error(
+                            `The file ${path}.json does not contain valid JSON. No data was imported.`
+                        );
+                    }
+
+                    if (!level || typeof level !== 'object' || !level.name) {
+                        throw new Error(
+                            `The file ${path}.json is missing required level information. No data was imported.`
+                        );
+                    }
+
+                    const percentToQualify =
+                        level.percentToQualify == null
+                            ? 100
+                            : Number(level.percentToQualify);
+
+                    if (
+                        !Number.isFinite(percentToQualify) ||
+                        percentToQualify <= 0 ||
+                        percentToQualify > 100
+                    ) {
+                        throw new Error(
+                            `${level.name} has an invalid qualification percentage. No data was imported.`
+                        );
+                    }
+
+                    const pointsReward =
+                        level.pointsReward == null
+                            ? null
+                            : Number(level.pointsReward);
+
+                    if (
+                        pointsReward !== null &&
+                        (!Number.isFinite(pointsReward) || pointsReward < 0)
+                    ) {
+                        throw new Error(
+                            `${level.name} has an invalid points reward. No data was imported.`
+                        );
+                    }
+
+                    levelRows.push({
+                        legacy_path: path,
+                        game_id:
+                            level.id == null
+                                ? null
+                                : String(level.id),
+                        name: String(level.name),
+                        author: level.author || null,
+                        creators: Array.isArray(level.creators)
+                            ? level.creators
+                            : [],
+                        verifier: level.verifier || null,
+                        verification_url: level.verification || null,
+                        showcase_url: level.showcase || null,
+                        percent_to_qualify: percentToQualify,
+                        password: level.password || null,
+                        first_victor_name: level.firstVictor || null,
+                        spreadsheet_rank:
+                            level.spreadsheetRank == null
+                                ? null
+                                : Number(level.spreadsheetRank),
+                        difficulty: level.difficulty || null,
+                        enjoyment: level.enjoyment || null,
+                        points_reward: pointsReward,
+                    });
+
+                    const addLeaderboardName = name => {
+                        if (typeof name !== 'string') return;
+
+                        const cleanName = name.trim();
+
+                        if (!cleanName) return;
+
+                        const key = cleanName.toLowerCase();
+
+                        if (!leaderboardNames.has(key)) {
+                            leaderboardNames.set(key, cleanName);
+                        }
+                    };
+
+                    addLeaderboardName(level.verifier);
+                    addLeaderboardName(level.firstVictor);
+
+                    if (Array.isArray(level.records)) {
+                        level.records.forEach(record => {
+                            if (typeof record === 'string') {
+                                addLeaderboardName(record);
+                            }
+                        });
+                    }
+
+                    this.importProgress = Math.round(
+                        ((i + 1) / paths.length) * 30
+                    );
+                }
+
+                this.showImportMessage(
+                    'All 150 files loaded. Checking existing database entries...',
+                    'info'
+                );
+
+                const { data: existingLevels, error: existingLevelsError } =
+                    await supabase
+                        .from('levels')
+                        .select('id, legacy_path');
+
+                if (existingLevelsError) {
+                    throw new Error(
+                        `Could not check existing levels: ${existingLevelsError.message}`
+                    );
+                }
+
+                const existingLevelMap = new Map(
+                    (existingLevels || [])
+                        .filter(level => level.legacy_path)
+                        .map(level => [level.legacy_path, level])
+                );
+
+                const levelsToInsert = [];
+                const levelsToUpdate = [];
+
+                for (const row of levelRows) {
+                    const existing = existingLevelMap.get(row.legacy_path);
+
+                    if (existing) {
+                        levelsToUpdate.push({
+                            id: existing.id,
+                            values: row,
+                        });
+                    } else {
+                        levelsToInsert.push(row);
+                    }
+                }
+
+                let insertedLevels = 0;
+                let updatedLevels = 0;
+
+                if (levelsToInsert.length) {
+                    const { data, error } = await supabase
+                        .from('levels')
+                        .insert(levelsToInsert)
+                        .select('id');
+
+                    if (error) {
+                        throw new Error(
+                            `Could not insert new levels: ${error.message}`
+                        );
+                    }
+
+                    insertedLevels = data?.length || levelsToInsert.length;
+                }
+
+                for (
+                    let i = 0;
+                    i < levelsToUpdate.length;
+                    i += 10
+                ) {
+                    const batch = levelsToUpdate.slice(i, i + 10);
+
+                    const results = await Promise.all(
+                        batch.map(item =>
+                            supabase
+                                .from('levels')
+                                .update(item.values)
+                                .eq('id', item.id)
+                        )
+                    );
+
+                    const failedUpdate = results.find(result => result.error);
+
+                    if (failedUpdate) {
+                        throw new Error(
+                            `Could not update an existing level: ${failedUpdate.error.message}`
+                        );
+                    }
+
+                    updatedLevels += batch.length;
+
+                    this.importProgress = 30 + Math.round(
+                        (updatedLevels / Math.max(levelsToUpdate.length, 1)) * 35
+                    );
+                }
+
+                this.showImportMessage(
+                    'Levels imported. Checking leaderboard player identities...',
+                    'info'
+                );
+
+                const { data: existingPlayers, error: existingPlayersError } =
+                    await supabase
+                        .from('leaderboard_players')
+                        .select('username');
+
+                if (existingPlayersError) {
+                    throw new Error(
+                        `Levels were imported, but existing leaderboard identities could not be checked: ${existingPlayersError.message}`
+                    );
+                }
+
+                const existingNames = new Set(
+                    (existingPlayers || []).map(player =>
+                        String(player.username).toLowerCase()
+                    )
+                );
+
+                const namesToInsert = [];
+
+                for (const [key, username] of leaderboardNames.entries()) {
+                    if (!existingNames.has(key)) {
+                        namesToInsert.push({ username });
+                    }
+                }
+
+                let insertedPlayers = 0;
+
+                for (let i = 0; i < namesToInsert.length; i += 100) {
+                    const batch = namesToInsert.slice(i, i + 100);
+
+                    const { data, error } = await supabase
+                        .from('leaderboard_players')
+                        .insert(batch)
+                        .select('id');
+
+                    if (error) {
+                        throw new Error(
+                            `Levels were imported, but leaderboard identities could not be created: ${error.message}`
+                        );
+                    }
+
+                    insertedPlayers += data?.length || batch.length;
+                }
+
+                this.importProgress = 100;
+
+                await this.loadAdminData();
+
+                this.showImportMessage(
+                    `Import complete! ${insertedLevels} levels added, ${updatedLevels} levels updated, and ${insertedPlayers} new leaderboard identities created. Existing identities were preserved.`,
+                    'success'
+                );
+            } catch (error) {
+                console.error('Main List import failed:', error);
+
+                this.showImportMessage(
+                    error.message || 'The Main List import failed.',
+                    'error'
+                );
+
+                await this.loadAdminData();
+            } finally {
+                this.importingLevels = false;
+            }
+        },
+
+        showImportMessage(message, type) {
+            this.importMessage = message;
+            this.importMessageType = type;
         },
 
         formatDate(date) {
@@ -1623,11 +1969,82 @@ export default {
 
                                         <div class="admin-section-intro">
                                             <h2>Level Management</h2>
-                                            <p>Browse the levels currently stored in the GVDL database.</p>
+                                            <p>Import and manage the 150 levels on the GVDL Main List.</p>
                                         </div>
 
-                                        <div class="admin-management-notice">
-                                            Level creation, editing, deletion and list placement controls will be connected after the database management safeguards are in place.
+                                        <div class="admin-import-card">
+                                            <div class="admin-import-card-heading">
+                                                <div>
+                                                    <h3>Main List Database Import</h3>
+                                                    <p>
+                                                        Import level information and leaderboard identities
+                                                        from the existing Main List JSON files.
+                                                    </p>
+                                                </div>
+                                                <span class="admin-import-count">
+                                                    {{ adminLevels.filter(level => level.legacy_path).length }}/150
+                                                </span>
+                                            </div>
+
+                                            <div class="admin-import-details">
+                                                <span>Level information</span>
+                                                <span>Verifiers and first victors</span>
+                                                <span>Players listed in level records</span>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                class="account-submit admin-import-button"
+                                                :disabled="importingLevels || !isAdmin"
+                                                @click="importMainList"
+                                            >
+                                                {{
+                                                    importingLevels
+                                                        ? 'Importing Main List...'
+                                                        : 'Import 150 Main List Levels'
+                                                }}
+                                            </button>
+
+                                            <div
+                                                v-if="importingLevels"
+                                                class="admin-import-progress"
+                                            >
+                                                <div class="admin-import-progress-track">
+                                                    <div
+                                                        class="admin-import-progress-fill"
+                                                        :style="{ width: importProgress + '%' }"
+                                                    ></div>
+                                                </div>
+                                                <span>{{ importProgress }}%</span>
+                                            </div>
+
+                                            <p
+                                                v-if="importMessage"
+                                                class="admin-import-message"
+                                                :class="importMessageType"
+                                            >
+                                                {{ importMessage }}
+                                            </p>
+
+                                            <p class="admin-import-warning">
+                                                This import does not delete your JSON files or create registered user accounts.
+                                                Existing leaderboard identities are preserved.
+                                            </p>
+                                        </div>
+
+                                        <div class="admin-level-summary">
+                                            <div>
+                                                <strong>{{ adminLevels.length }}</strong>
+                                                <span>Database Levels</span>
+                                            </div>
+                                            <div>
+                                                <strong>{{ adminLevels.filter(level => level.legacy_path).length }}</strong>
+                                                <span>Imported Main List Levels</span>
+                                            </div>
+                                            <div>
+                                                <strong>{{ adminLevels.filter(level => level.difficulty).length }}</strong>
+                                                <span>With Difficulty Data</span>
+                                            </div>
                                         </div>
 
                                         <div v-if="adminLevels.length" class="admin-data-list">
@@ -1643,10 +2060,15 @@ export default {
                                                         <template v-if="level.verifier">
                                                             · Verifier: {{ level.verifier }}
                                                         </template>
+                                                        <template v-if="level.difficulty">
+                                                            · {{ level.difficulty }}
+                                                        </template>
                                                     </small>
                                                 </div>
                                                 <div class="admin-data-meta">
-                                                    <span>{{ level.game_id || 'No game ID' }}</span>
+                                                    <span>
+                                                        {{ level.spreadsheet_rank ? '#' + level.spreadsheet_rank : (level.game_id || 'No game ID') }}
+                                                    </span>
                                                     <small>{{ formatDate(level.created_at) }}</small>
                                                 </div>
                                             </article>
@@ -1654,7 +2076,7 @@ export default {
 
                                         <div v-else class="empty-state">
                                             <h2>No levels found</h2>
-                                            <p>Levels stored in the database will appear here.</p>
+                                            <p>Use the import button above to add the Main List levels to the database.</p>
                                         </div>
 
                                     </template>

@@ -41,6 +41,9 @@ export default {
         importMessage: '',
         importMessageType: '',
 
+        levelPositionDrafts: {},
+        savingLevelPosition: null,
+
         stats: {
             records: 0,
             completed: 0,
@@ -253,6 +256,7 @@ export default {
             this.adminPlayers = [];
             this.adminLogs = [];
             this.adminRecords = [];
+            this.levelPositionDrafts = {};
             this.adminError = '';
             this.adminLoading = false;
 
@@ -282,7 +286,7 @@ export default {
                 supabase
                     .from('levels')
                     .select('id, legacy_path, name, author, creators, verifier, game_id, verification_url, percent_to_qualify, password, first_victor_name, spreadsheet_rank, difficulty, enjoyment, points_reward, created_at')
-                    .order('name', { ascending: true }),
+                    .order('spreadsheet_rank', { ascending: true, nullsFirst: false }),
 
                 supabase
                     .from('profiles')
@@ -309,7 +313,23 @@ export default {
             ].filter(Boolean);
 
             this.adminSubmissions = submissionsResult.data || [];
-            this.adminLevels = levelsResult.data || [];
+
+            this.adminLevels = (levelsResult.data || []).sort((a, b) => {
+                const rankA = a.spreadsheet_rank ?? Infinity;
+                const rankB = b.spreadsheet_rank ?? Infinity;
+
+                return rankA - rankB;
+            });
+
+            this.levelPositionDrafts = {};
+
+            this.adminLevels.forEach(level => {
+                if (level.legacy_path && level.spreadsheet_rank != null) {
+                    this.levelPositionDrafts[level.id] =
+                        Number(level.spreadsheet_rank);
+                }
+            });
+
             this.adminPlayers = playersResult.data || [];
             this.adminLogs = logsResult.data || [];
             this.adminRecords = recordsResult.data || [];
@@ -322,6 +342,120 @@ export default {
             }
 
             this.adminLoading = false;
+        },
+
+        async saveLevelPosition(level) {
+            if (!this.isAdmin || !this.store.user) return;
+            if (!level?.id || !level.legacy_path) return;
+            if (this.savingLevelPosition) return;
+
+            const targetPosition = Number(
+                this.levelPositionDrafts[level.id]
+            );
+
+            if (
+                !Number.isInteger(targetPosition) ||
+                targetPosition < 1 ||
+                targetPosition > 150
+            ) {
+                this.showImportMessage(
+                    'Enter a valid Main List position between 1 and 150.',
+                    'error'
+                );
+                return;
+            }
+
+            const mainList = this.adminLevels
+                .filter(item => item.legacy_path)
+                .sort((a, b) => {
+                    return (
+                        (a.spreadsheet_rank ?? Infinity) -
+                        (b.spreadsheet_rank ?? Infinity)
+                    );
+                });
+
+            if (mainList.length !== 150) {
+                this.showImportMessage(
+                    'The Main List must contain all 150 imported levels before positions can be changed.',
+                    'error'
+                );
+                return;
+            }
+
+            const currentIndex = mainList.findIndex(
+                item => item.id === level.id
+            );
+
+            if (currentIndex === -1) {
+                this.showImportMessage(
+                    'Could not find this level in the Main List.',
+                    'error'
+                );
+                return;
+            }
+
+            const reorderedLevels = [...mainList];
+            const [selectedLevel] = reorderedLevels.splice(currentIndex, 1);
+
+            reorderedLevels.splice(
+                targetPosition - 1,
+                0,
+                selectedLevel
+            );
+
+            const updates = reorderedLevels.map((item, index) => ({
+                id: item.id,
+                spreadsheet_rank: index + 1,
+            }));
+
+            this.savingLevelPosition = level.id;
+            this.importMessage = '';
+            this.importMessageType = '';
+
+            try {
+                for (let i = 0; i < updates.length; i += 10) {
+                    const batch = updates.slice(i, i + 10);
+
+                    const results = await Promise.all(
+                        batch.map(item =>
+                            supabase
+                                .from('levels')
+                                .update({
+                                    spreadsheet_rank: item.spreadsheet_rank,
+                                })
+                                .eq('id', item.id)
+                        )
+                    );
+
+                    const failedUpdate = results.find(
+                        result => result.error
+                    );
+
+                    if (failedUpdate) {
+                        throw new Error(
+                            `Could not save the new level positions: ${failedUpdate.error.message}`
+                        );
+                    }
+                }
+
+                await this.loadAdminData();
+
+                this.showImportMessage(
+                    `${level.name} moved to position #${targetPosition}. All other Main List positions have been adjusted automatically.`,
+                    'success'
+                );
+            } catch (error) {
+                console.error('Level position update failed:', error);
+
+                this.showImportMessage(
+                    error.message || 'Could not update the level position.',
+                    'error'
+                );
+
+                await this.loadAdminData();
+            } finally {
+                this.savingLevelPosition = null;
+            }
         },
 
         async importMainList() {
@@ -460,10 +594,10 @@ export default {
                         percent_to_qualify: percentToQualify,
                         password: level.password || null,
                         first_victor_name: level.firstVictor || null,
-                        spreadsheet_rank:
-                            level.spreadsheetRank == null
-                                ? null
-                                : Number(level.spreadsheetRank),
+
+                        // The position in _list.json is the canonical rank.
+                        spreadsheet_rank: i + 1,
+
                         difficulty: level.difficulty || null,
                         enjoyment: level.enjoyment || null,
                         points_reward: pointsReward,
@@ -1976,20 +2110,7 @@ export default {
                                             <div class="admin-import-card-heading">
                                                 <div>
                                                     <h3>Main List Database Import</h3>
-                                                    <p>
-                                                        Import level information and leaderboard identities
-                                                        from the existing Main List JSON files.
-                                                    </p>
                                                 </div>
-                                                <span class="admin-import-count">
-                                                    {{ adminLevels.filter(level => level.legacy_path).length }}/150
-                                                </span>
-                                            </div>
-
-                                            <div class="admin-import-details">
-                                                <span>Level information</span>
-                                                <span>Verifiers and first victors</span>
-                                                <span>Players listed in level records</span>
                                             </div>
 
                                             <button
@@ -2025,26 +2146,6 @@ export default {
                                             >
                                                 {{ importMessage }}
                                             </p>
-
-                                            <p class="admin-import-warning">
-                                                This import does not delete your JSON files or create registered user accounts.
-                                                Existing leaderboard identities are preserved.
-                                            </p>
-                                        </div>
-
-                                        <div class="admin-level-summary">
-                                            <div>
-                                                <strong>{{ adminLevels.length }}</strong>
-                                                <span>Database Levels</span>
-                                            </div>
-                                            <div>
-                                                <strong>{{ adminLevels.filter(level => level.legacy_path).length }}</strong>
-                                                <span>Imported Main List Levels</span>
-                                            </div>
-                                            <div>
-                                                <strong>{{ adminLevels.filter(level => level.difficulty).length }}</strong>
-                                                <span>With Difficulty Data</span>
-                                            </div>
                                         </div>
 
                                         <div v-if="adminLevels.length" class="admin-data-list">
@@ -2065,10 +2166,45 @@ export default {
                                                         </template>
                                                     </small>
                                                 </div>
-                                                <div class="admin-data-meta">
-                                                    <span>
-                                                        {{ level.spreadsheet_rank ? '#' + level.spreadsheet_rank : (level.game_id || 'No game ID') }}
-                                                    </span>
+
+                                                <div
+                                                    v-if="level.legacy_path"
+                                                    class="admin-level-position"
+                                                >
+                                                    <label :for="'level-position-' + level.id">
+                                                        Position
+                                                    </label>
+
+                                                    <input
+                                                        :id="'level-position-' + level.id"
+                                                        v-model.number="levelPositionDrafts[level.id]"
+                                                        type="number"
+                                                        min="1"
+                                                        max="150"
+                                                        step="1"
+                                                        :disabled="!!savingLevelPosition || importingLevels"
+                                                    />
+
+                                                    <button
+                                                        type="button"
+                                                        class="admin-refresh-button"
+                                                        :disabled="
+                                                            !!savingLevelPosition ||
+                                                            importingLevels ||
+                                                            Number(levelPositionDrafts[level.id]) === Number(level.spreadsheet_rank)
+                                                        "
+                                                        @click="saveLevelPosition(level)"
+                                                    >
+                                                        {{
+                                                            savingLevelPosition === level.id
+                                                                ? 'Saving...'
+                                                                : 'Save'
+                                                        }}
+                                                    </button>
+                                                </div>
+
+                                                <div v-else class="admin-data-meta">
+                                                    <span>{{ level.game_id || 'No game ID' }}</span>
                                                     <small>{{ formatDate(level.created_at) }}</small>
                                                 </div>
                                             </article>

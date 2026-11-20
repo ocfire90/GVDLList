@@ -26,6 +26,7 @@
     top: 24px;
     min-width: 0;
     padding: 22px 16px;
+
     background: var(--background-secondary, #17191f);
     border: 1px solid var(--border, #30343d);
     border-radius: 12px;
@@ -35,10 +36,15 @@
 .account-sidebar-heading {
     padding: 0 8px 22px;
     border-bottom: 1px solid var(--border, #30343d);
+
+
+
+
 }
 
 .account-sidebar-heading h1 {
     font-size: 20px;
+
     font-weight: 800;
     line-height: 1.3;
 }
@@ -55,6 +61,12 @@
     flex-direction: column;
     gap: 5px;
     padding: 18px 0;
+
+
+
+
+
+
 }
 
 .account-navigation button {
@@ -77,11 +89,14 @@
 
 .account-navigation button:hover {
     background: rgba(100, 125, 165, 0.09);
+
 }
 
 .account-navigation button.active {
     background: rgba(100, 125, 165, 0.16);
     border-color: rgba(100, 125, 165, 0.22);
+
+
 }
 
 .account-nav-icon {
@@ -250,13 +265,11 @@
 .account-avatar-editor {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
+@@ -129,10 +257,10 @@
 .account-avatar {
     width: 58px;
     height: 58px;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -264,66 +277,7 @@
     overflow: hidden;
     border-radius: 50%;
     background: #303b50;
-    color: #ffffff;
-    font-size: 23px;
-    font-weight: 800;
-}
-
-.account-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.account-avatar-button,
-.account-banner-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 9px 13px;
-    border: 1px solid var(--border, #30343d);
-    border-radius: 7px;
-    background: rgba(100, 125, 165, 0.10);
-    color: inherit;
-    font-size: 11px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: background 0.18s ease;
-}
-
-.account-avatar-button:hover,
-.account-banner-button:hover {
-    background: rgba(100, 125, 165, 0.20);
-}
-
-.account-file-input {
-    display: none;
-}
-
-.account-banner-editor {
-    padding: 16px;
-    margin-bottom: 24px;
-    border: 1px solid var(--border, #30343d);
-    border-radius: 9px;
-    background: var(--background-primary, #101217);
-}
-
-.account-banner-editor-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.account-banner-editor-heading strong {
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.account-banner-editor-heading span {
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 10px;
+@@ -196,49 +324,52 @@
 }
 
 .account-hint {
@@ -331,6 +285,7 @@
     color: var(--text-secondary, #a0a5b0);
     font-size: 11px;
     line-height: 1.5;
+
 }
 
 /* FORMS AND BUTTONS */
@@ -345,6 +300,7 @@
     margin-bottom: 4px;
     font-size: 18px;
     font-weight: 800;
+
 }
 
 .account-form label {
@@ -352,11 +308,14 @@
     font-size: 11px;
     font-weight: 800;
     text-transform: uppercase;
+
+
 }
 
 .account-form input,
 .account-form textarea {
     width: 100%;
+
     padding: 12px 13px;
     border: 1px solid var(--border, #30343d);
     border-radius: 8px;
@@ -376,29 +335,19 @@
 }
 
 .account-form input:focus,
-.account-form textarea:focus {
-    border-color: #7189b2;
-    box-shadow: 0 0 0 2px rgba(113, 137, 178, 0.12);
-}
-
-.account-form input::placeholder,
-.account-form textarea::placeholder {
-    color: var(--text-secondary, #a0a5b0);
-    opacity: 0.7;
-}
-
-.account-form button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
+@@ -252,16 +383,16 @@
 }
 
 .account-character-count {
+
     margin-top: -5px;
     text-align: right;
 }
 
 .account-submit {
     width: 100%;
+
+
     padding: 12px;
     margin-top: 8px;
     border: none;
@@ -406,31 +355,18 @@
     background: #303b50;
     color: #ffffff;
     font: inherit;
-    font-size: 12px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.account-submit:hover {
-    background: #3c4b65;
-}
+@@ -282,9 +413,9 @@
 
 .account-secondary {
     width: 100%;
     padding: 11px;
     border: 1px solid var(--border, #30343d);
     border-radius: 8px;
+
     background: transparent;
     color: inherit;
     font: inherit;
-    font-size: 12px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.account-secondary:hover {
+@@ -297,12 +428,18 @@
     background: rgba(255, 255, 255, 0.05);
 }
 
@@ -449,113 +385,61 @@
     border-bottom: 1px solid rgba(128, 128, 128, 0.12);
     font-size: 12px;
 }
-
-.settings-info span {
-    color: var(--text-secondary, #a0a5b0);
+@@ -330,13 +467,8 @@
+    line-height: 1.6;
 }
 
-.settings-info strong {
-    overflow-wrap: anywhere;
-    text-align: right;
-    font-weight: 700;
-}
+
+
+
+
 
 .account-message {
     margin: 14px 0;
     padding: 12px;
     border-radius: 8px;
     font-size: 12px;
-    line-height: 1.5;
-}
-
-.account-message.success {
-    border: 1px solid rgba(55, 150, 100, 0.25);
-    background: rgba(55, 150, 100, 0.10);
-    color: #65ce96;
-}
-
-.account-message.error {
-    border: 1px solid rgba(200, 70, 70, 0.25);
-    background: rgba(200, 70, 70, 0.10);
-    color: #f08080;
-}
+@@ -356,13 +488,13 @@
 
 .account-logout {
     width: 100%;
     padding: 11px;
     border: 1px solid rgba(200, 70, 70, 0.35);
     border-radius: 8px;
+
     background: rgba(200, 70, 70, 0.08);
     color: #e58b8b;
     font: inherit;
     font-size: 12px;
     font-weight: 800;
     cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.account-logout:hover {
-    background: rgba(200, 70, 70, 0.16);
-}
-
-.account-logout:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-}
+    transition: background 0.2s;
+@@ -379,20 +511,6 @@
 
 /* PUBLIC PLAYER PROFILE */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .player-profile-card {
     overflow: hidden;
     border: 1px solid var(--border, #30343d);
-    border-radius: 11px;
-    background: var(--background-primary, #101217);
-}
-
-.player-profile-banner {
-    position: relative;
-    height: 190px;
-    overflow: hidden;
-    background:
-        radial-gradient(circle at 75% 20%, rgba(115, 145, 190, 0.30), transparent 35%),
-        linear-gradient(120deg, #202b3d, #111722 65%, #303b50);
-}
-
-.player-profile-banner::after {
-    position: absolute;
-    inset: 0;
-    content: "";
-    background: linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.35),
-        transparent 65%
-    );
-    pointer-events: none;
-}
-
-.player-profile-banner-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.banner-pattern {
-    width: 100%;
-    height: 100%;
-    background:
-        linear-gradient(135deg, transparent 45%, rgba(255, 255, 255, 0.035) 45% 46%, transparent 46%),
-        linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.035) 45% 46%, transparent 46%),
-        radial-gradient(circle at 80% 20%, rgba(125, 155, 205, 0.28), transparent 35%),
-        linear-gradient(120deg, #202b3d, #111722 65%, #303b50);
-    background-size: 38px 38px, 38px 38px, auto, auto;
-}
-
-.banner-label {
-    position: absolute;
-    z-index: 1;
+@@ -430,16 +548,15 @@
     right: 22px;
     bottom: 18px;
     color: rgba(255, 255, 255, 0.7);
+
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 1px;
@@ -568,68 +452,25 @@
 }
 
 .player-profile-avatar {
-    width: 100px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    margin-top: -50px;
-    position: relative;
-    border: 5px solid var(--background-primary, #101217);
-    border-radius: 50%;
-    background: #303b50;
-    color: #ffffff;
-    font-size: 38px;
-    font-weight: 800;
-}
-
-.player-profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.player-profile-identity {
-    margin-top: 15px;
-}
-
-.player-profile-name {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.player-profile-name h2 {
-    font-size: 28px;
-    font-weight: 800;
-    overflow-wrap: anywhere;
-}
-
-.player-role {
-    padding: 5px 8px;
-    border: 1px solid var(--border, #30343d);
-    border-radius: 5px;
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 9px;
+@@ -490,7 +607,6 @@
+    font-size: 10px;
     font-weight: 800;
     text-transform: uppercase;
+
 }
 
 .player-joined {
-    margin-top: 6px;
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 11px;
+@@ -500,8 +616,8 @@
 }
 
 .player-profile-bio {
+
     max-width: 900px;
     padding: 32px 0 27px;
 }
 
 .player-profile-bio h3,
-.player-stats-heading h3 {
+@@ -510,7 +626,7 @@
     color: var(--text-secondary, #a0a5b0);
     font-size: 11px;
     font-weight: 800;
@@ -637,32 +478,11 @@
 }
 
 .player-profile-bio p {
-    margin-top: 10px;
-    font-size: 13px;
-    line-height: 1.7;
-    overflow-wrap: anywhere;
-}
-
-.player-no-bio {
-    color: var(--text-secondary, #a0a5b0);
-    font-style: italic;
-}
-
-.player-profile-divider {
-    height: 1px;
-    background: var(--border, #30343d);
-}
-
-.player-stats-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin: 25px 0 15px;
-}
+@@ -543,37 +659,36 @@
 
 .player-stats-heading span {
     color: var(--text-secondary, #a0a5b0);
+
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -696,21 +516,12 @@
 }
 
 .player-stats-loading {
-    padding: 25px;
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 12px;
-    text-align: center;
-}
-
-.player-profile-footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 28px;
+@@ -591,44 +706,241 @@
     padding-top: 16px;
     border-top: 1px solid var(--border, #30343d);
     color: var(--text-secondary, #a0a5b0);
     font-size: 9px;
+
     font-weight: 800;
     letter-spacing: 0.5px;
 }
@@ -815,7 +626,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
     margin-top: 18px;
     padding-top: 13px;
     border-top: 1px solid var(--border, #30343d);
@@ -828,17 +638,6 @@
 
 .submission-details strong {
     font-weight: 800;
-}
-
-.submission-card a {
-    color: #91a9d0;
-    font-size: 11px;
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.submission-card a:hover {
-    text-decoration: underline;
 }
 
 .moderator-feedback {
@@ -954,349 +753,13 @@
     background: #65ce96;
 }
 
-/* ADMIN PANEL */
-
-.admin-overview-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 24px;
-}
-
-.admin-stat-card {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    min-width: 0;
-    padding: 18px;
-    border: 1px solid var(--border, #30343d);
-    border-radius: 9px;
-    background: var(--background-primary, #101217);
-}
-
-.admin-stat-card span {
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 10px;
-    font-weight: 700;
-}
-
-.admin-stat-card strong {
-    font-size: 26px;
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-}
-
-.admin-stat-card small {
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 10px;
-}
-
-.admin-panel-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    margin-bottom: 22px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border, #30343d);
-}
-
-.admin-panel-tabs button {
-    padding: 9px 13px;
-    border: 1px solid var(--border, #30343d);
-    border-radius: 7px;
-    background: transparent;
-    color: var(--text-secondary, #a0a5b0);
-    font: inherit;
-    font-size: 11px;
-    font-weight: 800;
-    cursor: pointer;
-    transition:
-        color 0.18s ease,
-        background 0.18s ease,
-        border-color 0.18s ease;
-}
-
-.admin-panel-tabs button:hover {
-    background: rgba(100, 125, 165, 0.09);
-    color: inherit;
-}
-
-.admin-panel-tabs button.active {
-    border-color: rgba(100, 125, 165, 0.35);
-    background: rgba(100, 125, 165, 0.16);
-    color: #a9bfdf;
-}
-
-.admin-section {
-    min-width: 0;
-}
-
-.admin-section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 17px;
-}
-
-.admin-section-heading h2 {
-    font-size: 15px;
-    font-weight: 800;
-}
-
-.admin-section-heading p {
-    margin-top: 5px;
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 11px;
-    line-height: 1.5;
-}
-
-.admin-table-wrap {
-    width: 100%;
-    overflow-x: auto;
-    border: 1px solid var(--border, #30343d);
-    border-radius: 9px;
-}
-
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    font-size: 11px;
-}
-
-.admin-table th {
-    padding: 13px 14px;
-    background: var(--background-primary, #101217);
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.admin-table td {
-    padding: 13px 14px;
-    border-top: 1px solid var(--border, #30343d);
-    vertical-align: middle;
-}
-
-.admin-table tr:hover td {
-    background: rgba(100, 125, 165, 0.035);
-}
-
-.admin-table strong {
-    font-weight: 800;
-}
-
-.admin-table a {
-    color: #91a9d0;
-    text-decoration: none;
-}
-
-.admin-table a:hover {
-    text-decoration: underline;
-}
-
-.admin-role {
-    display: inline-flex;
-    padding: 5px 8px;
-    border-radius: 5px;
-    background: rgba(150, 150, 150, 0.12);
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 9px;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-.admin-role.admin {
-    background: rgba(100, 125, 165, 0.15);
-    color: #91a9d0;
-}
-
-.admin-role.owner {
-    background: rgba(190, 155, 75, 0.15);
-    color: #d9b45e;
-}
-
-.admin-filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 9px;
-    margin-bottom: 16px;
-}
-
-.admin-filter-row button {
-    padding: 8px 11px;
-    border: 1px solid var(--border, #30343d);
-    border-radius: 6px;
-    background: transparent;
-    color: var(--text-secondary, #a0a5b0);
-    font: inherit;
-    font-size: 10px;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.admin-filter-row button.active {
-    background: rgba(100, 125, 165, 0.16);
-    border-color: rgba(100, 125, 165, 0.3);
-    color: #a9bfdf;
-}
-
-.admin-submission-card {
-    padding: 17px;
-    border: 1px solid var(--border, #30343d);
-    border-radius: 9px;
-    background: var(--background-primary, #101217);
-}
-
-.admin-submission-card + .admin-submission-card {
-    margin-top: 12px;
-}
-
-.admin-submission-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-}
-
-.admin-submission-top h3 {
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.admin-submission-top p {
-    margin-top: 5px;
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 11px;
-}
-
-.admin-submission-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 18px;
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border, #30343d);
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 10px;
-}
-
-.admin-submission-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
-}
-
-.admin-submission-actions button {
-    padding: 8px 12px;
-    border: 1px solid var(--border, #30343d);
-    border-radius: 6px;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    font-size: 10px;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.admin-submission-actions button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.admin-loading {
-    padding: 30px;
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 12px;
-    text-align: center;
-}
-
-.admin-error {
-    padding: 13px;
-    border: 1px solid rgba(200, 70, 70, 0.25);
-    border-radius: 8px;
-    background: rgba(200, 70, 70, 0.08);
-    color: #f08080;
-    font-size: 11px;
-    line-height: 1.6;
-}
-
-.admin-notice {
-    padding: 13px;
-    border: 1px solid rgba(210, 165, 65, 0.22);
-    border-radius: 8px;
-    background: rgba(210, 165, 65, 0.07);
-    color: #d9b45e;
-    font-size: 11px;
-    line-height: 1.6;
-}
-
-.admin-activity-list {
-    display: flex;
-    flex-direction: column;
-}
-
-.admin-activity-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border, #30343d);
-}
-
-.admin-activity-item:last-child {
-    border-bottom: none;
-}
-
-.admin-activity-marker {
-    width: 8px;
-    height: 8px;
-    flex-shrink: 0;
-    margin-top: 5px;
-    border-radius: 50%;
-    background: #7189b2;
-}
-
-.admin-activity-item > div {
-    min-width: 0;
-}
-
-.admin-activity-item strong {
-    font-size: 11px;
-    font-weight: 800;
-}
-
-.admin-activity-item p {
-    margin-top: 4px;
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 11px;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-}
-
-.admin-activity-item small {
-    display: block;
-    margin-top: 5px;
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 9px;
-}
-
 /* LOGIN AND REGISTRATION */
 
 .account-card {
     width: 100%;
     max-width: 440px;
     margin: 30px auto;
-    box-sizing: border-box;
-    background: var(--background-secondary, #17191f);
-    border: 1px solid var(--border, #30343d);
-    border-radius: 14px;
+@@ -639,6 +951,11 @@
     padding: 32px;
 }
 
@@ -1308,62 +771,12 @@
 .account-heading {
     text-align: center;
     margin-bottom: 28px;
-}
-
-.account-heading h1 {
-    font-size: 28px;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-
-.account-heading p {
-    color: var(--text-secondary, #a0a5b0);
-    font-size: 14px;
-}
-
-.account-tabs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    padding: 5px;
-    border-radius: 9px;
-    background: var(--background-primary, #101217);
-    margin-bottom: 28px;
-}
-
-.account-tabs button {
-    border: none;
-    border-radius: 7px;
-    padding: 11px;
-    background: transparent;
-    color: var(--text-secondary, #a0a5b0);
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.account-tabs button.active {
-    background: #303b50;
-    color: #ffffff;
-}
-
-.account-login-card .account-form h2 {
-    font-size: 19px;
-}
-
-.account-login-card .account-form label {
-    font-size: 12px;
-}
-
-.account-login-card .account-form input {
-    padding: 13px 14px;
-}
-
-.account-footer {
+@@ -697,56 +1014,89 @@
     text-align: center;
     margin-top: 28px;
     color: var(--text-secondary, #a0a5b0);
     font-size: 10px;
+
     text-transform: uppercase;
 }
 
@@ -1377,44 +790,31 @@
 
 /* RESPONSIVE */
 
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
     .account-dashboard {
-        grid-template-columns: 230px minmax(0, 1fr);
-        gap: 16px;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 14px;
     }
 
     .account-content {
         padding: 22px;
     }
 
-    .admin-overview-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 900px) {
-    .account-dashboard {
-        grid-template-columns: 210px minmax(0, 1fr);
-        gap: 14px;
-    }
-
     .player-stats-grid,
     .submission-summary {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .admin-table {
-        min-width: 560px;
     }
 }
 
 @media (max-width: 650px) {
     .page-account {
         padding: 18px 12px 35px;
+
     }
 
     .account-dashboard {
         grid-template-columns: 1fr;
+
     }
 
     .account-sidebar {
@@ -1424,6 +824,7 @@
 
     .account-sidebar-heading {
         padding-bottom: 14px;
+
     }
 
     .account-navigation {
@@ -1464,36 +865,8 @@
     }
 
     .player-profile-main {
-        padding-right: 20px;
-        padding-left: 20px;
-    }
-
-    .player-profile-banner {
-        height: 145px;
-    }
-
-    .player-profile-name h2 {
-        font-size: 23px;
-    }
-
-    .player-stat {
-        padding: 15px;
-    }
-
-    .player-stat strong {
-        font-size: 24px;
-    }
-
-    .admin-overview-grid {
-        gap: 8px;
-    }
-
-    .admin-stat-card {
-        padding: 13px;
-    }
-
-    .admin-stat-card strong {
-        font-size: 22px;
+@@ -781,3 +1131,34 @@
+        font-size: 8px;
     }
 }
 
@@ -1518,31 +891,12 @@
         font-size: 20px;
     }
 
-    .submission-card-heading,
-    .admin-submission-top {
+    .submission-card-heading {
         flex-direction: column;
     }
 
     .customization-option {
         align-items: flex-start;
         flex-direction: column;
-    }
-
-    .content-heading {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .admin-overview-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .admin-panel-tabs {
-        gap: 5px;
-    }
-
-    .admin-panel-tabs button {
-        padding: 8px 9px;
-        font-size: 10px;
     }
 }

@@ -1,4 +1,3 @@
-
 import { store } from "../main.js";
 import { embed } from "../util.js";
 import { score } from "../score.js";
@@ -48,6 +47,21 @@ export default {
                         :creators="level.creators"
                         :verifier="level.verifier"
                     ></LevelAuthors>
+
+                    <div
+                        v-if="level.difficulty || level.enjoyment"
+                        class="level-rating-pills"
+                    >
+                        <span v-if="level.difficulty" class="level-rating-pill difficulty">
+                            <strong>Difficulty</strong>
+                            <span>{{ level.difficulty }}</span>
+                        </span>
+
+                        <span v-if="level.enjoyment" class="level-rating-pill enjoyment">
+                            <strong>Enjoyment</strong>
+                            <span>{{ level.enjoyment }}</span>
+                        </span>
+                    </div>
 
                     <iframe
                         class="video"
@@ -251,7 +265,7 @@ export default {
         score,
 
         playerUrl(player) {
-            return `#/leaderboard?player=${encodeURIComponent(player)}`;
+            return \`#/leaderboard?player=\${encodeURIComponent(player)}\`;
         },
 
         selectLevel(index) {

@@ -44,6 +44,21 @@ export default {
         levelPositionDrafts: {},
         savingLevelPosition: null,
 
+        adminListEntries: [],
+        levelEditorOpen: false,
+        levelEditorSaving: false,
+        levelEditorError: '',
+        levelEditorMessage: '',
+        levelEditorDraft: null,
+        levelEditorRecords: [],
+        levelEditorListOptions: [
+            { key: 'main', label: 'Main List' },
+            { key: 'platformer', label: 'Platformer List' },
+            { key: 'challenge', label: 'Challenge List' },
+            { key: 'created', label: 'Created List' },
+            { key: 'upcoming', label: 'Upcoming List' },
+        ],
+
         stats: {
             records: 0,
             completed: 0,
@@ -256,6 +271,10 @@ export default {
             this.adminPlayers = [];
             this.adminLogs = [];
             this.adminRecords = [];
+            this.adminListEntries = [];
+            this.levelEditorOpen = false;
+            this.levelEditorDraft = null;
+            this.levelEditorRecords = [];
             this.levelPositionDrafts = {};
             this.adminError = '';
             this.adminLoading = false;
@@ -277,6 +296,7 @@ export default {
                 playersResult,
                 logsResult,
                 recordsResult,
+                listEntriesResult,
             ] = await Promise.all([
                 supabase
                     .from('record_submissions')
@@ -301,7 +321,14 @@ export default {
 
                 supabase
                     .from('player_records')
-                    .select('id'),
+                    .select('id, level_id, player_id, player_name, percentage, video_url, is_first_victor, source, achieved_at')
+                    .order('created_at', { ascending: true }),
+
+                supabase
+                    .from('level_list_entries')
+                    .select('id, level_id, list_key, position')
+                    .order('list_key', { ascending: true })
+                    .order('position', { ascending: true }),
             ]);
 
             const errors = [
@@ -310,6 +337,7 @@ export default {
                 playersResult.error,
                 logsResult.error,
                 recordsResult.error,
+                listEntriesResult.error,
             ].filter(Boolean);
 
             this.adminSubmissions = submissionsResult.data || [];
@@ -333,6 +361,7 @@ export default {
             this.adminPlayers = playersResult.data || [];
             this.adminLogs = logsResult.data || [];
             this.adminRecords = recordsResult.data || [];
+            this.adminListEntries = listEntriesResult.data || [];
 
             if (errors.length) {
                 console.error('Some Admin Panel data could not be loaded:', errors);
@@ -344,114 +373,273 @@ export default {
             this.adminLoading = false;
         },
 
-        async saveLevelPosition(level) {
-            if (!this.isAdmin || !this.store.user) return;
-            if (!level?.id || !level.legacy_path) return;
-            if (this.savingLevelPosition) return;
+        createEmptyLevelDraft() {
+            return {
+                id: null,
+                name: '',
+                author: '',
+                creatorsText: '',
+                verifier: '',
+                game_id: '',
+                legacy_path: '',
+                verification_url: '',
+                showcase_url: '',
+                percent_to_qualify: 100,
+                password: '',
+                difficulty: '',
+                enjoyment: '',
+                points_reward: 0,
+                listKeys: [],
+                listPositions: {},
+            };
+        },
 
-            const targetPosition = Number(
-                this.levelPositionDrafts[level.id]
-            );
+        openLevelEditor(level = null) {
+            const draft = this.createEmptyLevelDraft();
 
-            if (
-                !Number.isInteger(targetPosition) ||
-                targetPosition < 1 ||
-                targetPosition > 150
-            ) {
-                this.showImportMessage(
-                    'Enter a valid Main List position between 1 and 150.',
-                    'error'
+            if (level) {
+                const memberships = this.adminListEntries.filter(
+                    entry => entry.level_id === level.id
                 );
-                return;
-            }
 
-            const mainList = this.adminLevels
-                .filter(item => item.legacy_path)
-                .sort((a, b) => {
-                    return (
-                        (a.spreadsheet_rank ?? Infinity) -
-                        (b.spreadsheet_rank ?? Infinity)
-                    );
+                draft.id = level.id;
+                draft.name = level.name || '';
+                draft.author = level.author || '';
+                draft.creatorsText = Array.isArray(level.creators)
+                    ? level.creators.join(', ')
+                    : '';
+                draft.verifier = level.verifier || '';
+                draft.game_id = level.game_id || '';
+                draft.legacy_path = level.legacy_path || '';
+                draft.verification_url = level.verification_url || '';
+                draft.showcase_url = level.showcase_url || '';
+                draft.percent_to_qualify = Number(level.percent_to_qualify ?? 100);
+                draft.password = level.password || '';
+                draft.difficulty = level.difficulty || '';
+                draft.enjoyment = level.enjoyment || '';
+                draft.points_reward = Number(level.points_reward ?? 0);
+                draft.listKeys = memberships.map(entry => entry.list_key);
+                memberships.forEach(entry => {
+                    draft.listPositions[entry.list_key] = Number(entry.position);
                 });
 
-            if (mainList.length !== 150) {
-                this.showImportMessage(
-                    'The Main List must contain all 150 imported levels before positions can be changed.',
-                    'error'
-                );
+                this.levelEditorRecords = this.adminRecords
+                    .filter(record => record.level_id === level.id)
+                    .map(record => ({
+                        id: record.id,
+                        player_name: record.player_name || '',
+                        percentage: Number(record.percentage),
+                        video_url: record.video_url || '',
+                        is_first_victor: !!record.is_first_victor,
+                        achieved_at: record.achieved_at || '',
+                        source: record.source || 'submission',
+                    }));
+            } else {
+                this.levelEditorRecords = [];
+            }
+
+            this.levelEditorDraft = draft;
+            this.levelEditorError = '';
+            this.levelEditorMessage = '';
+            this.levelEditorOpen = true;
+        },
+
+        closeLevelEditor() {
+            if (this.levelEditorSaving) return;
+            this.levelEditorOpen = false;
+            this.levelEditorDraft = null;
+            this.levelEditorRecords = [];
+            this.levelEditorError = '';
+            this.levelEditorMessage = '';
+        },
+
+        addLevelEditorRecord() {
+            this.levelEditorRecords.push({
+                id: null,
+                player_name: '',
+                percentage: 100,
+                video_url: '',
+                is_first_victor: false,
+                achieved_at: '',
+                source: 'submission',
+            });
+        },
+
+        removeLevelEditorRecord(index) {
+            this.levelEditorRecords.splice(index, 1);
+        },
+
+        setFirstVictorRecord(index) {
+            this.levelEditorRecords.forEach((record, recordIndex) => {
+                record.is_first_victor = recordIndex === index;
+            });
+        },
+
+        async saveLevelEditor() {
+            if (!this.isAdmin || !this.store.user || !this.levelEditorDraft) return;
+            if (this.levelEditorSaving) return;
+
+            const draft = this.levelEditorDraft;
+            const name = String(draft.name || '').trim();
+            const listKeys = [...new Set(draft.listKeys || [])];
+
+            if (!name) {
+                this.levelEditorError = 'A level name is required.';
                 return;
             }
 
-            const currentIndex = mainList.findIndex(
-                item => item.id === level.id
-            );
-
-            if (currentIndex === -1) {
-                this.showImportMessage(
-                    'Could not find this level in the Main List.',
-                    'error'
-                );
+            const validKeys = this.levelEditorListOptions.map(option => option.key);
+            if (listKeys.some(key => !validKeys.includes(key))) {
+                this.levelEditorError = 'One or more selected lists are invalid.';
                 return;
             }
 
-            const reorderedLevels = [...mainList];
-            const [selectedLevel] = reorderedLevels.splice(currentIndex, 1);
-
-            reorderedLevels.splice(
-                targetPosition - 1,
-                0,
-                selectedLevel
-            );
-
-            const updates = reorderedLevels.map((item, index) => ({
-                id: item.id,
-                spreadsheet_rank: index + 1,
+            const records = this.levelEditorRecords.map(record => ({
+                player_name: String(record.player_name || '').trim(),
+                percentage: Number(record.percentage),
+                video_url: String(record.video_url || '').trim() || null,
+                is_first_victor: !!record.is_first_victor,
+                achieved_at: record.achieved_at || null,
+                source: record.source === 'legacy_import' ? 'legacy_import' : 'submission',
             }));
+
+            if (records.some(record => !record.player_name || !Number.isFinite(record.percentage) || record.percentage <= 0 || record.percentage > 100)) {
+                this.levelEditorError = 'Every record needs a player name and a percentage greater than 0 and no higher than 100.';
+                return;
+            }
+
+            if (records.filter(record => record.is_first_victor).length > 1) {
+                this.levelEditorError = 'A level can only have one first victor.';
+                return;
+            }
+
+            const firstVictor = records.find(record => record.is_first_victor);
+            const listPositions = {};
+
+            for (const key of listKeys) {
+                const existingCount = this.adminListEntries.filter(
+                    entry => entry.list_key === key && entry.level_id !== draft.id
+                ).length;
+                const requested = Number(draft.listPositions?.[key]);
+                listPositions[key] = Number.isInteger(requested) && requested >= 1
+                    ? requested
+                    : existingCount + 1;
+            }
+
+            this.levelEditorSaving = true;
+            this.levelEditorError = '';
+            this.levelEditorMessage = '';
+
+            try {
+                const { data: savedLevelId, error: saveError } = await supabase.rpc(
+                    'admin_save_complete_level',
+                    {
+                        p_level_id: draft.id || null,
+                        p_name: name,
+                        p_author: String(draft.author || '').trim() || null,
+                        p_creators: String(draft.creatorsText || '')
+                            .split(/[,\n]/)
+                            .map(value => value.trim())
+                            .filter(Boolean),
+                        p_verifier: String(draft.verifier || '').trim() || null,
+                        p_game_id: String(draft.game_id || '').trim() || null,
+                        p_legacy_path: String(draft.legacy_path || '').trim() || null,
+                        p_verification_url: String(draft.verification_url || '').trim() || null,
+                        p_showcase_url: String(draft.showcase_url || '').trim() || null,
+                        p_percent_to_qualify: Number(draft.percent_to_qualify || 100),
+                        p_password: String(draft.password || '').trim() || null,
+                        p_first_victor_name: firstVictor?.player_name || null,
+                        p_difficulty: String(draft.difficulty || '').trim() || null,
+                        p_enjoyment: String(draft.enjoyment || '').trim() || null,
+                        p_points_reward: Number(draft.points_reward || 0),
+                        p_list_keys: listKeys,
+                        p_list_positions: listPositions,
+                        p_records: records,
+                    }
+                );
+
+                if (saveError) throw saveError;
+                if (!savedLevelId) throw new Error('The database did not return the saved level ID.');
+
+                await this.loadAdminData();
+                this.levelEditorOpen = false;
+                this.levelEditorDraft = null;
+                this.levelEditorRecords = [];
+                this.showImportMessage(
+                    `${name} was ${draft.id ? 'updated' : 'created'} successfully.`,
+                    'success'
+                );
+            } catch (error) {
+                console.error('Level save failed:', error);
+                this.levelEditorError = error.message || 'Could not save this level.';
+            } finally {
+                this.levelEditorSaving = false;
+            }
+        },
+
+        async deleteLevel(level) {
+            if (!this.isAdmin || !level?.id) return;
+            if (!window.confirm(`Delete "${level.name}" and all of its records and list placements? This cannot be undone.`)) return;
+
+            try {
+                const { error } = await supabase.rpc('admin_delete_level', {
+                    p_level_id: level.id,
+                });
+                if (error) throw error;
+
+                await this.loadAdminData();
+                this.closeLevelEditor();
+                this.showImportMessage(`${level.name} was deleted.`, 'success');
+            } catch (error) {
+                console.error('Level deletion failed:', error);
+                this.levelEditorError = error.message || 'Could not delete this level.';
+            }
+        },
+
+        async saveLevelPosition(level) {
+            if (!this.isAdmin || !this.store.user || !level?.id) return;
+            if (this.savingLevelPosition) return;
+
+            const targetPosition = Number(this.levelPositionDrafts[level.id]);
+            const mainListCount = this.adminListEntries.filter(
+                entry => entry.list_key === 'main'
+            ).length;
+
+            if (!Number.isInteger(targetPosition) || targetPosition < 1 || targetPosition > mainListCount) {
+                this.showImportMessage(
+                    `Enter a valid Main List position between 1 and ${mainListCount}.`,
+                    'error'
+                );
+                return;
+            }
 
             this.savingLevelPosition = level.id;
             this.importMessage = '';
             this.importMessageType = '';
 
             try {
-                for (let i = 0; i < updates.length; i += 10) {
-                    const batch = updates.slice(i, i + 10);
-
-                    const results = await Promise.all(
-                        batch.map(item =>
-                            supabase
-                                .from('levels')
-                                .update({
-                                    spreadsheet_rank: item.spreadsheet_rank,
-                                })
-                                .eq('id', item.id)
-                        )
-                    );
-
-                    const failedUpdate = results.find(
-                        result => result.error
-                    );
-
-                    if (failedUpdate) {
-                        throw new Error(
-                            `Could not save the new level positions: ${failedUpdate.error.message}`
-                        );
+                const { error } = await supabase.rpc(
+                    'admin_set_level_list_position',
+                    {
+                        p_level_id: level.id,
+                        p_list_key: 'main',
+                        p_position: targetPosition,
                     }
-                }
+                );
+
+                if (error) throw error;
 
                 await this.loadAdminData();
-
                 this.showImportMessage(
-                    `${level.name} moved to position #${targetPosition}. All other Main List positions have been adjusted automatically.`,
+                    `${level.name} moved to Main List position #${targetPosition}.`,
                     'success'
                 );
             } catch (error) {
                 console.error('Level position update failed:', error);
-
                 this.showImportMessage(
                     error.message || 'Could not update the level position.',
                     'error'
                 );
-
                 await this.loadAdminData();
             } finally {
                 this.savingLevelPosition = null;
@@ -2103,8 +2291,17 @@ export default {
 
                                         <div class="admin-section-intro">
                                             <h2>Level Management</h2>
-                                            <p>Import and manage the 150 levels on the GVDL Main List.</p>
+                                            <p>Create, edit, position and remove levels across every GVDL list.</p>
                                         </div>
+
+                                        <button
+                                            type="button"
+                                            class="account-submit admin-import-button"
+                                            style="margin-bottom: 18px;"
+                                            @click="openLevelEditor()"
+                                        >
+                                            Add New Level
+                                        </button>
 
                                         <div class="admin-import-card">
                                             <div class="admin-import-card-heading">
@@ -2165,6 +2362,14 @@ export default {
                                                             · {{ level.difficulty }}
                                                         </template>
                                                     </small>
+                                                    <button
+                                                        type="button"
+                                                        class="admin-refresh-button"
+                                                        style="margin-top: 10px;"
+                                                        @click="openLevelEditor(level)"
+                                                    >
+                                                        Edit Level
+                                                    </button>
                                                 </div>
 
                                                 <div
@@ -2212,7 +2417,150 @@ export default {
 
                                         <div v-else class="empty-state">
                                             <h2>No levels found</h2>
-                                            <p>Use the import button above to add the Main List levels to the database.</p>
+                                            <p>Use Add New Level to create a level, or import the Main List.</p>
+                                        </div>
+
+                                        <div
+                                            v-if="levelEditorOpen && levelEditorDraft"
+                                            class="admin-level-editor-overlay"
+                                            style="position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.78); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto;"
+                                        >
+                                            <form
+                                                class="account-content-section"
+                                                style="width: min(900px, 100%); margin: auto; max-height: none;"
+                                                @submit.prevent="saveLevelEditor"
+                                            >
+                                                <div class="content-section-heading" style="display:flex; justify-content:space-between; gap:16px; align-items:center;">
+                                                    <div>
+                                                        <h2>{{ levelEditorDraft.id ? 'Edit Level' : 'Create Level' }}</h2>
+                                                        <p>Update level details, list membership, positions and player records.</p>
+                                                    </div>
+                                                    <button type="button" class="admin-refresh-button" :disabled="levelEditorSaving" @click="closeLevelEditor">Close</button>
+                                                </div>
+
+                                                <div v-if="levelEditorError" class="admin-error">{{ levelEditorError }}</div>
+
+                                                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;">
+                                                    <label>Level Name
+                                                        <input v-model="levelEditorDraft.name" required maxlength="200" />
+                                                    </label>
+                                                    <label>Author
+                                                        <input v-model="levelEditorDraft.author" />
+                                                    </label>
+                                                    <label>Verifier
+                                                        <input v-model="levelEditorDraft.verifier" />
+                                                    </label>
+                                                    <label>Creators (comma or newline separated)
+                                                        <textarea v-model="levelEditorDraft.creatorsText" rows="2"></textarea>
+                                                    </label>
+                                                    <label>Game ID
+                                                        <input v-model="levelEditorDraft.game_id" />
+                                                    </label>
+                                                    <label>Legacy Path
+                                                        <input v-model="levelEditorDraft.legacy_path" />
+                                                    </label>
+                                                    <label>Verification URL
+                                                        <input v-model="levelEditorDraft.verification_url" type="url" />
+                                                    </label>
+                                                    <label>Showcase URL
+                                                        <input v-model="levelEditorDraft.showcase_url" type="url" />
+                                                    </label>
+                                                    <label>Percent to Qualify
+                                                        <input v-model.number="levelEditorDraft.percent_to_qualify" type="number" min="0.01" max="100" step="0.01" required />
+                                                    </label>
+                                                    <label>Password
+                                                        <input v-model="levelEditorDraft.password" />
+                                                    </label>
+                                                    <label>Difficulty
+                                                        <input v-model="levelEditorDraft.difficulty" />
+                                                    </label>
+                                                    <label>Enjoyment
+                                                        <input v-model="levelEditorDraft.enjoyment" />
+                                                    </label>
+                                                    <label>Points Reward
+                                                        <input v-model.number="levelEditorDraft.points_reward" type="number" min="0" step="0.01" />
+                                                    </label>
+                                                </div>
+
+                                                <div style="margin-top:24px;">
+                                                    <h3>List Membership and Position</h3>
+                                                    <p class="account-hint">Select every list this level belongs to. Set its position separately for each selected list.</p>
+                                                    <div v-for="option in levelEditorListOptions" :key="option.key" style="display:grid; grid-template-columns:minmax(180px,1fr) 140px; gap:12px; align-items:center; margin:10px 0;">
+                                                        <label style="display:flex; align-items:center; gap:9px;">
+                                                            <input v-model="levelEditorDraft.listKeys" type="checkbox" :value="option.key" />
+                                                            {{ option.label }}
+                                                        </label>
+                                                        <input
+                                                            v-if="levelEditorDraft.listKeys.includes(option.key)"
+                                                            v-model.number="levelEditorDraft.listPositions[option.key]"
+                                                            type="number"
+                                                            min="1"
+                                                            step="1"
+                                                            :aria-label="option.label + ' position'"
+                                                        />
+                                                        <span v-else class="account-hint">Not included</span>
+                                                    </div>
+                                                </div>
+
+                                                <div style="margin-top:28px;">
+                                                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                                                        <div>
+                                                            <h3>Player Records and Victors</h3>
+                                                            <p class="account-hint">Add, edit or remove completions. Mark one record as the first victor if applicable.</p>
+                                                        </div>
+                                                        <button type="button" class="admin-refresh-button" @click="addLevelEditorRecord">Add Record</button>
+                                                    </div>
+
+                                                    <div v-if="levelEditorRecords.length" style="display:grid; gap:14px; margin-top:14px;">
+                                                        <article v-for="(record, index) in levelEditorRecords" :key="record.id || 'new-' + index" class="admin-data-row" style="display:block;">
+                                                            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px;">
+                                                                <label>Player Name
+                                                                    <input v-model="record.player_name" required />
+                                                                </label>
+                                                                <label>Percentage
+                                                                    <input v-model.number="record.percentage" type="number" min="0.01" max="100" step="0.01" required />
+                                                                </label>
+                                                                <label>Video URL
+                                                                    <input v-model="record.video_url" type="url" />
+                                                                </label>
+                                                                <label>Achieved At
+                                                                    <input v-model="record.achieved_at" type="datetime-local" />
+                                                                </label>
+                                                                <label>Record Source
+                                                                    <select v-model="record.source">
+                                                                        <option value="submission">Submission</option>
+                                                                        <option value="legacy_import">Legacy Import</option>
+                                                                    </select>
+                                                                </label>
+                                                            </div>
+                                                            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px;">
+                                                                <label style="display:flex; align-items:center; gap:8px;">
+                                                                    <input type="checkbox" :checked="record.is_first_victor" @change="setFirstVictorRecord(index)" />
+                                                                    First Victor
+                                                                </label>
+                                                                <button type="button" class="admin-refresh-button" @click="removeLevelEditorRecord(index)">Remove Record</button>
+                                                            </div>
+                                                        </article>
+                                                    </div>
+                                                    <p v-else class="account-hint" style="margin-top:14px;">No records have been added to this level.</p>
+                                                </div>
+
+                                                <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:28px;">
+                                                    <button
+                                                        v-if="levelEditorDraft.id"
+                                                        type="button"
+                                                        class="admin-refresh-button"
+                                                        :disabled="levelEditorSaving"
+                                                        @click="deleteLevel(adminLevels.find(item => item.id === levelEditorDraft.id))"
+                                                    >Delete Level</button>
+                                                    <div style="display:flex; gap:10px; margin-left:auto;">
+                                                        <button type="button" class="admin-refresh-button" :disabled="levelEditorSaving" @click="closeLevelEditor">Cancel</button>
+                                                        <button type="submit" class="account-submit" :disabled="levelEditorSaving">
+                                                            {{ levelEditorSaving ? 'Saving...' : 'Save Level' }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
                                         </div>
 
                                     </template>

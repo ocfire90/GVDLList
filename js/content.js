@@ -37,12 +37,8 @@ async function fetchJsonLevel(path, rank) {
     }
 }
 
-/**
- * Converts a Supabase level into the format used by the public website.
- */
 async function formatDatabaseLevel(databaseLevel, rank) {
     const path = databaseLevel.legacy_path;
-
     let records = [];
 
     if (path) {
@@ -70,16 +66,13 @@ async function formatDatabaseLevel(databaseLevel, rank) {
                     ? null
                     : Number(databaseLevel.game_id),
 
+            databaseId: databaseLevel.id,
             name: databaseLevel.name,
             author: databaseLevel.author || '',
             creators: databaseLevel.creators || [],
             verifier: databaseLevel.verifier || '',
-
-            verification:
-                databaseLevel.verification_url || '',
-
-            showcase:
-                databaseLevel.showcase_url || '',
+            verification: databaseLevel.verification_url || '',
+            showcase: databaseLevel.showcase_url || '',
 
             percentToQualify:
                 databaseLevel.percent_to_qualify == null
@@ -89,17 +82,12 @@ async function formatDatabaseLevel(databaseLevel, rank) {
             password: databaseLevel.password || '',
             records,
 
-            firstVictor:
-                databaseLevel.first_victor_name || '',
-
+            firstVictor: databaseLevel.first_victor_name || '',
             spreadsheetRank:
                 databaseLevel.spreadsheet_rank || rank + 1,
 
-            difficulty:
-                databaseLevel.difficulty || '',
-
-            enjoyment:
-                databaseLevel.enjoyment || '',
+            difficulty: databaseLevel.difficulty || '',
+            enjoyment: databaseLevel.enjoyment || '',
 
             pointsReward:
                 databaseLevel.points_reward == null
@@ -113,16 +101,13 @@ async function formatDatabaseLevel(databaseLevel, rank) {
 }
 
 /**
- * Loads a list from the Supabase list-membership table.
+ * Loads a list from Supabase using its list memberships and positions.
  *
- * The Main List only replaces the existing JSON list when all 150
- * levels are available. Other lists use the database when at least
- * one membership exists.
+ * Returns null when the database list is unavailable or empty, allowing
+ * the existing JSON list to remain the fallback.
  */
 async function fetchDatabaseList(listKey) {
     try {
-        // Dynamic import avoids a circular initialisation issue:
-        // main.js imports the routes, which import this file.
         const { supabase } = await import('./main.js');
 
         const { data, error } = await supabase
@@ -164,6 +149,7 @@ async function fetchDatabaseList(listKey) {
             return null;
         }
 
+        // Do not replace the existing Main List with an incomplete import.
         if (listKey === 'main' && data.length !== 150) {
             console.warn(
                 'The database Main List does not contain all 150 levels. Using the existing JSON list.'
@@ -174,21 +160,20 @@ async function fetchDatabaseList(listKey) {
 
         return await Promise.all(
             data.map(async (entry, index) => {
-                const databaseLevel = entry.levels;
-
-                if (!databaseLevel) {
-                    return [null, `Missing level at position ${index + 1}`];
+                if (!entry.levels) {
+                    return [
+                        null,
+                        `Missing level at position ${index + 1}`,
+                    ];
                 }
 
-                const [level, error] = await formatDatabaseLevel(
+                return formatDatabaseLevel(
                     {
-                        ...databaseLevel,
+                        ...entry.levels,
                         spreadsheet_rank: entry.position,
                     },
                     index
                 );
-
-                return [level, error];
             })
         );
     } catch (error) {
@@ -212,8 +197,7 @@ export async function fetchList(indexFile = '_list.json') {
         }
     }
 
-    // Retain the original JSON fallback if the database list is
-    // unavailable, empty, or incomplete.
+    // Preserve the original JSON fallback.
     const listResult = await fetch(`${dir}/${indexFile}`, {
         cache: 'no-store',
     });

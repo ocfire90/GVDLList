@@ -265,7 +265,7 @@ export default {
         score,
 
         playerUrl(player) {
-            return \`#/leaderboard?player=\${encodeURIComponent(player)}\`;
+            return `#/leaderboard?player=${encodeURIComponent(player)}`;
         },
 
         selectLevel(index) {

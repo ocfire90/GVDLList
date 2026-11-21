@@ -69,6 +69,48 @@
     gap: 1rem;
 }
 
+/* Difficulty and enjoyment pills */
+
+.page-list .level-rating-pills {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: -1rem;
+}
+
+.page-list .level-rating-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--color-border, rgba(128, 128, 128, 0.3));
+    border-radius: 999px;
+    background: var(--color-background);
+    color: var(--color-on-background);
+    font-family: "Manrope", sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.2;
+}
+
+.page-list .level-rating-pill strong {
+    font-weight: 800;
+}
+
+.page-list .level-rating-pill span {
+    opacity: 0.82;
+}
+
+.page-list .level-rating-pill.difficulty {
+    border-color: rgba(96, 165, 250, 0.45);
+    background: rgba(96, 165, 250, 0.1);
+}
+
+.page-list .level-rating-pill.enjoyment {
+    border-color: rgba(52, 211, 153, 0.4);
+    background: rgba(52, 211, 153, 0.1);
+}
+
 .page-list .level-container .level .video {
     aspect-ratio: 16/9;
 }

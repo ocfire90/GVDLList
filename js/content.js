@@ -1,6 +1,15 @@
+
 import { round, score } from './score.js';
 
 const dir = './data';
+
+const databaseListKeys = {
+    '_list.json': 'main',
+    '_platformer.json': 'platformer',
+    '_challenge.json': 'challenge',
+    '_created.json': 'created',
+    '_upcoming.json': 'upcoming',
+};
 
 async function fetchJsonLevel(path, rank) {
     const levelResult = await fetch(`${dir}/${path}.json`, {
@@ -29,134 +38,162 @@ async function fetchJsonLevel(path, rank) {
 }
 
 /**
- * Loads the Main List from Supabase.
- *
- * The database is used only when all 150 Main List levels have been
- * imported. This prevents an incomplete database import from replacing
- * the existing public JSON list.
+ * Converts a Supabase level into the format used by the public website.
  */
-async function fetchDatabaseMainList() {
+async function formatDatabaseLevel(databaseLevel, rank) {
+    const path = databaseLevel.legacy_path;
+
+    let records = [];
+
+    if (path) {
+        try {
+            const response = await fetch(`${dir}/${path}.json`, {
+                cache: 'no-store',
+            });
+
+            if (response.ok) {
+                const legacyLevel = await response.json();
+                records = legacyLevel.records || [];
+            }
+        } catch (error) {
+            console.error(
+                `Could not load legacy records for ${path}:`,
+                error
+            );
+        }
+    }
+
+    return [
+        {
+            id:
+                databaseLevel.game_id == null
+                    ? null
+                    : Number(databaseLevel.game_id),
+
+            name: databaseLevel.name,
+            author: databaseLevel.author || '',
+            creators: databaseLevel.creators || [],
+            verifier: databaseLevel.verifier || '',
+
+            verification:
+                databaseLevel.verification_url || '',
+
+            showcase:
+                databaseLevel.showcase_url || '',
+
+            percentToQualify:
+                databaseLevel.percent_to_qualify == null
+                    ? 100
+                    : String(databaseLevel.percent_to_qualify),
+
+            password: databaseLevel.password || '',
+            records,
+
+            firstVictor:
+                databaseLevel.first_victor_name || '',
+
+            spreadsheetRank:
+                databaseLevel.spreadsheet_rank || rank + 1,
+
+            difficulty:
+                databaseLevel.difficulty || '',
+
+            enjoyment:
+                databaseLevel.enjoyment || '',
+
+            pointsReward:
+                databaseLevel.points_reward == null
+                    ? ''
+                    : String(databaseLevel.points_reward),
+
+            path,
+        },
+        null,
+    ];
+}
+
+/**
+ * Loads a list from the Supabase list-membership table.
+ *
+ * The Main List only replaces the existing JSON list when all 150
+ * levels are available. Other lists use the database when at least
+ * one membership exists.
+ */
+async function fetchDatabaseList(listKey) {
     try {
         // Dynamic import avoids a circular initialisation issue:
         // main.js imports the routes, which import this file.
         const { supabase } = await import('./main.js');
 
         const { data, error } = await supabase
-            .from('levels')
+            .from('level_list_entries')
             .select(`
-                id,
-                legacy_path,
-                game_id,
-                name,
-                author,
-                creators,
-                verifier,
-                verification_url,
-                showcase_url,
-                percent_to_qualify,
-                password,
-                first_victor_name,
-                spreadsheet_rank,
-                difficulty,
-                enjoyment,
-                points_reward
+                position,
+                levels!inner (
+                    id,
+                    legacy_path,
+                    game_id,
+                    name,
+                    author,
+                    creators,
+                    verifier,
+                    verification_url,
+                    showcase_url,
+                    percent_to_qualify,
+                    password,
+                    first_victor_name,
+                    spreadsheet_rank,
+                    difficulty,
+                    enjoyment,
+                    points_reward
+                )
             `)
-            .not('legacy_path', 'is', null)
-            .order('spreadsheet_rank', { ascending: true });
+            .eq('list_key', listKey)
+            .order('position', { ascending: true });
 
         if (error) {
             console.error(
-                'Failed to load Main List from Supabase:',
+                `Failed to load ${listKey} from Supabase:`,
                 error
             );
 
             return null;
         }
 
-        if (!data || data.length !== 150) {
+        if (!data || data.length === 0) {
             return null;
         }
 
-        const levels = await Promise.all(
-            data.map(async (databaseLevel, index) => {
-                const path = databaseLevel.legacy_path;
+        if (listKey === 'main' && data.length !== 150) {
+            console.warn(
+                'The database Main List does not contain all 150 levels. Using the existing JSON list.'
+            );
 
-                if (!path) {
-                    return [null, 'Missing legacy path'];
+            return null;
+        }
+
+        return await Promise.all(
+            data.map(async (entry, index) => {
+                const databaseLevel = entry.levels;
+
+                if (!databaseLevel) {
+                    return [null, `Missing level at position ${index + 1}`];
                 }
 
-                let records = [];
-
-                try {
-                    const response = await fetch(`${dir}/${path}.json`, {
-                        cache: 'no-store',
-                    });
-
-                    if (response.ok) {
-                        const legacyLevel = await response.json();
-                        records = legacyLevel.records || [];
-                    }
-                } catch (error) {
-                    console.error(
-                        `Could not load legacy records for ${path}:`,
-                        error
-                    );
-                }
-
-                return [
+                const [level, error] = await formatDatabaseLevel(
                     {
-                        id:
-                            databaseLevel.game_id == null
-                                ? null
-                                : Number(databaseLevel.game_id),
-
-                        name: databaseLevel.name,
-                        author: databaseLevel.author || '',
-                        creators: databaseLevel.creators || [],
-                        verifier: databaseLevel.verifier || '',
-
-                        verification:
-                            databaseLevel.verification_url || '',
-
-                        showcase:
-                            databaseLevel.showcase_url || '',
-
-                        percentToQualify:
-                            databaseLevel.percent_to_qualify == null
-                                ? 100
-                                : String(databaseLevel.percent_to_qualify),
-
-                        password: databaseLevel.password || '',
-                        records,
-
-                        firstVictor:
-                            databaseLevel.first_victor_name || '',
-
-                        spreadsheetRank:
-                            databaseLevel.spreadsheet_rank || index + 1,
-
-                        difficulty:
-                            databaseLevel.difficulty || '',
-
-                        enjoyment:
-                            databaseLevel.enjoyment || '',
-
-                        pointsReward:
-                            databaseLevel.points_reward == null
-                                ? ''
-                                : String(databaseLevel.points_reward),
-
-                        path,
+                        ...databaseLevel,
+                        spreadsheet_rank: entry.position,
                     },
-                    null,
-                ];
+                    index
+                );
+
+                return [level, error];
             })
         );
-
-        return levels;
     } catch (error) {
         console.error(
-            'Could not access the Main List database:',
+            `Could not access the ${listKey} database list:`,
             error
         );
 
@@ -165,16 +202,18 @@ async function fetchDatabaseMainList() {
 }
 
 export async function fetchList(indexFile = '_list.json') {
-    // The Main List uses Supabase when all 150 levels are imported.
-    // Other lists continue to use their existing JSON files.
-    if (indexFile === '_list.json') {
-        const databaseList = await fetchDatabaseMainList();
+    const listKey = databaseListKeys[indexFile];
+
+    if (listKey) {
+        const databaseList = await fetchDatabaseList(listKey);
 
         if (databaseList) {
             return databaseList;
         }
     }
 
+    // Retain the original JSON fallback if the database list is
+    // unavailable, empty, or incomplete.
     const listResult = await fetch(`${dir}/${indexFile}`, {
         cache: 'no-store',
     });

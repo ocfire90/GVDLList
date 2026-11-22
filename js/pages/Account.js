@@ -47,6 +47,7 @@ export default {
         adminListEntries: [],
         levelEditorOpen: false,
         levelEditorSaving: false,
+        levelEditorRecordsLoading: false,
         levelEditorError: '',
         levelEditorMessage: '',
         levelEditorDraft: null,
@@ -275,6 +276,7 @@ export default {
             this.levelEditorOpen = false;
             this.levelEditorDraft = null;
             this.levelEditorRecords = [];
+            this.levelEditorRecordsLoading = false;
             this.levelPositionDrafts = {};
             this.adminError = '';
             this.adminLoading = false;
@@ -378,7 +380,7 @@ export default {
                 id: null,
                 name: '',
                 author: '',
-                creatorsText: '',
+                creators: [],
                 verifier: '',
                 game_id: '',
                 legacy_path: '',
@@ -394,7 +396,7 @@ export default {
             };
         },
 
-        openLevelEditor(level = null) {
+        async openLevelEditor(level = null) {
             const draft = this.createEmptyLevelDraft();
 
             if (level) {
@@ -405,9 +407,8 @@ export default {
                 draft.id = level.id;
                 draft.name = level.name || '';
                 draft.author = level.author || '';
-                draft.creatorsText = Array.isArray(level.creators)
-                    ? level.creators.join(', ')
-                    : '';
+                // Preserve legacy database fields without exposing them as editor controls.
+                draft.creators = Array.isArray(level.creators) ? level.creators : [];
                 draft.verifier = level.verifier || '';
                 draft.game_id = level.game_id || '';
                 draft.legacy_path = level.legacy_path || '';
@@ -422,26 +423,64 @@ export default {
                 memberships.forEach(entry => {
                     draft.listPositions[entry.list_key] = Number(entry.position);
                 });
+            }
 
-                this.levelEditorRecords = this.adminRecords
-                    .filter(record => record.level_id === level.id)
-                    .map(record => ({
+            this.levelEditorDraft = draft;
+            this.levelEditorRecords = [];
+            this.levelEditorError = '';
+            this.levelEditorMessage = '';
+            this.levelEditorOpen = true;
+            this.levelEditorRecordsLoading = !!level;
+
+            if (!level) return;
+
+            try {
+                const { data, error } = await supabase
+                    .from('player_records')
+                    .select('id, level_id, player_id, player_name, percentage, video_url, is_first_victor, source, achieved_at, created_at')
+                    .eq('level_id', level.id)
+                    .order('created_at', { ascending: true });
+
+                if (!this.levelEditorOpen || this.levelEditorDraft?.id !== level.id) return;
+                if (error) throw error;
+
+                const records = data || [];
+                this.levelEditorRecords = records.map(record => {
+                    const achievedDate = record.achieved_at
+                        ? new Date(record.achieved_at)
+                        : null;
+                    const achievedAt = achievedDate && !Number.isNaN(achievedDate.getTime())
+                        ? new Date(
+                            achievedDate.getTime() -
+                            achievedDate.getTimezoneOffset() * 60000
+                        ).toISOString().slice(0, 16)
+                        : '';
+
+                    return {
                         id: record.id,
                         player_name: record.player_name || '',
                         percentage: Number(record.percentage),
                         video_url: record.video_url || '',
                         is_first_victor: !!record.is_first_victor,
-                        achieved_at: record.achieved_at || '',
+                        achieved_at: achievedAt,
                         source: record.source || 'submission',
-                    }));
-            } else {
-                this.levelEditorRecords = [];
-            }
+                    };
+                });
 
-            this.levelEditorDraft = draft;
-            this.levelEditorError = '';
-            this.levelEditorMessage = '';
-            this.levelEditorOpen = true;
+                this.adminRecords = [
+                    ...this.adminRecords.filter(record => record.level_id !== level.id),
+                    ...records,
+                ];
+            } catch (error) {
+                console.error('Could not load level records:', error);
+                if (this.levelEditorOpen && this.levelEditorDraft?.id === level.id) {
+                    this.levelEditorError = error.message || 'Could not load this level’s player records.';
+                }
+            } finally {
+                if (this.levelEditorOpen && this.levelEditorDraft?.id === level.id) {
+                    this.levelEditorRecordsLoading = false;
+                }
+            }
         },
 
         closeLevelEditor() {
@@ -449,6 +488,7 @@ export default {
             this.levelEditorOpen = false;
             this.levelEditorDraft = null;
             this.levelEditorRecords = [];
+            this.levelEditorRecordsLoading = false;
             this.levelEditorError = '';
             this.levelEditorMessage = '';
         },
@@ -469,15 +509,22 @@ export default {
             this.levelEditorRecords.splice(index, 1);
         },
 
-        setFirstVictorRecord(index) {
-            this.levelEditorRecords.forEach((record, recordIndex) => {
-                record.is_first_victor = recordIndex === index;
-            });
+        setFirstVictorRecord(index, checked) {
+            if (checked) {
+                this.levelEditorRecords.forEach((record, recordIndex) => {
+                    record.is_first_victor = recordIndex === index;
+                });
+                return;
+            }
+
+            if (this.levelEditorRecords[index]) {
+                this.levelEditorRecords[index].is_first_victor = false;
+            }
         },
 
         async saveLevelEditor() {
             if (!this.isAdmin || !this.store.user || !this.levelEditorDraft) return;
-            if (this.levelEditorSaving) return;
+            if (this.levelEditorSaving || this.levelEditorRecordsLoading) return;
 
             const draft = this.levelEditorDraft;
             const name = String(draft.name || '').trim();
@@ -499,7 +546,9 @@ export default {
                 percentage: Number(record.percentage),
                 video_url: String(record.video_url || '').trim() || null,
                 is_first_victor: !!record.is_first_victor,
-                achieved_at: record.achieved_at || null,
+                achieved_at: record.achieved_at
+                    ? new Date(record.achieved_at).toISOString()
+                    : null,
                 source: record.source === 'legacy_import' ? 'legacy_import' : 'submission',
             }));
 
@@ -537,10 +586,7 @@ export default {
                         p_level_id: draft.id || null,
                         p_name: name,
                         p_author: String(draft.author || '').trim() || null,
-                        p_creators: String(draft.creatorsText || '')
-                            .split(/[,\n]/)
-                            .map(value => value.trim())
-                            .filter(Boolean),
+                        p_creators: Array.isArray(draft.creators) ? draft.creators : [],
                         p_verifier: String(draft.verifier || '').trim() || null,
                         p_game_id: String(draft.game_id || '').trim() || null,
                         p_legacy_path: String(draft.legacy_path || '').trim() || null,
@@ -2450,9 +2496,6 @@ export default {
                                                     <label>Verifier
                                                         <input v-model="levelEditorDraft.verifier" />
                                                     </label>
-                                                    <label>Creators (comma or newline separated)
-                                                        <textarea v-model="levelEditorDraft.creatorsText" rows="2"></textarea>
-                                                    </label>
                                                     <label>Game ID
                                                         <input v-model="levelEditorDraft.game_id" />
                                                     </label>
@@ -2476,9 +2519,6 @@ export default {
                                                     </label>
                                                     <label>Enjoyment
                                                         <input v-model="levelEditorDraft.enjoyment" />
-                                                    </label>
-                                                    <label>Points Reward
-                                                        <input v-model.number="levelEditorDraft.points_reward" type="number" min="0" step="0.01" />
                                                     </label>
                                                 </div>
 
@@ -2506,12 +2546,13 @@ export default {
                                                     <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
                                                         <div>
                                                             <h3>Player Records and Victors</h3>
-                                                            <p class="account-hint">Add, edit or remove completions. Mark one record as the first victor if applicable.</p>
+                                                            <p class="account-hint">Add completions or progress records. Use 100% for a completion and any lower percentage for progress. First Victor is optional.</p>
                                                         </div>
-                                                        <button type="button" class="admin-refresh-button" @click="addLevelEditorRecord">Add Record</button>
+                                                        <button type="button" class="admin-refresh-button" :disabled="levelEditorRecordsLoading || levelEditorSaving" @click="addLevelEditorRecord">Add Record</button>
                                                     </div>
 
-                                                    <div v-if="levelEditorRecords.length" style="display:grid; gap:14px; margin-top:14px;">
+                                                    <p v-if="levelEditorRecordsLoading" class="account-hint" style="margin-top:14px;">Loading this level’s player records...</p>
+                                                    <div v-else-if="levelEditorRecords.length" style="display:grid; gap:14px; margin-top:14px;">
                                                         <article v-for="(record, index) in levelEditorRecords" :key="record.id || 'new-' + index" class="admin-data-row" style="display:block;">
                                                             <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px;">
                                                                 <label>Player Name
@@ -2535,14 +2576,14 @@ export default {
                                                             </div>
                                                             <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px;">
                                                                 <label style="display:flex; align-items:center; gap:8px;">
-                                                                    <input type="checkbox" :checked="record.is_first_victor" @change="setFirstVictorRecord(index)" />
+                                                                    <input type="checkbox" :checked="record.is_first_victor" @change="setFirstVictorRecord(index, $event.target.checked)" />
                                                                     First Victor
                                                                 </label>
                                                                 <button type="button" class="admin-refresh-button" @click="removeLevelEditorRecord(index)">Remove Record</button>
                                                             </div>
                                                         </article>
                                                     </div>
-                                                    <p v-else class="account-hint" style="margin-top:14px;">No records have been added to this level.</p>
+                                                    <p v-else-if="!levelEditorRecordsLoading" class="account-hint" style="margin-top:14px;">No player records have been added to this level yet.</p>
                                                 </div>
 
                                                 <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:28px;">

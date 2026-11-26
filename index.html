@@ -26,6 +26,7 @@
         />
         <link rel="stylesheet" type="text/css" href="./css/pages/roulette.css" />
         <link rel="stylesheet" type="text/css" href="./css/pages/account.css" />
+        <link rel="stylesheet" type="text/css" href="./css/pages/submit-record.css" />
         <link rel="stylesheet" type="text/css" href="./css/components/nav.css" />
         <link rel="stylesheet" type="text/css" href="./css/components/btn.css" />
         <link
@@ -113,13 +114,13 @@
                         Login
                     </router-link>
 
-                    <a
+                    <router-link
                         v-else
                         class="nav__cta type-label-lg"
-                        href="#"
+                        to="/submit-record"
                     >
                         Submit Record
-                    </a>
+                    </router-link>
                 </div>
             </nav>
         </header>

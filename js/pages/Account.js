@@ -758,6 +758,7 @@ export default {
 
                 const levelRows = [];
                 const leaderboardNames = new Map();
+                const legacyRecordDrafts = [];
 
                 for (let i = 0; i < paths.length; i += 1) {
                     const path = paths[i];
@@ -871,8 +872,23 @@ export default {
 
                     if (Array.isArray(level.records)) {
                         level.records.forEach(record => {
-                            if (typeof record === 'string') {
-                                addLeaderboardName(record);
+                            const playerName = typeof record === 'string'
+                                ? record.trim()
+                                : String(record?.user || '').trim();
+                            const percentage = typeof record === 'string'
+                                ? 100
+                                : Number(record?.percent);
+
+                            if (!playerName) return;
+                            addLeaderboardName(playerName);
+
+                            if (Number.isFinite(percentage) && percentage > 0 && percentage <= 100) {
+                                legacyRecordDrafts.push({
+                                    legacy_path: path,
+                                    player_name: playerName,
+                                    percentage,
+                                    video_url: typeof record === 'object' ? (record.link || null) : null,
+                                });
                             }
                         });
                     }
@@ -969,6 +985,61 @@ export default {
                     );
                 }
 
+                const { data: resolvedLevels, error: resolvedLevelsError } = await supabase
+                    .from('levels')
+                    .select('id, legacy_path')
+                    .in('legacy_path', paths);
+
+                if (resolvedLevelsError) {
+                    throw new Error('Levels were imported, but legacy records could not be mapped: ' + resolvedLevelsError.message);
+                }
+
+                const levelIdByPath = new Map((resolvedLevels || []).map(level => [level.legacy_path, level.id]));
+                const { data: existingRecords, error: existingRecordsError } = await supabase
+                    .from('player_records')
+                    .select('level_id, player_name, percentage');
+
+                if (existingRecordsError) {
+                    throw new Error('Levels were imported, but existing records could not be checked: ' + existingRecordsError.message);
+                }
+
+                const existingRecordKeys = new Set((existingRecords || []).map(record =>
+                    String(record.level_id) + '|' + record.player_name.trim().toLowerCase() + '|' + Number(record.percentage)
+                ));
+
+                const legacyRecordsToInsert = [];
+                for (const record of legacyRecordDrafts) {
+                    const levelId = levelIdByPath.get(record.legacy_path);
+                    if (!levelId) continue;
+
+                    const key = String(levelId) + '|' + record.player_name.toLowerCase() + '|' + record.percentage;
+                    if (existingRecordKeys.has(key)) continue;
+                    existingRecordKeys.add(key);
+
+                    legacyRecordsToInsert.push({
+                        level_id: levelId,
+                        player_id: null,
+                        player_name: record.player_name,
+                        percentage: record.percentage,
+                        video_url: record.video_url,
+                        is_first_victor: false,
+                        source: 'legacy',
+                    });
+                }
+
+                let insertedLegacyRecords = 0;
+                for (let i = 0; i < legacyRecordsToInsert.length; i += 100) {
+                    const batch = legacyRecordsToInsert.slice(i, i + 100);
+                    const { data, error } = await supabase
+                        .from('player_records')
+                        .insert(batch)
+                        .select('id');
+                    if (error) {
+                        throw new Error('Leaderboard identities were prepared, but legacy records could not be imported: ' + error.message);
+                    }
+                    insertedLegacyRecords += data?.length || batch.length;
+                }
+
                 this.showImportMessage(
                     'Levels imported. Checking leaderboard player identities...',
                     'info'
@@ -1023,7 +1094,7 @@ export default {
                 await this.loadAdminData();
 
                 this.showImportMessage(
-                    `Import complete! ${insertedLevels} levels added, ${updatedLevels} levels updated, and ${insertedPlayers} new leaderboard identities created. Existing identities were preserved.`,
+                    `Import complete! ${insertedLevels} levels added, ${updatedLevels} levels updated, ${insertedPlayers} new leaderboard identities created, and ${insertedLegacyRecords} historical records imported. Existing identities were preserved.`,
                     'success'
                 );
             } catch (error) {

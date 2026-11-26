@@ -130,6 +130,40 @@ export default {
                             </span>
                         </li>
                     </ul>
+
+                    <section class="placement-history" aria-labelledby="placement-history-title">
+                        <div class="placement-history-heading">
+                            <h2 id="placement-history-title">Placement History</h2>
+                            <span v-if="placementHistory.length" class="type-label-md">
+                                {{ placementHistory.length }} {{ placementHistory.length === 1 ? 'event' : 'events' }}
+                            </span>
+                        </div>
+
+                        <p v-if="!level.databaseId" class="placement-history-empty">
+                            Placement history is not available for this legacy entry.
+                        </p>
+                        <p v-else-if="placementHistoryLoading" class="placement-history-empty">
+                            Loading placement history...
+                        </p>
+                        <p v-else-if="placementHistoryError" class="placement-history-empty">
+                            Could not load placement history. Please try again later.
+                        </p>
+                        <p v-else-if="placementHistory.length === 0" class="placement-history-empty">
+                            No placement changes have been recorded for this level yet.
+                        </p>
+
+                        <ol v-else class="placement-history-list">
+                            <li v-for="event in placementHistory" :key="event.id" class="placement-history-event">
+                                <span class="placement-history-marker" :class="placementEventClass(event)"></span>
+                                <div class="placement-history-event-content">
+                                    <strong>{{ placementEventTitle(event) }}</strong>
+                                    <span>{{ placementEventDescription(event) }}</span>
+                                    <time :datetime="event.changed_at">{{ formatPlacementDate(event.changed_at) }}</time>
+                                </div>
+                            </li>
+                        </ol>
+                    </section>
+
                 </div>
 
                 <div
@@ -208,6 +242,9 @@ export default {
         loading: true,
         selected: 0,
         errors: [],
+        placementHistory: [],
+        placementHistoryLoading: false,
+        placementHistoryError: false,
         roleIconMap,
         store
     }),
@@ -256,6 +293,7 @@ export default {
             }
 
             this.selectLevelFromRoute();
+            await this.loadPlacementHistory();
         }
 
         this.loading = false;
@@ -268,8 +306,9 @@ export default {
             return `#/leaderboard?player=${encodeURIComponent(player)}`;
         },
 
-        selectLevel(index) {
+        async selectLevel(index) {
             this.selected = index;
+            await this.loadPlacementHistory();
 
             const path = this.list[index]?.[0]?.path;
 
@@ -281,6 +320,72 @@ export default {
                     },
                 });
             }
+        },
+
+        async loadPlacementHistory() {
+            const levelId = this.level?.databaseId;
+            this.placementHistory = [];
+            this.placementHistoryError = false;
+
+            if (!levelId) {
+                this.placementHistoryLoading = false;
+                return;
+            }
+
+            this.placementHistoryLoading = true;
+
+            try {
+                const { supabase } = await import('../main.js');
+                const { data, error } = await supabase
+                    .from('level_placement_history')
+                    .select('id, action, old_position, new_position, changed_at')
+                    .eq('level_id', levelId)
+                    .eq('list_key', 'main')
+                    .order('changed_at', { ascending: false });
+
+                if (error) throw error;
+                this.placementHistory = data || [];
+            } catch (error) {
+                console.error('Failed to load level placement history:', error);
+                this.placementHistoryError = true;
+            } finally {
+                this.placementHistoryLoading = false;
+            }
+        },
+
+        placementEventClass(event) {
+            if (event.action === 'added') return 'added';
+            if (event.action === 'removed') return 'removed';
+            if (event.action === 'moved' && event.new_position < event.old_position) return 'up';
+            if (event.action === 'moved' && event.new_position > event.old_position) return 'down';
+            return 'neutral';
+        },
+
+        placementEventTitle(event) {
+            if (event.action === 'added') return 'Added to the Main List';
+            if (event.action === 'removed') return 'Removed from the Main List';
+            if (event.action === 'moved' && event.new_position < event.old_position) return 'Moved up';
+            if (event.action === 'moved' && event.new_position > event.old_position) return 'Moved down';
+            return 'Placement updated';
+        },
+
+        placementEventDescription(event) {
+            if (event.action === 'added') return event.new_position ? `Entered at #${event.new_position}` : 'Added to the list';
+            if (event.action === 'removed') return event.old_position ? `Removed from #${event.old_position}` : 'Removed from the list';
+            if (event.action === 'moved') return `#${event.old_position} → #${event.new_position}`;
+            return 'The level placement was updated';
+        },
+
+        formatPlacementDate(value) {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return 'Date unavailable';
+            return new Intl.DateTimeFormat(undefined, {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+            }).format(date);
         },
 
         selectLevelFromRoute() {

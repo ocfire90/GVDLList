@@ -3,6 +3,13 @@ import { localize } from '../util.js';
 import { store, supabase } from '../main.js';
 import Spinner from '../components/Spinner.js';
 
+const PROFILE_LISTS = [
+    { key: 'main', label: 'Main List', file: '_list.json' },
+    { key: 'platformer', label: 'Platformer', file: '_platformer.json' },
+    { key: 'challenge', label: 'Challenge', file: '_challenge.json' },
+    { key: 'created', label: 'Created', file: '_created.json' },
+];
+
 export default {
     components: { Spinner },
 
@@ -12,6 +19,7 @@ export default {
         selectedUser: '',
         selectedList: ['main', 'created', 'challenge', 'platformer'].includes(store.activeList) ? store.activeList : 'main',
         listRequest: 0,
+        listLeaderboards: {},
         search: '',
         profile: null,
         profileLoading: false,
@@ -32,6 +40,18 @@ export default {
 
         entry() {
             return this.leaderboard.find(item => item.user === this.selectedUser) || null;
+        },
+
+        profileListOptions() {
+            const username = this.selectedUser.toLowerCase();
+            if (!username) return [];
+
+            return PROFILE_LISTS.filter(list => {
+                const player = (this.listLeaderboards[list.key] || []).find(item =>
+                    item.user.toLowerCase() === username
+                );
+                return !!player && player.completed.length > 0;
+            });
         },
 
         selectedRank() {
@@ -168,13 +188,10 @@ export default {
                                         <h3>PLAYER STATISTICS</h3>
                                         <span>GVDL RECORDS</span>
                                     </div>
-                                    <label class="profile-list-picker">
+                                    <label v-if="profileListOptions.length >= 2" class="profile-list-picker">
                                         <span>LIST</span>
                                         <select v-model="selectedList" @change="changeProfileList">
-                                            <option value="main">Main List</option>
-                                            <option value="platformer">Platformer</option>
-                                            <option value="challenge">Challenge</option>
-                                            <option value="created">Created</option>
+                                            <option v-for="list in profileListOptions" :key="list.key" :value="list.key">{{ list.label }}</option>
                                         </select>
                                     </label>
                                 </div>
@@ -297,7 +314,12 @@ export default {
             }
 
             try {
-                const [leaderboard, err] = await fetchLeaderboard(indexFile);
+                let leaderboard = this.listLeaderboards[listKey];
+                let err = [];
+                if (!leaderboard) {
+                    [leaderboard, err] = await fetchLeaderboard(indexFile);
+                    this.listLeaderboards[listKey] = leaderboard;
+                }
                 if (request !== this.listRequest) return;
 
                 this.leaderboard = leaderboard;
@@ -375,6 +397,12 @@ export default {
     watch: {
         selectedUser() {
             this.loadSelectedProfile();
+            const options = this.profileListOptions;
+            if (options.length && !options.some(list => list.key === this.selectedList)) {
+                this.selectedList = options[0].key;
+                this.store.setActiveList(this.selectedList);
+                this.loadLeaderboardForList(this.selectedList, this.selectedUser);
+            }
         },
 
         search() {
@@ -386,9 +414,23 @@ export default {
     },
 
     async mounted() {
-        await this.loadLeaderboardForList(
-            this.selectedList,
-            String(this.$route.query.player || '')
-        );
+        this.loading = true;
+        const results = await Promise.all(PROFILE_LISTS.map(async list => {
+            const [leaderboard, errors] = await fetchLeaderboard(list.file);
+            return { key: list.key, leaderboard, errors };
+        }));
+
+        results.forEach(result => {
+            this.listLeaderboards[result.key] = result.leaderboard;
+        });
+
+        const current = results.find(result => result.key === this.selectedList);
+        this.leaderboard = current?.leaderboard || [];
+        this.err = current?.errors || [];
+
+        const requestedPlayer = String(this.$route.query.player || '').toLowerCase();
+        const requestedEntry = this.leaderboard.find(item => item.user.toLowerCase() === requestedPlayer);
+        this.selectedUser = requestedEntry?.user || this.leaderboard[0]?.user || '';
+        this.loading = false;
     },
 };

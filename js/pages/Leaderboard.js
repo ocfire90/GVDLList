@@ -36,10 +36,12 @@ export default {
                                 <p class="type-label-lg">{{ localize(ientry.total) }}</p>
                             </td>
                             <td class="user" :class="{ 'active': selected == i }">
-                                <button @click="selectPlayer(i)">
+                                <router-link
+                                    class="leaderboard-player-link"
+                                    :to="{ path: '/player/' + encodeURIComponent(ientry.user) }"
+                                >
                                     <span class="type-label-lg">{{ ientry.user }}</span>
-                                </button>
-                                <router-link class="leaderboard-profile-link" :to="{ path: '/player/' + encodeURIComponent(ientry.user) }" @click.stop>Profile</router-link>
+                                </router-link>
                             </td>
                         </tr>
                     </table>

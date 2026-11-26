@@ -1,4 +1,4 @@
-import { supabase } from '../main.js';
+import { store, supabase } from '../main.js';
 import { fetchLeaderboard } from '../content.js';
 
 export default {
@@ -9,6 +9,7 @@ export default {
         profile: null,
         entry: null,
         rank: null,
+        selectedList: ['main', 'created', 'challenge', 'platformer'].includes(store.activeList) ? store.activeList : 'main',
         stats: {
             records: 0,
             completed: 0,
@@ -104,9 +105,20 @@ export default {
 
                             <div class="player-profile-divider"></div>
 
-                            <div class="player-stats-heading">
-                                <h3>PLAYER STATISTICS</h3>
-                                <span>GVDL RECORDS</span>
+                            <div class="player-stats-heading leaderboard-profile-stats-heading">
+                                <div>
+                                    <h3>PLAYER STATISTICS</h3>
+                                    <span>GVDL RECORDS</span>
+                                </div>
+                                <label class="profile-list-picker">
+                                    <span>LIST</span>
+                                    <select v-model="selectedList" @change="changeProfileList">
+                                        <option value="main">Main List</option>
+                                        <option value="platformer">Platformer</option>
+                                        <option value="challenge">Challenge</option>
+                                        <option value="created">Created</option>
+                                    </select>
+                                </label>
                             </div>
 
                             <div class="player-stats-grid">
@@ -139,6 +151,47 @@ export default {
         </main>
     `,
 
+    methods: {
+        async changeProfileList() {
+            store.setActiveList(this.selectedList);
+            await this.loadPlayerStats(this.selectedList);
+        },
+
+        async loadPlayerStats(listKey) {
+            const listFiles = {
+                main: '_list.json',
+                created: '_created.json',
+                challenge: '_challenge.json',
+                platformer: '_platformer.json',
+            };
+            const indexFile = listFiles[listKey];
+            if (!indexFile || !this.identity) return;
+
+            try {
+                const [leaderboard] = await fetchLeaderboard(indexFile);
+                const entry = leaderboard.find(item =>
+                    item.user.toLowerCase() === this.identity.username.toLowerCase()
+                );
+
+                this.entry = entry || null;
+                this.rank = entry ? leaderboard.indexOf(entry) + 1 : null;
+                const firstVictories = entry?.completed.filter(item => item.type === 'first-victor').length || 0;
+                const normalCompletions = entry?.completed.filter(item => item.type === 'completion').length || 0;
+                this.stats = {
+                    records: (entry?.completed.length || 0) + (entry?.progressed.length || 0),
+                    completed: normalCompletions,
+                    progress: entry?.progressed.length || 0,
+                    firstVictories,
+                };
+            } catch (error) {
+                console.error('Could not load player statistics for selected list:', error);
+                this.entry = null;
+                this.rank = null;
+                this.stats = { records: 0, completed: 0, progress: 0, firstVictories: 0 };
+            }
+        },
+    },
+
     async mounted() {
         const username = String(this.$route.params.username || '').trim();
 
@@ -169,23 +222,7 @@ export default {
             if (profileError) console.error('Could not load the player account profile:', profileError);
             this.profile = profile || null;
 
-            const [leaderboard] = await fetchLeaderboard('_list.json');
-            const entry = leaderboard.find(item =>
-                item.user.toLowerCase() === identity.username.toLowerCase()
-            );
-
-            if (entry) {
-                this.entry = entry;
-                this.rank = leaderboard.indexOf(entry) + 1;
-                const firstVictories = entry.completed.filter(item => item.type === 'first-victor').length;
-                const normalCompletions = entry.completed.filter(item => item.type === 'completion').length;
-                this.stats = {
-                    records: entry.completed.length + entry.progressed.length,
-                    completed: normalCompletions,
-                    progress: entry.progressed.length,
-                    firstVictories,
-                };
-            }
+            await this.loadPlayerStats(this.selectedList);
         } catch (error) {
             console.error('Could not load player profile:', error);
             this.error = 'The player profile could not be loaded. Please try again.';

@@ -391,7 +391,9 @@ export default {
                 difficulty: '',
                 enjoyment: '',
                 points_reward: 0,
-                listKeys: [],
+                // New levels join the Main List by default; admins can uncheck it
+                // or add the level to other lists before saving.
+                listKeys: ['main'],
                 listPositions: {},
             };
         },

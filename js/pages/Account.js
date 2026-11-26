@@ -1191,7 +1191,7 @@ export default {
                     .order('submitted_at', { ascending: false }),
                 supabase
                     .from('level_submissions')
-                    .select('id, name, verifier, recommended_difficulty, recommended_enjoyment, suggested_position, status, moderator_note, submitted_at, reviewed_at')
+                    .select('id, name, creators, verifier, recommended_difficulty, recommended_enjoyment, suggested_position, status, moderator_note, approved_level_id, submitted_at, reviewed_at')
                     .eq('submitted_by', userId)
                     .order('submitted_at', { ascending: false }),
             ]);
@@ -2136,6 +2136,9 @@ export default {
                                             <span>Suggested placement</span><strong>#{{ proposal.suggested_position }}</strong>
                                             <span>Enjoyment</span><strong>{{ proposal.recommended_enjoyment }}</strong>
                                         </div>
+                                        <div v-if="proposal.approved_level_id" class="submission-details">
+                                            <span>Added level</span><strong>{{ shortId(proposal.approved_level_id) }}</strong>
+                                        </div>
                                         <div v-if="proposal.moderator_note" class="moderator-feedback">
                                             <strong>Moderator feedback</strong><p>{{ proposal.moderator_note }}</p>
                                         </div>
@@ -2484,6 +2487,7 @@ export default {
                                             <p>Review proposed levels, verifier details, enjoyment ratings and suggested placements.</p>
                                         </div>
 
+                                        <div v-if="adminError" class="admin-error" role="alert">{{ adminError }}</div>
                                         <div v-if="adminLevelSubmissions.length" class="admin-table-list">
                                             <article v-for="submission in adminLevelSubmissions" :key="submission.id" class="admin-submission-card">
                                                 <div class="admin-submission-top">
@@ -2495,6 +2499,7 @@ export default {
                                                 </div>
 
                                                 <div class="admin-submission-details">
+                                                    <div><span>Creators</span><strong>{{ (submission.creators || []).join(', ') }}</strong></div>
                                                     <div><span>Verifier</span><strong>{{ submission.verifier }}</strong></div>
                                                     <div><span>Difficulty</span><strong>{{ submission.recommended_difficulty }}</strong></div>
                                                     <div><span>Enjoyment</span><strong>{{ submission.recommended_enjoyment }}</strong></div>

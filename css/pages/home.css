@@ -52,7 +52,7 @@ main.page-home {
 }
 
 .home-intro-copy { max-width: 760px; position: relative; z-index: 1; }
-.home-eyebrow, .home-kicker {
+.home-kicker {
     margin: 0;
     font-size: .68rem;
     line-height: 1.2;
@@ -119,7 +119,6 @@ main.page-home {
     font-weight: 900;
     letter-spacing: -.08em;
 }
-.home-mark-caption { position: absolute; bottom: 0; font-size: .56rem; line-height: 1; letter-spacing: .16em; opacity: .6; }
 
  .home-content {
     min-height: 0;
@@ -190,7 +189,6 @@ main.page-home {
 .home-victory-footer a { color: var(--color-primary); font-size: .7rem; line-height: 1.2; font-weight: 800; text-decoration: none; }
 .home-victory-footer a span { margin-left: .3rem; }
 .home-muted { margin-top: .8rem; color: rgba(255,255,255,.7); font-size: .82rem; }
-.home-footer { display: flex; justify-content: space-between; gap: 1rem; padding: .35rem .1rem 0; color: var(--color-on-background); opacity: .45; font-size: .6rem; line-height: 1.2; font-weight: 800; letter-spacing: .12em; }
 .home-error { padding: .75rem 1rem; border-radius: 8px; background: rgba(220,80,80,.12); color: #c44; font-size: .82rem; }
 .home-loading { min-height: 220px; display: grid; place-items: center; }
 
@@ -217,7 +215,6 @@ main.page-home {
     .home-feature-grid { grid-template-columns: 1fr; }
     .home-feature-card { min-height: 175px; }
     .home-panel { padding: 1.1rem; }
-    .home-footer { flex-direction: column; }
 }
 
 /* Homepage spacing refinement: isolated content grid and explicit text flow. */

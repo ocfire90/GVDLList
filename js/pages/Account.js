@@ -1,4 +1,5 @@
 import { supabase, store } from '../main.js';
+import { fetchLeaderboard } from '../content.js';
 
 export default {
     data: () => ({
@@ -1145,44 +1146,44 @@ export default {
 
         async loadPlayerStats(userId) {
             this.statsLoading = true;
+            try {
+                const { data: identity, error: identityError } = await supabase
+                    .from('leaderboard_players')
+                    .select('username')
+                    .eq('account_id', userId)
+                    .maybeSingle();
 
-            const { data, error } = await supabase
-                .from('player_records')
-                .select('id, level_id, percentage, is_first_victor')
-                .eq('player_id', userId);
+                if (identityError) throw identityError;
 
-            if (error) {
-                console.error('Failed to load player statistics:', error);
+                if (!identity) {
+                    this.stats = { records: 0, completed: 0, progress: 0, firstVictories: 0 };
+                    return;
+                }
+
+                const [leaderboard] = await fetchLeaderboard('_list.json');
+                const entry = leaderboard.find(item =>
+                    item.user.toLowerCase() === identity.username.toLowerCase()
+                );
+
+                if (!entry) {
+                    this.stats = { records: 0, completed: 0, progress: 0, firstVictories: 0 };
+                    return;
+                }
+
+                const firstVictories = entry.completed.filter(item => item.type === 'first-victor').length;
+                const normalCompletions = entry.completed.filter(item => item.type === 'completion').length;
+                this.stats = {
+                    records: entry.completed.length + entry.progressed.length,
+                    completed: normalCompletions,
+                    progress: entry.progressed.length,
+                    firstVictories,
+                };
+            } catch (error) {
+                console.error('Failed to load linked leaderboard statistics:', error);
+                this.stats = { records: 0, completed: 0, progress: 0, firstVictories: 0 };
+            } finally {
                 this.statsLoading = false;
-                return;
             }
-
-            const records = data || [];
-
-            const completedLevels = new Set(
-                records
-                    .filter(record => Number(record.percentage) >= 100)
-                    .map(record => record.level_id)
-                    .filter(Boolean)
-            );
-
-            const progressLevels = new Set(
-                records
-                    .filter(record => Number(record.percentage) < 100)
-                    .map(record => record.level_id)
-                    .filter(Boolean)
-            );
-
-            this.stats = {
-                records: records.length,
-                completed: completedLevels.size,
-                progress: progressLevels.size,
-                firstVictories: records.filter(
-                    record => record.is_first_victor
-                ).length,
-            };
-
-            this.statsLoading = false;
         },
 
         async loadSubmissions(userId) {

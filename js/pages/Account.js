@@ -2512,7 +2512,7 @@ export default {
                                                     </label>
                                                 </div>
 
-                                                <section class="admin-level-editor-section">
+                                                <div class="admin-level-editor-section">
                                                     <div class="admin-level-editor-section-heading">
                                                         <h3>List Membership and Position</h3>
                                                         <p class="account-hint">Select every list this level belongs to. Set its position separately for each selected list.</p>
@@ -2532,9 +2532,9 @@ export default {
                                                         />
                                                         <span v-else class="account-hint">Not included</span>
                                                     </div>
-                                                </section>
+                                                </div>
 
-                                                <section class="admin-level-editor-section admin-records-section">
+                                                <div class="admin-level-editor-section admin-records-section">
                                                     <div class="admin-level-editor-section-heading admin-records-heading">
                                                         <div>
                                                             <h3>Player Records and Victors</h3>
@@ -2563,8 +2563,8 @@ export default {
                                                             </div>
                                                         </article>
                                                     </div>
-                                                    <p v-else-if="!levelEditorRecordsLoading" class="account-hint" style="margin-top:14px;">No player records have been added to this level yet.</p>
-                                                </section>
+                                                    <p v-else class="account-hint" style="margin-top:14px;">No player records have been added to this level yet.</p>
+                                                </div>
 
                                                 <div class="admin-level-editor-footer">
                                                     <button

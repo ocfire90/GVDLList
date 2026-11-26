@@ -2509,15 +2509,15 @@ export default {
                                                 <div class="admin-submission-details">
                                                     <div><span>Creators</span><strong>{{ (submission.creators || []).join(', ') }}</strong></div>
                                                     <div><span>Verifier</span><strong>{{ submission.verifier }}</strong></div>
-                                                    <div><span>Difficulty</span><strong>{{ submission.recommended_difficulty }}</strong></div>
-                                                    <div><span>Enjoyment</span><strong>{{ submission.recommended_enjoyment }}</strong></div>
+                                                    <div><span>Recommended difficulty</span><strong>{{ submission.recommended_difficulty }}</strong></div>
+                                                    <div><span>Recommended enjoyment</span><strong>{{ submission.recommended_enjoyment }}</strong></div>
                                                     <div><span>Suggested rank</span><strong>#{{ submission.suggested_position }}</strong></div>
                                                 </div>
 
                                                 <div v-if="submission.status === 'pending'" class="admin-level-review-controls">
                                                     <label>
                                                         Final placement
-                                                        <input v-model.number="submission.reviewPosition" type="number" min="1" max="152" step="1" />
+                                                        <input v-model.number="submission.reviewPosition" type="number" min="1" step="1" />
                                                     </label>
                                                     <label>
                                                         Final difficulty

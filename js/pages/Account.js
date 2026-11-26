@@ -1127,22 +1127,22 @@ export default {
         async loadPlayerStats(userId) {
             this.statsLoading = true;
             try {
-                const { data: identity, error: identityError } = await supabase
-                    .from('leaderboard_players')
+                const { data: account, error: accountError } = await supabase
+                    .from('profiles')
                     .select('username')
-                    .eq('account_id', userId)
+                    .eq('id', userId)
                     .maybeSingle();
 
-                if (identityError) throw identityError;
+                if (accountError) throw accountError;
 
-                if (!identity) {
+                if (!account?.username) {
                     this.stats = { records: 0, completed: 0, progress: 0, firstVictories: 0 };
                     return;
                 }
 
                 const [leaderboard] = await fetchLeaderboard('_list.json');
                 const entry = leaderboard.find(item =>
-                    item.user.toLowerCase() === identity.username.toLowerCase()
+                    item.user.toLowerCase() === account.username.toLowerCase()
                 );
 
                 if (!entry) {
@@ -1159,7 +1159,7 @@ export default {
                     firstVictories,
                 };
             } catch (error) {
-                console.error('Failed to load linked leaderboard statistics:', error);
+                console.error('Failed to load player statistics:', error);
                 this.stats = { records: 0, completed: 0, progress: 0, firstVictories: 0 };
             } finally {
                 this.statsLoading = false;

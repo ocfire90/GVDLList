@@ -37,7 +37,8 @@ export default {
         adminRecords: [],
         linkedIdentity: null,
         claimIdentities: [],
-        identityClaims: [],
+        myIdentityClaims: [],
+        adminIdentityClaims: [],
         claimPlayerId: '',
         claimProofUrl: '',
         claimProofDescription: '',
@@ -282,7 +283,7 @@ export default {
             this.adminPlayers = [];
             this.adminLogs = [];
             this.adminRecords = [];
-            this.identityClaims = [];
+            this.adminIdentityClaims = [];
             this.adminListEntries = [];
             this.levelEditorOpen = false;
             this.levelEditorDraft = null;
@@ -382,7 +383,7 @@ export default {
             this.adminLogs = logsResult.data || [];
             this.adminRecords = recordsResult.data || [];
             this.adminListEntries = listEntriesResult.data || [];
-            this.identityClaims = identityClaimsResult.data || [];
+            this.adminIdentityClaims = identityClaimsResult.data || [];
 
             if (errors.length) {
                 console.error('Some Admin Panel data could not be loaded:', errors);
@@ -1092,7 +1093,7 @@ export default {
             if (claimsResult.error) console.error('Could not load identity claims:', claimsResult.error);
             if (playersResult.error) console.error('Could not load available leaderboard identities:', playersResult.error);
             this.linkedIdentity = identityResult.data || null;
-            this.identityClaims = claimsResult.data || [];
+            this.myIdentityClaims = claimsResult.data || [];
             this.claimIdentities = playersResult.data || [];
             if (this.linkedIdentity) this.claimPlayerId = this.linkedIdentity.id;
         },
@@ -1873,9 +1874,9 @@ export default {
                                         </form>
                                         <p v-if="!claimIdentities.length" class="account-hint">There are currently no unlinked leaderboard identities available.</p>
                                     </template>
-                                    <div v-if="identityClaims.length" class="identity-claim-history">
+                                    <div v-if="myIdentityClaims.length" class="identity-claim-history">
                                         <h3>Claim history</h3>
-                                        <article v-for="claim in identityClaims" :key="claim.id">
+                                        <article v-for="claim in myIdentityClaims" :key="claim.id">
                                             <strong>{{ claimIdentities.find(player => player.id === claim.player_id)?.username || (linkedIdentity?.username || 'Leaderboard identity') }}</strong>
                                             <span class="submission-status" :class="claim.status">{{ claim.status }}</span>
                                             <small v-if="claim.moderator_note">{{ claim.moderator_note }}</small>
@@ -2758,8 +2759,8 @@ export default {
                                             <h2>Leaderboard Identity Claims</h2>
                                             <p>Review proof submitted by players who want to connect their account to an existing leaderboard identity.</p>
                                         </div>
-                                        <div v-if="identityClaims.filter(claim => claim.status === 'pending').length" class="admin-table-list">
-                                            <article v-for="claim in identityClaims.filter(item => item.status === 'pending')" :key="claim.id" class="admin-submission-card">
+                                        <div v-if="adminIdentityClaims.filter(claim => claim.status === 'pending').length" class="admin-table-list">
+                                            <article v-for="claim in adminIdentityClaims.filter(item => item.status === 'pending')" :key="claim.id" class="admin-submission-card">
                                                 <div class="admin-submission-top"><div><strong>{{ claim.leaderboard_players?.username || shortId(claim.player_id) }}</strong><small>Submitted {{ formatDateTime(claim.submitted_at) }}</small></div><span class="submission-status pending">pending</span></div>
                                                 <div class="admin-submission-details"><div><span>Claimant account</span><strong>{{ shortId(claim.claimant_id) }}</strong></div><div><span>Identity ID</span><strong>{{ shortId(claim.player_id) }}</strong></div></div>
                                                 <p v-if="claim.proof_description">{{ claim.proof_description }}</p>

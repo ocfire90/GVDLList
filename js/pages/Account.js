@@ -1023,7 +1023,7 @@ export default {
                         percentage: record.percentage,
                         video_url: record.video_url,
                         is_first_victor: false,
-                        source: 'legacy',
+                        source: 'legacy_import',
                     });
                 }
 

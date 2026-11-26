@@ -127,10 +127,6 @@ export default {
                     </div>
 
                     <div v-else class="player">
-                        <div v-if="profileLoading" class="player-profile-card player-profile-loading">
-                            <p class="player-stats-loading">Loading player profile...</p>
-                        </div>
-
                         <div class="player-profile-card">
                             <div class="player-profile-banner">
                                 <img
@@ -191,6 +187,7 @@ export default {
                             </div>
                         </div>
 
+                        <div v-if="profileLoading" class="leaderboard-profile-note">Loading account profile...</div>
                         <div v-if="profileError" class="leaderboard-profile-note">{{ profileError }}</div>
 
                         <section v-if="entry.completed.length" class="leaderboard-record-section">

@@ -446,23 +446,14 @@ export default {
 
                 const records = data || [];
                 this.levelEditorRecords = records.map(record => {
-                    const achievedDate = record.achieved_at
-                        ? new Date(record.achieved_at)
-                        : null;
-                    const achievedAt = achievedDate && !Number.isNaN(achievedDate.getTime())
-                        ? new Date(
-                            achievedDate.getTime() -
-                            achievedDate.getTimezoneOffset() * 60000
-                        ).toISOString().slice(0, 16)
-                        : '';
-
                     return {
                         id: record.id,
                         player_name: record.player_name || '',
                         percentage: Number(record.percentage),
+                        // Keep existing metadata intact even though it is not editable in the panel.
                         video_url: record.video_url || '',
                         is_first_victor: !!record.is_first_victor,
-                        achieved_at: achievedAt,
+                        achieved_at: record.achieved_at || null,
                         source: record.source || 'submission',
                     };
                 });
@@ -2473,11 +2464,10 @@ export default {
                                             style="position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.78); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto;"
                                         >
                                             <form
-                                                class="account-content-section"
-                                                style="width: min(900px, 100%); margin: auto; max-height: none;"
+                                                class="account-content-section admin-level-editor-form"
                                                 @submit.prevent="saveLevelEditor"
                                             >
-                                                <div class="content-section-heading" style="display:flex; justify-content:space-between; gap:16px; align-items:center;">
+                                                <div class="content-section-heading admin-level-editor-heading">
                                                     <div>
                                                         <h2>{{ levelEditorDraft.id ? 'Edit Level' : 'Create Level' }}</h2>
                                                         <p>Update level details, list membership, positions and player records.</p>
@@ -2487,7 +2477,7 @@ export default {
 
                                                 <div v-if="levelEditorError" class="admin-error">{{ levelEditorError }}</div>
 
-                                                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px;">
+                                                <div class="admin-level-fields-grid">
                                                     <label>Level Name
                                                         <input v-model="levelEditorDraft.name" required maxlength="200" />
                                                     </label>
@@ -2523,10 +2513,12 @@ export default {
                                                     </label>
                                                 </div>
 
-                                                <div style="margin-top:24px;">
-                                                    <h3>List Membership and Position</h3>
-                                                    <p class="account-hint">Select every list this level belongs to. Set its position separately for each selected list.</p>
-                                                    <div v-for="option in levelEditorListOptions" :key="option.key" style="display:grid; grid-template-columns:minmax(180px,1fr) 140px; gap:12px; align-items:center; margin:10px 0;">
+                                                <section class="admin-level-editor-section">
+                                                    <div class="admin-level-editor-section-heading">
+                                                        <h3>List Membership and Position</h3>
+                                                        <p class="account-hint">Select every list this level belongs to. Set its position separately for each selected list.</p>
+                                                    </div>
+                                                    <div v-for="option in levelEditorListOptions" :key="option.key" class="admin-level-list-row">
                                                         <label style="display:flex; align-items:center; gap:9px;">
                                                             <input v-model="levelEditorDraft.listKeys" type="checkbox" :value="option.key" />
                                                             {{ option.label }}
@@ -2543,8 +2535,8 @@ export default {
                                                     </div>
                                                 </div>
 
-                                                <div style="margin-top:28px;">
-                                                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                                                <section class="admin-level-editor-section admin-records-section">
+                                                    <div class="admin-level-editor-section-heading admin-records-heading">
                                                         <div>
                                                             <h3>Player Records and Victors</h3>
                                                             <p class="account-hint">Add completions or progress records. Use 100% for a completion and any lower percentage for progress. First Victor is optional.</p>
@@ -2553,41 +2545,29 @@ export default {
                                                     </div>
 
                                                     <p v-if="levelEditorRecordsLoading" class="account-hint" style="margin-top:14px;">Loading this level’s player records...</p>
-                                                    <div v-else-if="levelEditorRecords.length" style="display:grid; gap:14px; margin-top:14px;">
-                                                        <article v-for="(record, index) in levelEditorRecords" :key="record.id || 'new-' + index" class="admin-data-row" style="display:block;">
-                                                            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px;">
+                                                    <div v-else-if="levelEditorRecords.length" class="admin-level-record-list">
+                                                        <article v-for="(record, index) in levelEditorRecords" :key="record.id || 'new-' + index" class="admin-level-record-card">
+                                                            <div class="admin-level-record-fields">
                                                                 <label>Player Name
                                                                     <input v-model="record.player_name" required />
                                                                 </label>
                                                                 <label>Percentage
                                                                     <input v-model.number="record.percentage" type="number" min="0.01" max="100" step="0.01" required />
                                                                 </label>
-                                                                <label>Video URL
-                                                                    <input v-model="record.video_url" type="url" />
-                                                                </label>
-                                                                <label>Achieved At
-                                                                    <input v-model="record.achieved_at" type="datetime-local" />
-                                                                </label>
-                                                                <label>Record Source
-                                                                    <select v-model="record.source">
-                                                                        <option value="submission">Submission</option>
-                                                                        <option value="legacy_import">Legacy Import</option>
-                                                                    </select>
-                                                                </label>
                                                             </div>
-                                                            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px;">
-                                                                <label style="display:flex; align-items:center; gap:8px;">
+                                                            <div class="admin-level-record-actions">
+                                                                <label class="admin-first-victor-toggle">
                                                                     <input type="checkbox" :checked="record.is_first_victor" @change="setFirstVictorRecord(index, $event.target.checked)" />
-                                                                    First Victor
+                                                                    <span>First Victor</span>
                                                                 </label>
-                                                                <button type="button" class="admin-refresh-button" @click="removeLevelEditorRecord(index)">Remove Record</button>
+                                                                <button type="button" class="admin-refresh-button admin-remove-record" @click="removeLevelEditorRecord(index)">Remove Record</button>
                                                             </div>
                                                         </article>
                                                     </div>
                                                     <p v-else-if="!levelEditorRecordsLoading" class="account-hint" style="margin-top:14px;">No player records have been added to this level yet.</p>
-                                                </div>
+                                                </section>
 
-                                                <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:28px;">
+                                                <div class="admin-level-editor-footer">
                                                     <button
                                                         v-if="levelEditorDraft.id"
                                                         type="button"

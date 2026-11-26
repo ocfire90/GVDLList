@@ -21,7 +21,7 @@ export default {
         <main v-if="loading">
             <Spinner></Spinner>
         </main>
-        <main v-else class="page-list">
+        <main v-else class="page-list" :class="{ 'mobile-level-open': mobileLevelOpen }">
             <div class="list-container">
                 <table class="list" v-if="list">
                     <tr v-for="([level, err], i) in list">
@@ -39,6 +39,16 @@ export default {
             </div>
 
             <div class="level-container">
+                <button
+                    class="mobile-list-back"
+                    type="button"
+                    @click="backToList"
+                    aria-label="Back to the full level list"
+                >
+                    <span aria-hidden="true">←</span>
+                    <span>Back to list</span>
+                </button>
+
                 <div class="level" v-if="level">
                     <h1>{{ level.name }}</h1>
 
@@ -241,6 +251,7 @@ export default {
         editors: [],
         loading: true,
         selected: 0,
+        mobileLevelOpen: false,
         errors: [],
         placementHistory: [],
         placementHistoryLoading: false,
@@ -309,6 +320,7 @@ export default {
 
         async selectLevel(index) {
             this.selected = index;
+            this.mobileLevelOpen = true;
             await this.loadPlacementHistory();
 
             const path = this.list[index]?.[0]?.path;
@@ -321,6 +333,13 @@ export default {
                     },
                 });
             }
+        },
+
+        backToList() {
+            this.mobileLevelOpen = false;
+            const query = { ...this.$route.query };
+            delete query.level;
+            this.$router.replace({ query });
         },
 
         async loadPlacementHistory() {
@@ -409,6 +428,7 @@ export default {
 
             if (index !== -1) {
                 this.selected = index;
+                this.mobileLevelOpen = true;
             }
         },
     },

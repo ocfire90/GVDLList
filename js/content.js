@@ -39,11 +39,32 @@ async function fetchJsonLevel(path, rank) {
 
 async function formatDatabaseLevel(databaseLevel, rank, databaseRecords = null) {
     const legacyPath = databaseLevel.legacy_path;
-    let records = [];
+    let legacyRecords = [];
 
-    if (Array.isArray(databaseRecords)) {
-        // Supabase records are authoritative, including when the list is empty.
-        records = databaseRecords
+    // Legacy JSON still contains most historical player completions. Load it
+    // even when Supabase has some records, because the database may be partial.
+    if (legacyPath) {
+        try {
+            const response = await fetch(`${dir}/${legacyPath}.json`, {
+                cache: 'no-store',
+            });
+
+            if (response.ok) {
+                const legacyLevel = await response.json();
+                legacyRecords = Array.isArray(legacyLevel.records)
+                    ? legacyLevel.records
+                    : [];
+            }
+        } catch (error) {
+            console.error(
+                `Could not load legacy records for ${legacyPath}:`,
+                error
+            );
+        }
+    }
+
+    const databaseLevelRecords = Array.isArray(databaseRecords)
+        ? databaseRecords
             .filter(record => !record.is_first_victor)
             .map(record => {
                 const percentage = Number(record.percentage);
@@ -58,25 +79,23 @@ async function formatDatabaseLevel(databaseLevel, rank, databaseRecords = null) 
                     link: record.video_url || '',
                 };
             })
-            .filter(record => typeof record === 'string' ? !!record : !!record.user);
-    } else if (legacyPath) {
-        // Fall back to the legacy JSON records only if the database query failed.
-        try {
-            const response = await fetch(`${dir}/${legacyPath}.json`, {
-                cache: 'no-store',
-            });
+            .filter(record => typeof record === 'string' ? !!record : !!record.user)
+        : [];
 
-            if (response.ok) {
-                const legacyLevel = await response.json();
-                records = legacyLevel.records || [];
-            }
-        } catch (error) {
-            console.error(
-                `Could not load legacy records for ${legacyPath}:`,
-                error
-            );
-        }
-    }
+    // Keep legacy entries first so their existing links and formatting survive.
+    // Merge database-only records and avoid duplicate player/percentage entries.
+    const records = [];
+    const seenRecords = new Set();
+
+    [...legacyRecords, ...databaseLevelRecords].forEach(record => {
+        const key = typeof record === 'string'
+            ? `completion:${record.trim().toLowerCase()}`
+            : `progress:${String(record.user || '').trim().toLowerCase()}:${Number(record.percent)}`;
+
+        if (!key || key.endsWith(':') || seenRecords.has(key)) return;
+        seenRecords.add(key);
+        records.push(record);
+    });
 
     return [
         {

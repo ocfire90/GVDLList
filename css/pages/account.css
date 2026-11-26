@@ -2111,3 +2111,281 @@
         gap: 5px;
     }
 }
+
+
+/* ADMIN LEVEL EDITOR */
+.admin-level-editor-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 20px;
+    overflow-y: auto;
+    background: rgba(5, 7, 11, 0.82);
+    backdrop-filter: blur(7px);
+}
+
+.admin-level-editor-form {
+    width: min(940px, 100%);
+    max-height: none;
+    margin: auto;
+    padding: 28px;
+    border: 1px solid rgba(145, 169, 208, 0.2);
+    border-radius: 14px;
+    background: var(--background-secondary, #17191f);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+}
+
+.admin-level-editor-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding-bottom: 20px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--border, #30343d);
+}
+
+.admin-level-editor-heading h2 {
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.admin-level-editor-heading p {
+    margin-top: 5px;
+    color: var(--text-secondary, #a0a5b0);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.admin-level-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.admin-level-fields-grid label,
+.admin-level-record-fields label {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    color: var(--text-secondary, #a0a5b0);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.45px;
+    text-transform: uppercase;
+}
+
+.admin-level-editor-form input:not([type="checkbox"]),
+.admin-level-editor-form select {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid var(--border, #30343d);
+    border-radius: 7px;
+    background: var(--background-primary, #101217);
+    color: inherit;
+    font: inherit;
+    font-size: 12px;
+    letter-spacing: normal;
+    text-transform: none;
+    outline: none;
+    transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.admin-level-editor-form input:focus,
+.admin-level-editor-form select:focus {
+    border-color: #91a9d0;
+    background: rgba(100, 125, 165, 0.08);
+}
+
+.admin-level-editor-section {
+    padding-top: 24px;
+    margin-top: 26px;
+    border-top: 1px solid var(--border, #30343d);
+}
+
+.admin-level-editor-section-heading {
+    margin-bottom: 15px;
+}
+
+.admin-level-editor-section-heading h3 {
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.admin-level-editor-section-heading .account-hint {
+    margin-top: 5px;
+}
+
+.admin-level-list-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 150px;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 13px;
+    margin-top: 8px;
+    border: 1px solid var(--border, #30343d);
+    border-radius: 8px;
+    background: var(--background-primary, #101217);
+}
+
+.admin-level-list-row > label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.admin-level-list-row input[type="checkbox"],
+.admin-first-victor-toggle input {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    accent-color: #91a9d0;
+}
+
+.admin-level-list-row > .account-hint {
+    margin: 0;
+    text-align: right;
+}
+
+.admin-records-section {
+    padding-bottom: 2px;
+}
+
+.admin-records-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.admin-level-record-list {
+    display: grid;
+    gap: 11px;
+}
+
+.admin-level-record-card {
+    padding: 16px;
+    border: 1px solid var(--border, #30343d);
+    border-radius: 9px;
+    background: var(--background-primary, #101217);
+}
+
+.admin-level-record-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(140px, 0.7fr);
+    gap: 13px;
+}
+
+.admin-level-record-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 13px;
+    margin-top: 14px;
+    border-top: 1px solid rgba(128, 128, 128, 0.13);
+}
+
+.admin-first-victor-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #d9b45e;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.admin-remove-record {
+    border-color: rgba(200, 90, 90, 0.25);
+    color: #e58b8b;
+}
+
+.admin-remove-record:hover {
+    border-color: rgba(200, 90, 90, 0.55);
+    background: rgba(200, 70, 70, 0.1);
+}
+
+.admin-level-editor-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 22px;
+    margin-top: 28px;
+    border-top: 1px solid var(--border, #30343d);
+}
+
+.admin-level-editor-footer > div {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.admin-level-editor-footer .account-submit {
+    width: auto;
+    min-width: 140px;
+    margin: 0;
+}
+
+@media (max-width: 650px) {
+    .admin-level-editor-overlay {
+        padding: 12px;
+    }
+
+    .admin-level-editor-form {
+        padding: 19px 15px;
+        border-radius: 11px;
+    }
+
+    .admin-level-editor-heading {
+        align-items: flex-start;
+    }
+
+    .admin-level-editor-heading h2 {
+        font-size: 18px;
+    }
+
+    .admin-level-fields-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .admin-level-list-row {
+        grid-template-columns: minmax(0, 1fr) 105px;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .admin-records-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-level-record-fields {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .admin-level-editor-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .admin-level-editor-footer > div {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .admin-level-editor-footer > div button {
+        flex: 1;
+    }
+}

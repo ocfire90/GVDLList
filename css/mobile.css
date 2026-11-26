@@ -224,31 +224,70 @@ input[type="radio"] {
     }
 }
 
-/* Main / extended lists: convert the desktop three-column layout
-   into a scrollable level picker followed by the selected level. */
+/* Main List: a dedicated list screen and a dedicated level screen. */
 @media (max-width: 900px) {
     main.page-list {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: minmax(190px, 34vh) auto auto;
-        align-content: start;
+        display: block;
+        width: 100%;
         height: auto;
         min-height: 0;
         flex: 1 1 auto;
-        overflow-x: hidden;
-        overflow-y: auto;
-        gap: 0;
+        overflow: visible;
     }
 
-    .page-list > .list-container {
-        grid-column: 1;
-        grid-row: 1;
+    .page-list:not(.mobile-level-open) > .list-container {
+        display: block;
         width: 100%;
-        max-height: 34vh;
-        min-height: 190px;
-        overflow: auto;
-        padding: 10px 12px;
-        border-bottom: 1px solid var(--color-border, rgba(128,128,128,.2));
+        max-height: none;
+        min-height: 0;
+        padding: 12px 14px 28px;
+        overflow: visible;
+        border: 0;
+    }
+
+    .page-list:not(.mobile-level-open) > .level-container,
+    .page-list:not(.mobile-level-open) > .meta-container {
+        display: none;
+    }
+
+    .page-list.mobile-level-open > .list-container,
+    .page-list.mobile-level-open > .meta-container {
+        display: none;
+    }
+
+    .page-list.mobile-level-open > .level-container {
+        display: block;
+        width: 100%;
+        padding: 12px 16px 30px;
+        overflow: visible;
+    }
+
+    .page-list .mobile-list-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 38px;
+        margin: 0 0 18px;
+        padding: 7px 11px 7px 8px;
+        border: 1px solid var(--color-border, rgba(128, 128, 128, .25));
+        border-radius: 9px;
+        background: var(--color-background);
+        color: var(--color-on-background);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .page-list .mobile-list-back > span:first-child {
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .page-list .mobile-list-back:active {
+        background: var(--color-background-hover);
     }
 
     .page-list .list {
@@ -264,17 +303,9 @@ input[type="radio"] {
 
     .page-list .list .level button {
         width: 100%;
-        min-height: 42px;
-        padding: 8px 10px;
-        font-size: 12px;
-    }
-
-    .page-list > .level-container {
-        grid-column: 1;
-        grid-row: 2;
-        width: 100%;
-        overflow: visible;
-        padding: 20px 16px 26px;
+        min-height: 44px;
+        padding: 9px 11px;
+        font-size: 13px;
     }
 
     .page-list .level-container .level {
@@ -329,18 +360,6 @@ input[type="radio"] {
         font-size: 1.25rem !important;
     }
 
-    .page-list > .meta-container {
-        grid-column: 1;
-        grid-row: 3;
-        width: 100%;
-        padding: 0 16px 28px;
-        overflow: visible;
-    }
-
-    .page-list .meta {
-        gap: 18px;
-    }
-
     .page-list .level-container .level .level-authors {
         grid-template-columns: minmax(0, 1fr);
         gap: 7px;
@@ -354,12 +373,11 @@ input[type="radio"] {
 }
 
 @media (max-width: 480px) {
-    .page-list > .list-container {
+    .page-list:not(.mobile-level-open) > .list-container {
         padding-inline: 8px;
     }
 
-    .page-list > .level-container,
-    .page-list > .meta-container {
+    .page-list.mobile-level-open > .level-container {
         padding-inline: 12px;
     }
 

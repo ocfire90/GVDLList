@@ -58,6 +58,11 @@ input[type="radio"] {
     touch-action: manipulation;
 }
 
+/* Only shown in the mobile level-detail view. */
+.page-list .mobile-list-back {
+    display: none;
+}
+
 /* Tablet header: keep the logo on its own line and navigation below it. */
 @media (min-width: 761px) and (max-width: 1050px) {
     body > header {

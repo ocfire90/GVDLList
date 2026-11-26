@@ -523,3 +523,51 @@
         padding-inline: 0.35rem;
     }
 }
+
+
+/* List selector inside player profile statistics */
+.page-leaderboard .leaderboard-profile-stats-heading,
+.page-public-player .leaderboard-profile-stats-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.leaderboard-profile-stats-heading > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.profile-list-picker {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-shrink: 0;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    opacity: 0.8;
+}
+
+.profile-list-picker select {
+    max-width: 10rem;
+    padding: 0.55rem 2rem 0.55rem 0.7rem;
+    border: 1px solid var(--color-border, rgba(128,128,128,.35));
+    border-radius: 0.5rem;
+    background: var(--color-background);
+    color: var(--color-on-background);
+    font: inherit;
+    font-size: 0.8rem;
+    letter-spacing: normal;
+    cursor: pointer;
+}
+
+@media (max-width: 480px) {
+    .page-leaderboard .leaderboard-profile-stats-heading,
+    .page-public-player .leaderboard-profile-stats-heading {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+}

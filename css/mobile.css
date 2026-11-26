@@ -58,6 +58,50 @@ input[type="radio"] {
     touch-action: manipulation;
 }
 
+/* Tablet header: keep the logo on its own line and navigation below it. */
+@media (min-width: 761px) and (max-width: 1050px) {
+    body > header {
+        flex-wrap: wrap;
+        gap: 6px 18px;
+        padding: 10px 20px;
+    }
+
+    body > header .nav {
+        flex: 1 0 100%;
+        flex-wrap: nowrap;
+        gap: 10px;
+        width: 100%;
+    }
+
+    body > header .nav__list-selector {
+        flex: 0 1 190px;
+        min-width: 0;
+    }
+
+    body > header .nav__dropdown {
+        width: 100%;
+        min-width: 0;
+    }
+
+    body > header .nav > .nav__tab {
+        justify-content: center;
+        min-height: 40px;
+        padding-inline: 8px;
+        white-space: nowrap;
+    }
+
+    body > header .nav .nav__actions {
+        flex: 0 1 auto;
+        gap: 4px;
+    }
+
+    body > header .nav .nav__actions .nav__cta {
+        margin-left: 4px;
+        padding: 10px 12px;
+        font-size: 11px;
+    }
+}
+
 /* Header and primary navigation */
 @media (max-width: 760px) {
     body > header {
@@ -414,6 +458,14 @@ input[type="radio"] {
 
     .page-leaderboard .player .records-table .score {
         width: 66px;
+    }
+
+    main.page-public-player {
+        display: block;
+        height: auto;
+        min-height: 0;
+        flex: 1 1 auto;
+        overflow: visible;
     }
 
     .page-public-player {

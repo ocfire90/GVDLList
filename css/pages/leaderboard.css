@@ -296,3 +296,230 @@
         padding: 18px 12px 35px;
     }
 }
+
+
+/* Searchable two-panel leaderboard browser */
+.page-leaderboard-container {
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    padding: 1.25rem;
+    box-sizing: border-box;
+}
+
+.page-leaderboard {
+    width: 100%;
+    max-width: 100rem;
+    height: calc(100vh - 120px);
+    min-height: 38rem;
+    grid-template-columns: minmax(19rem, 0.85fr) minmax(0, 1.5fr);
+    grid-template-rows: max-content minmax(0, 1fr);
+    column-gap: 1.5rem;
+    overflow: hidden;
+}
+
+.page-leaderboard .error-container {
+    min-width: 0;
+}
+
+.page-leaderboard .board-container,
+.page-leaderboard .player-container {
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.page-leaderboard .board-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0.5rem 1rem 0;
+}
+
+.leaderboard-search {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    padding: 0 0.5rem 1rem;
+}
+
+.leaderboard-search label {
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.leaderboard-search input {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--color-border, rgba(128,128,128,.35));
+    border-radius: 0.55rem;
+    background: var(--color-background);
+    color: var(--color-on-background);
+    font: inherit;
+}
+
+.leaderboard-search > span {
+    font-size: 0.78rem;
+    opacity: 0.65;
+}
+
+.leaderboard-list-scroll {
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.page-leaderboard .board {
+    display: table;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.3rem;
+}
+
+.page-leaderboard .board tr {
+    cursor: pointer;
+}
+
+.page-leaderboard .board .rank,
+.page-leaderboard .board .total {
+    padding: 0.7rem 0.5rem;
+}
+
+.page-leaderboard .board .user {
+    padding: 0;
+}
+
+.page-leaderboard .board .user .leaderboard-player-link {
+    display: block;
+    width: 100%;
+    padding: 0.8rem 0.85rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--color-on-background);
+    text-align: start;
+    font: inherit;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+
+.page-leaderboard .board tr:hover .leaderboard-player-link {
+    background: var(--color-background-hover);
+}
+
+.page-leaderboard .board tr.active .leaderboard-player-link,
+.page-leaderboard .board .user.active .leaderboard-player-link {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+}
+
+.leaderboard-empty-search,
+.player-empty,
+.leaderboard-no-records {
+    padding: 2rem 1rem;
+    text-align: center;
+    opacity: 0.75;
+}
+
+.page-leaderboard .player-container {
+    padding: 1rem 0 2rem;
+}
+
+.page-leaderboard .player {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 0 0.5rem 1.5rem;
+}
+
+.page-leaderboard .player-profile-card {
+    width: 100%;
+}
+
+.page-leaderboard .player-profile-main {
+    padding-bottom: 1.5rem;
+}
+
+.page-leaderboard .player-stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.page-leaderboard .leaderboard-record-section {
+    min-width: 0;
+}
+
+.page-leaderboard .leaderboard-record-section h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin: 0 0 0.65rem;
+    font-size: 1.15rem;
+}
+
+.page-leaderboard .leaderboard-record-section h2 span {
+    font-size: 0.85rem;
+    opacity: 0.65;
+}
+
+.page-leaderboard .player .records-table {
+    margin-top: 0;
+}
+
+.leaderboard-profile-note {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: rgba(128,128,128,.12);
+    font-size: 0.85rem;
+}
+
+@media (max-width: 900px) {
+    .page-leaderboard-container {
+        padding: 0.75rem;
+    }
+
+    .page-leaderboard {
+        height: auto;
+        min-height: 0;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: max-content auto auto;
+        overflow: visible;
+    }
+
+    .page-leaderboard .board-container {
+        grid-column: 1;
+        grid-row: 2;
+        max-height: 34rem;
+        padding: 0.5rem 0;
+        overflow: hidden;
+    }
+
+    .page-leaderboard .leaderboard-list-scroll {
+        overflow-y: auto;
+    }
+
+    .page-leaderboard .player-container {
+        grid-column: 1;
+        grid-row: 3;
+        overflow: visible;
+        padding-top: 0.5rem;
+    }
+
+    .page-leaderboard .player {
+        padding-inline: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .page-leaderboard .player-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .page-leaderboard .board .rank {
+        width: 2.5rem;
+    }
+
+    .page-leaderboard .board .total {
+        padding-inline: 0.35rem;
+    }
+}

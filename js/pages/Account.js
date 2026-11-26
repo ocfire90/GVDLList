@@ -2461,7 +2461,6 @@ export default {
                                         <div
                                             v-if="levelEditorOpen && levelEditorDraft"
                                             class="admin-level-editor-overlay"
-                                            style="position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.78); display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto;"
                                         >
                                             <form
                                                 class="account-content-section admin-level-editor-form"
@@ -2533,7 +2532,7 @@ export default {
                                                         />
                                                         <span v-else class="account-hint">Not included</span>
                                                     </div>
-                                                </div>
+                                                </section>
 
                                                 <section class="admin-level-editor-section admin-records-section">
                                                     <div class="admin-level-editor-section-heading admin-records-heading">

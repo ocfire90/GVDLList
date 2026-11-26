@@ -219,3 +219,5 @@ main.page-home {
     .home-panel { padding: 1.1rem; }
     .home-footer { flex-direction: column; }
 }
+
+/* Homepage spacing refinement: isolated content grid and explicit text flow. */

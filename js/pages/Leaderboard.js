@@ -39,6 +39,7 @@ export default {
                                 <button @click="selectPlayer(i)">
                                     <span class="type-label-lg">{{ ientry.user }}</span>
                                 </button>
+                                <router-link class="leaderboard-profile-link" :to="{ path: '/player/' + encodeURIComponent(ientry.user) }" @click.stop>Profile</router-link>
                             </td>
                         </tr>
                     </table>

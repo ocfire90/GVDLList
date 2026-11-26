@@ -20,6 +20,7 @@ export default {
         selectedList: ['main', 'created', 'challenge', 'platformer'].includes(store.activeList) ? store.activeList : 'main',
         listRequest: 0,
         listLeaderboards: {},
+        listErrors: {},
         search: '',
         profile: null,
         profileLoading: false,
@@ -315,10 +316,11 @@ export default {
 
             try {
                 let leaderboard = this.listLeaderboards[listKey];
-                let err = [];
+                let err = this.listErrors[listKey] || [];
                 if (!leaderboard) {
                     [leaderboard, err] = await fetchLeaderboard(indexFile);
                     this.listLeaderboards[listKey] = leaderboard;
+                    this.listErrors[listKey] = err;
                 }
                 if (request !== this.listRequest) return;
 
@@ -422,6 +424,7 @@ export default {
 
         results.forEach(result => {
             this.listLeaderboards[result.key] = result.leaderboard;
+            this.listErrors[result.key] = result.errors;
         });
 
         const current = results.find(result => result.key === this.selectedList);

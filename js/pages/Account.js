@@ -35,6 +35,14 @@ export default {
         adminPlayers: [],
         adminLogs: [],
         adminRecords: [],
+        linkedIdentity: null,
+        claimIdentities: [],
+        identityClaims: [],
+        claimPlayerId: '',
+        claimProofUrl: '',
+        claimProofDescription: '',
+        claimLoading: false,
+        identityClaimsLoading: false,
 
         importingLevels: false,
         importProgress: 0,
@@ -194,6 +202,7 @@ export default {
 
                 this.editUsername = profile.username || '';
                 this.editBio = profile.bio || '';
+                this.loadIdentityData();
 
                 if (['admin', 'owner'].includes(profile.role?.toLowerCase())) {
                     this.loadAdminData();
@@ -257,6 +266,7 @@ export default {
                 'levels',
                 'players',
                 'admins',
+                'identity-claims',
                 'logs',
             ];
 
@@ -272,6 +282,7 @@ export default {
             this.adminPlayers = [];
             this.adminLogs = [];
             this.adminRecords = [];
+            this.identityClaims = [];
             this.adminListEntries = [];
             this.levelEditorOpen = false;
             this.levelEditorDraft = null;
@@ -299,6 +310,7 @@ export default {
                 logsResult,
                 recordsResult,
                 listEntriesResult,
+                identityClaimsResult,
             ] = await Promise.all([
                 supabase
                     .from('record_submissions')
@@ -331,6 +343,11 @@ export default {
                     .select('id, level_id, list_key, position')
                     .order('list_key', { ascending: true })
                     .order('position', { ascending: true }),
+
+                supabase
+                    .from('player_identity_claims')
+                    .select('id, player_id, claimant_id, proof_url, proof_description, status, submitted_at, moderator_note, leaderboard_players(username)')
+                    .order('submitted_at', { ascending: false }),
             ]);
 
             const errors = [
@@ -340,6 +357,7 @@ export default {
                 logsResult.error,
                 recordsResult.error,
                 listEntriesResult.error,
+                identityClaimsResult.error,
             ].filter(Boolean);
 
             this.adminSubmissions = submissionsResult.data || [];
@@ -364,6 +382,7 @@ export default {
             this.adminLogs = logsResult.data || [];
             this.adminRecords = recordsResult.data || [];
             this.adminListEntries = listEntriesResult.data || [];
+            this.identityClaims = identityClaimsResult.data || [];
 
             if (errors.length) {
                 console.error('Some Admin Panel data could not be loaded:', errors);
@@ -1050,6 +1069,77 @@ export default {
             if (!id) return 'Unknown';
 
             return `${id.slice(0, 8)}...`;
+        },
+
+        async loadIdentityData() {
+            if (!this.store.user) return;
+            const userId = this.store.user.id;
+            const [identityResult, claimsResult, playersResult] = await Promise.all([
+                supabase.from('leaderboard_players')
+                    .select('id, username, claimed_at')
+                    .eq('account_id', userId)
+                    .maybeSingle(),
+                supabase.from('player_identity_claims')
+                    .select('id, player_id, status, submitted_at, moderator_note')
+                    .eq('claimant_id', userId)
+                    .order('submitted_at', { ascending: false }),
+                supabase.from('leaderboard_players')
+                    .select('id, username, account_id')
+                    .is('account_id', null)
+                    .order('username', { ascending: true }),
+            ]);
+            if (identityResult.error) console.error('Could not load linked leaderboard identity:', identityResult.error);
+            if (claimsResult.error) console.error('Could not load identity claims:', claimsResult.error);
+            if (playersResult.error) console.error('Could not load available leaderboard identities:', playersResult.error);
+            this.linkedIdentity = identityResult.data || null;
+            this.identityClaims = claimsResult.data || [];
+            this.claimIdentities = playersResult.data || [];
+            if (this.linkedIdentity) this.claimPlayerId = this.linkedIdentity.id;
+        },
+
+        async submitIdentityClaim() {
+            if (!this.store.user || this.claimLoading) return;
+            if (!this.claimPlayerId || !this.claimProofUrl.trim()) {
+                this.showMessage('Choose a leaderboard identity and provide a proof link.', 'error');
+                return;
+            }
+            try {
+                new URL(this.claimProofUrl.trim());
+            } catch {
+                this.showMessage('Enter a valid proof URL.', 'error');
+                return;
+            }
+            this.claimLoading = true;
+            const { error } = await supabase.rpc('submit_player_identity_claim', {
+                p_player_id: this.claimPlayerId,
+                p_proof_url: this.claimProofUrl.trim(),
+                p_proof_description: this.claimProofDescription.trim(),
+            });
+            this.claimLoading = false;
+            if (error) {
+                this.showMessage(error.message, 'error');
+                return;
+            }
+            this.claimProofUrl = '';
+            this.claimProofDescription = '';
+            await this.loadIdentityData();
+            this.showMessage('Identity claim submitted for staff review.', 'success');
+        },
+
+        async reviewIdentityClaim(claimId, decision) {
+            const note = window.prompt('Optional moderator note:') || '';
+            const { error } = await supabase.rpc('review_player_identity_claim', {
+                p_claim_id: claimId,
+                p_decision: decision,
+                p_moderator_note: note,
+            });
+            if (error) {
+                this.showMessage(error.message, 'error');
+                return;
+            }
+            await this.loadAdminData();
+            await this.loadIdentityData();
+            this.showMessage('Identity claim ' + decision + '.', 'success');
         },
 
         async loadPlayerStats(userId) {
@@ -1757,9 +1847,41 @@ export default {
                                     </div>
                                 </div>
 
-                                <div class="content-note">
-                                    Your public profile will be accessible to other GVDL players once public player pages are implemented.
-                                </div>
+                                <section class="identity-link-panel">
+                                    <div class="content-heading">
+                                        <div><h2>Leaderboard Identity</h2><p>Connect this account to your existing GVDL leaderboard history.</p></div>
+                                        <span class="content-tag">ACCOUNT LINK</span>
+                                    </div>
+                                    <div v-if="linkedIdentity" class="identity-linked-state">
+                                        <strong>Linked to {{ linkedIdentity.username }}</strong>
+                                        <p>Your leaderboard identity is connected. Your account username can still be changed independently.</p>
+                                        <router-link :to="{ path: '/player/' + encodeURIComponent(linkedIdentity.username) }">View public player profile</router-link>
+                                    </div>
+                                    <template v-else>
+                                        <p class="account-hint">Choose the leaderboard name that belongs to you. Staff will review the proof before the link is approved. Matching usernames alone are not accepted as proof.</p>
+                                        <form class="account-form" @submit.prevent="submitIdentityClaim">
+                                            <label for="claim-player">Leaderboard identity</label>
+                                            <select id="claim-player" v-model="claimPlayerId" required>
+                                                <option value="" disabled>Select your existing player name</option>
+                                                <option v-for="player in claimIdentities" :key="player.id" :value="player.id">{{ player.username }}</option>
+                                            </select>
+                                            <label for="claim-proof">Proof link</label>
+                                            <input id="claim-proof" v-model="claimProofUrl" type="url" maxlength="1000" placeholder="Link to a profile or evidence you control" required />
+                                            <label for="claim-description">Additional context</label>
+                                            <textarea id="claim-description" v-model="claimProofDescription" maxlength="1000" rows="3" placeholder="Explain how staff can verify this identity"></textarea>
+                                            <button class="account-submit" type="submit" :disabled="claimLoading || !claimIdentities.length">{{ claimLoading ? 'Submitting...' : 'Submit identity claim' }}</button>
+                                        </form>
+                                        <p v-if="!claimIdentities.length" class="account-hint">There are currently no unlinked leaderboard identities available.</p>
+                                    </template>
+                                    <div v-if="identityClaims.length" class="identity-claim-history">
+                                        <h3>Claim history</h3>
+                                        <article v-for="claim in identityClaims" :key="claim.id">
+                                            <strong>{{ claimIdentities.find(player => player.id === claim.player_id)?.username || (linkedIdentity?.username || 'Leaderboard identity') }}</strong>
+                                            <span class="submission-status" :class="claim.status">{{ claim.status }}</span>
+                                            <small v-if="claim.moderator_note">{{ claim.moderator_note }}</small>
+                                        </article>
+                                    </div>
+                                </section>
 
                             </template>
 
@@ -2086,6 +2208,7 @@ export default {
                                             { id: 'submissions', label: 'Submissions' },
                                             { id: 'levels', label: 'Levels' },
                                             { id: 'players', label: 'Players' },
+                                            { id: 'identity-claims', label: 'Identity Claims' },
                                             ...(isOwner ? [{ id: 'admins', label: 'Admins' }] : []),
                                             { id: 'logs', label: 'Activity Logs' },
                                         ]"
@@ -2627,6 +2750,27 @@ export default {
                                             <p>Registered accounts will appear here.</p>
                                         </div>
 
+                                    </template>
+
+                                    <!-- LEADERBOARD IDENTITY CLAIMS -->
+                                    <template v-else-if="activeAdminTab === 'identity-claims'">
+                                        <div class="admin-section-intro">
+                                            <h2>Leaderboard Identity Claims</h2>
+                                            <p>Review proof submitted by players who want to connect their account to an existing leaderboard identity.</p>
+                                        </div>
+                                        <div v-if="identityClaims.filter(claim => claim.status === 'pending').length" class="admin-table-list">
+                                            <article v-for="claim in identityClaims.filter(item => item.status === 'pending')" :key="claim.id" class="admin-submission-card">
+                                                <div class="admin-submission-top"><div><strong>{{ claim.leaderboard_players?.username || shortId(claim.player_id) }}</strong><small>Submitted {{ formatDateTime(claim.submitted_at) }}</small></div><span class="submission-status pending">pending</span></div>
+                                                <div class="admin-submission-details"><div><span>Claimant account</span><strong>{{ shortId(claim.claimant_id) }}</strong></div><div><span>Identity ID</span><strong>{{ shortId(claim.player_id) }}</strong></div></div>
+                                                <p v-if="claim.proof_description">{{ claim.proof_description }}</p>
+                                                <a :href="claim.proof_url" target="_blank" rel="noopener noreferrer">Open proof link</a>
+                                                <div class="admin-submission-actions">
+                                                    <button type="button" @click="reviewIdentityClaim(claim.id, 'approved')">Approve and link</button>
+                                                    <button type="button" @click="reviewIdentityClaim(claim.id, 'rejected')">Reject</button>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div v-else class="empty-state"><h2>No pending identity claims</h2><p>New claims will appear here for review.</p></div>
                                     </template>
 
                                     <!-- OWNER ADMIN MANAGEMENT -->

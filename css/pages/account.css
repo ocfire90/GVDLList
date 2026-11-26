@@ -2389,3 +2389,40 @@
         flex: 1;
     }
 }
+
+.admin-level-review-controls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    padding: 14px;
+    margin-top: 14px;
+    border: 1px solid color-mix(in srgb, var(--color-on-background) 12%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--color-on-background) 3%, transparent);
+}
+.admin-level-review-controls label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: color-mix(in srgb, var(--color-on-background) 70%, transparent);
+    font-size: 10px;
+    font-weight: 800;
+}
+.admin-level-review-controls input,
+.admin-level-review-controls select {
+    width: 100%;
+    min-width: 0;
+    min-height: 38px;
+    padding: 8px 10px;
+    border: 1px solid color-mix(in srgb, var(--color-on-background) 16%, transparent);
+    border-radius: 6px;
+    background: var(--color-background);
+    color: var(--color-on-background);
+    font: inherit;
+    font-size: 11px;
+}
+@media (max-width: 650px) {
+    .admin-level-review-controls {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

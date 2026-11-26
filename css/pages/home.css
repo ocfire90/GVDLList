@@ -118,3 +118,7 @@ main.page-home {
     .home-panel { padding: 1.2rem; }
     .home-footer { flex-direction: column; }
 }
+
+
+header .logo { color: inherit; text-decoration: none; }
+header .logo:hover { opacity: .92; }

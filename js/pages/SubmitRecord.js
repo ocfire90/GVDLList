@@ -347,7 +347,7 @@ export default {
                             <li>The run must be on the exact level listed on the site. Check the level ID before submitting.</li>
                             <li>When providing video proof, include source audio or clicks/taps. Edited audio alone is not accepted.</li>
                             <li>When providing video proof, show a previous attempt and its full death animation before the completion, unless it was completed on the first attempt. Everyplay recordings are exempt.</li>
-                            <li>Show your character reaching the end wall.</li>
+                            <li>When providing video proof, show your character reaching the end wall.</li>
                             <li>Do not use secret routes, bug routes or easy modes.</li>
                         </ul>
                         <div class="submit-record-review-note">

@@ -33,8 +33,7 @@ export default {
 
         isCompletion() {
             const percentage = Number(this.draft.percentage);
-            return Number.isFinite(percentage) &&
-                percentage >= this.qualifyingPercentage;
+            return Number.isFinite(percentage) && percentage === 100;
         },
     },
 
@@ -122,7 +121,7 @@ export default {
             try {
                 const { data, error } = await supabase
                     .from('level_list_entries')
-                    .select('position, levels!inner(id, name, percent_to_qualify)')
+                    .select('position, levels!inner(id, name, percent_to_qualify, difficulty)')
                     .eq('list_key', 'main')
                     .lte('position', 150)
                     .order('position', { ascending: true });
@@ -136,6 +135,7 @@ export default {
                         name: entry.levels.name,
                         position: Number(entry.position),
                         percentToQualify: Number(entry.levels.percent_to_qualify || 100),
+                        difficulty: entry.levels.difficulty || '',
                     }));
             } catch (error) {
                 console.error('Failed to load levels for record submission:', error);
@@ -171,12 +171,13 @@ export default {
                 return;
             }
 
-            if (!Number.isFinite(percentage) || percentage <= 0 || percentage > 100) {
-                this.errorMessage = 'Enter a percentage greater than 0 and no higher than 100.';
+            if (!Number.isFinite(percentage) || percentage <= 0 || percentage > 100 ||
+                percentage < (level.position > 75 ? 100 : level.percentToQualify)) {
+                this.errorMessage = `This level requires at least ${level.position > 75 ? 100 : level.percentToQualify}% to qualify for a GVDL record.`;
                 return;
             }
 
-            if (!videoUrl || !this.validateVideoUrl(videoUrl)) {
+            if (videoUrl && !this.validateVideoUrl(videoUrl)) {
                 this.errorMessage = 'Enter a valid video URL beginning with http:// or https://.';
                 return;
             }
@@ -192,7 +193,7 @@ export default {
                         submitted_by: this.store.user.id,
                         level_id: level.id,
                         percentage,
-                        video_url: videoUrl,
+                        video_url: videoUrl || null,
                         status: 'pending',
                     });
 
@@ -232,7 +233,7 @@ export default {
                         <h1>Submit a Record</h1>
                         <p>Send a completion or progress record to the GVDL moderators for review.</p>
                     </div>
-                    <router-link class="submit-record-back" to="/account">My Account</router-link>
+                    <div class="submit-record-heading-actions"><router-link class="submit-record-back" to="/submit-level">Propose a Level</router-link><router-link class="submit-record-back" to="/account">My Account</router-link></div>
                 </div>
 
                 <div v-if="!store.authReady" class="submit-record-card submit-record-state">
@@ -251,7 +252,7 @@ export default {
                         <div class="submit-record-card-heading">
                             <div>
                                 <h2>Record details</h2>
-                                <p>Complete all three fields to submit your record.</p>
+                                <p>Submit a completion or qualifying progress record.</p>
                             </div>
                             <span class="submit-record-required">REQUIRED</span>
                         </div>
@@ -280,7 +281,7 @@ export default {
                                         id="record-percentage"
                                         v-model="draft.percentage"
                                         type="number"
-                                        min="0.01"
+                                         :min="selectedLevel ? (selectedLevel.position > 75 ? 100 : qualifyingPercentage) : 0.01"
                                         max="100"
                                         step="0.01"
                                         placeholder="100"
@@ -289,7 +290,7 @@ export default {
                                     <span>%</span>
                                 </div>
                                 <small v-if="selectedLevel">
-                                    {{ isCompletion ? 'This meets the completion requirement.' : 'A completion requires ' + qualifyingPercentage + '%. Lower percentages are submitted as progress.' }}
+                                    {{ isCompletion ? '100% is recorded as a completion.' : 'At least ' + (selectedLevel.position > 75 ? 100 : qualifyingPercentage) + '% is required. Accepted results below 100% are recorded as progress.' }}
                                 </small>
                                 <small v-else>Enter the highest percentage you achieved.</small>
                             </div>
@@ -301,9 +302,9 @@ export default {
                                     type="url"
                                     placeholder="https://www.youtube.com/watch?v=..."
                                     autocomplete="url"
-                                    required
                                 />
-                                <small>Include a video that shows the full run and meets the GVDL submission requirements.</small>
+                                <small v-if="selectedLevel && ['Extreme', 'Extreme +', 'Insane -', 'Insane', 'Insane +'].includes(selectedLevel.difficulty)">Video proof is optional, but strongly recommended for Extreme difficulty and above.</small>
+                                <small v-else>Video proof is optional. If provided, it should clearly demonstrate your submitted record.</small>
                             </label>
 
                             <div v-if="selectedLevel" class="submit-record-preview">

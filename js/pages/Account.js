@@ -1177,9 +1177,10 @@ export default {
                 return;
             }
             try {
-                new URL(this.claimProofUrl.trim());
+                const proofUrl = new URL(this.claimProofUrl.trim());
+                if (!['http:', 'https:'].includes(proofUrl.protocol)) throw new Error('Unsupported URL protocol');
             } catch {
-                this.showMessage('Enter a valid proof URL.', 'error');
+                this.showMessage('Enter a valid HTTP or HTTPS proof URL.', 'error');
                 return;
             }
             this.claimLoading = true;

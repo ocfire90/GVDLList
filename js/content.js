@@ -37,13 +37,32 @@ async function fetchJsonLevel(path, rank) {
     }
 }
 
-async function formatDatabaseLevel(databaseLevel, rank) {
-    const path = databaseLevel.legacy_path;
+async function formatDatabaseLevel(databaseLevel, rank, databaseRecords = null) {
+    const legacyPath = databaseLevel.legacy_path;
     let records = [];
 
-    if (path) {
+    if (Array.isArray(databaseRecords)) {
+        // Supabase records are authoritative, including when the list is empty.
+        records = databaseRecords
+            .filter(record => !record.is_first_victor)
+            .map(record => {
+                const percentage = Number(record.percentage);
+
+                if (percentage >= 100) {
+                    return record.player_name;
+                }
+
+                return {
+                    user: record.player_name,
+                    percent: percentage,
+                    link: record.video_url || '',
+                };
+            })
+            .filter(record => typeof record === 'string' ? !!record : !!record.user);
+    } else if (legacyPath) {
+        // Fall back to the legacy JSON records only if the database query failed.
         try {
-            const response = await fetch(`${dir}/${path}.json`, {
+            const response = await fetch(`${dir}/${legacyPath}.json`, {
                 cache: 'no-store',
             });
 
@@ -53,7 +72,7 @@ async function formatDatabaseLevel(databaseLevel, rank) {
             }
         } catch (error) {
             console.error(
-                `Could not load legacy records for ${path}:`,
+                `Could not load legacy records for ${legacyPath}:`,
                 error
             );
         }
@@ -94,7 +113,7 @@ async function formatDatabaseLevel(databaseLevel, rank) {
                     ? ''
                     : String(databaseLevel.points_reward),
 
-            path,
+            path: legacyPath || databaseLevel.id,
         },
         null,
     ];
@@ -149,13 +168,42 @@ async function fetchDatabaseList(listKey) {
             return null;
         }
 
-        // Do not replace the existing Main List with an incomplete import.
-        if (listKey === 'main' && data.length !== 150) {
+        // Keep the legacy 150-level baseline protected from partial imports,
+        // while allowing admin-managed additions beyond the original 150.
+        if (listKey === 'main' && data.length < 150) {
             console.warn(
-                'The database Main List does not contain all 150 levels. Using the existing JSON list.'
+                'The database Main List is incomplete. Using the existing JSON list.'
             );
 
             return null;
+        }
+
+        const levelIds = data
+            .map(entry => entry.levels?.id)
+            .filter(Boolean);
+
+        let recordsByLevel = null;
+
+        if (levelIds.length) {
+            const { data: recordRows, error: recordsError } = await supabase
+                .from('player_records')
+                .select('id, level_id, player_name, percentage, video_url, is_first_victor')
+                .in('level_id', levelIds)
+                .order('created_at', { ascending: true });
+
+            if (recordsError) {
+                console.error('Failed to load public player records from Supabase:', recordsError);
+            } else {
+                recordsByLevel = new Map();
+
+                (recordRows || []).forEach(record => {
+                    if (!recordsByLevel.has(record.level_id)) {
+                        recordsByLevel.set(record.level_id, []);
+                    }
+
+                    recordsByLevel.get(record.level_id).push(record);
+                });
+            }
         }
 
         return await Promise.all(
@@ -167,12 +215,17 @@ async function fetchDatabaseList(listKey) {
                     ];
                 }
 
+                const databaseLevel = {
+                    ...entry.levels,
+                    spreadsheet_rank: entry.position,
+                };
+
                 return formatDatabaseLevel(
-                    {
-                        ...entry.levels,
-                        spreadsheet_rank: entry.position,
-                    },
-                    index
+                    databaseLevel,
+                    index,
+                    recordsByLevel
+                        ? recordsByLevel.get(databaseLevel.id) || []
+                        : null
                 );
             })
         );

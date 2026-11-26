@@ -44,7 +44,12 @@ export default {
             handler() {
                 this.saveDraft();
                 this.errorMessage = '';
-                this.successMessage = '';
+
+                const hasDraft = this.draft.levelId ||
+                    String(this.draft.percentage ?? '').trim() ||
+                    this.draft.videoUrl.trim();
+
+                if (hasDraft) this.successMessage = '';
             },
         },
 

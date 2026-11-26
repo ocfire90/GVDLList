@@ -245,6 +245,7 @@ export default {
         placementHistory: [],
         placementHistoryLoading: false,
         placementHistoryError: false,
+        placementHistoryRequestId: 0,
         roleIconMap,
         store
     }),
@@ -324,6 +325,7 @@ export default {
 
         async loadPlacementHistory() {
             const levelId = this.level?.databaseId;
+            const requestId = ++this.placementHistoryRequestId;
             this.placementHistory = [];
             this.placementHistoryError = false;
 
@@ -344,12 +346,18 @@ export default {
                     .order('changed_at', { ascending: false });
 
                 if (error) throw error;
-                this.placementHistory = data || [];
+                if (requestId === this.placementHistoryRequestId) {
+                    this.placementHistory = data || [];
+                }
             } catch (error) {
                 console.error('Failed to load level placement history:', error);
-                this.placementHistoryError = true;
+                if (requestId === this.placementHistoryRequestId) {
+                    this.placementHistoryError = true;
+                }
             } finally {
-                this.placementHistoryLoading = false;
+                if (requestId === this.placementHistoryRequestId) {
+                    this.placementHistoryLoading = false;
+                }
             }
         },
 

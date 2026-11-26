@@ -37,7 +37,6 @@ export default {
             <div class="home-shell">
                 <section class="home-intro">
                     <div class="home-intro-copy">
-                        <p class="home-eyebrow">GRAB VR DEMON LIST</p>
                         <h1>The GVDL<br><span>Dashboard.</span></h1>
                         <p class="home-description">
                             The latest rankings, player achievements, and changes across the Main List.
@@ -50,7 +49,6 @@ export default {
                     <div class="home-intro-mark" aria-hidden="true">
                         <div class="home-mark-ring"></div>
                         <div class="home-mark-core">GVDL</div>
-                        <span class="home-mark-caption">EST. GRAB VR</span>
                     </div>
                 </section>
 
@@ -140,10 +138,6 @@ export default {
                         </article>
                     </section>
 
-                    <footer class="home-footer">
-                        <span>GRAB VR DEMON LIST</span>
-                        <span>{{ mainListCount }} LEVELS · MAIN LIST</span>
-                    </footer>
                 </div>
                 <p v-if="error" class="home-error">{{ error }}</p>
             </div>

@@ -2869,7 +2869,7 @@ export default {
                             </p>
 
                             <p class="account-hint">
-                                Already on the leaderboard? Use the same username to connect your existing profile and records automatically.
+                                Already on the leaderboard? Enter your exact existing leaderboard username to connect your profile and records automatically.
                             </p>
 
                             <label for="register-email">Email Address</label>

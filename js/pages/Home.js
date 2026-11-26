@@ -55,14 +55,16 @@ export default {
                 </section>
 
                 <div v-if="loading" class="home-loading"><Spinner /></div>
-                <div v-else>
+                <div v-else class="home-content">
                     <section class="home-feature-grid">
                         <article class="home-feature-card home-hardest">
                             <div class="home-card-topline"><span class="home-kicker">CURRENT HARDEST</span><span class="home-index">01 / MAIN LIST</span></div>
                             <template v-if="hardest">
-                                <p class="home-feature-rank">#1</p>
-                                <h2>{{ hardest.name }}</h2>
-                                <p class="home-feature-meta">by {{ hardest.author || 'Unknown creator' }}</p>
+                                <div class="home-feature-body">
+                                    <p class="home-feature-rank">#1</p>
+                                    <h2>{{ hardest.name }}</h2>
+                                    <p class="home-feature-meta">by {{ hardest.author || 'Unknown creator' }}</p>
+                                </div>
                                 <div class="home-feature-bottom">
                                     <span class="home-difficulty">{{ hardest.difficulty || 'Main List #1' }}</span>
                                     <router-link :to="{ path: '/list', query: { level: hardest.path } }">View level <span>↗</span></router-link>
@@ -74,9 +76,11 @@ export default {
                         <article class="home-feature-card home-best-player">
                             <div class="home-card-topline"><span class="home-kicker">TOP PLAYER</span><span class="home-index">02 / LEADERBOARD</span></div>
                             <template v-if="bestPlayer">
-                                <p class="home-feature-rank">#1</p>
-                                <h2>{{ bestPlayer.user }}</h2>
-                                <p class="home-feature-meta">Highest-ranked player on the Main List</p>
+                                <div class="home-feature-body">
+                                    <p class="home-feature-rank">#1</p>
+                                    <h2>{{ bestPlayer.user }}</h2>
+                                    <p class="home-feature-meta">Highest-ranked player on the Main List</p>
+                                </div>
                                 <div class="home-feature-bottom">
                                     <span class="home-player-score">{{ formatScore(bestPlayer.total) }} points</span>
                                     <router-link :to="{ path: '/leaderboard', query: { player: bestPlayer.user } }">View profile <span>↗</span></router-link>

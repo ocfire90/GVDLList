@@ -103,10 +103,7 @@ export default {
                 this.draft.videoUrl.trim();
 
             try {
-                if (!hasDraft) {
-                    localStorage.removeItem(key);
-                    return;
-                }
+                if (!hasDraft) return;
 
                 localStorage.setItem(key, JSON.stringify(this.draft));
                 this.draftStorageAvailable = true;
@@ -292,7 +289,7 @@ export default {
                                     <span>%</span>
                                 </div>
                                 <small v-if="selectedLevel">
-                                    {{ isCompletion ? 'This meets the completion requirement.' : `A completion requires ${qualifyingPercentage}%. Lower percentages are submitted as progress.` }}
+                                    {{ isCompletion ? 'This meets the completion requirement.' : 'A completion requires ' + qualifyingPercentage + '%. Lower percentages are submitted as progress.' }}
                                 </small>
                                 <small v-else>Enter the highest percentage you achieved.</small>
                             </div>

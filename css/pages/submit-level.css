@@ -1,0 +1,16 @@
+
+/* LEVEL PROPOSAL PAGE */
+.page-submit-level .submit-record-field > span small {
+    display: inline;
+    font-size: 10px;
+    font-weight: 500;
+}
+.page-submit-level .submit-record-field select {
+    cursor: pointer;
+}
+@media (max-width: 600px) {
+    .page-submit-level .submit-record-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}

@@ -26,12 +26,14 @@ export default {
         messageType: '',
 
         submissions: [],
+        levelSubmissions: [],
         submissionsLoading: false,
 
         adminLoading: false,
         adminError: '',
 
         adminSubmissions: [],
+        adminLevelSubmissions: [],
         adminLevels: [],
         adminPlayers: [],
         adminLogs: [],
@@ -93,6 +95,7 @@ export default {
                 players: this.adminPlayers.length,
                 levels: this.adminLevels.length,
                 submissions: this.adminSubmissions.length,
+                pendingLevelSubmissions: this.adminLevelSubmissions.filter(item => item.status === 'pending').length,
                 pending: this.adminSubmissions.filter(
                     item => item.status === 'pending'
                 ).length,
@@ -218,6 +221,7 @@ export default {
                     };
 
                     this.submissions = [];
+                    this.levelSubmissions = [];
                     this.clearAdminData();
 
                     this.statsLoading = false;
@@ -254,6 +258,7 @@ export default {
             const allowedTabs = [
                 'overview',
                 'submissions',
+                'level-submissions',
                 'levels',
                 'players',
                 'admins',
@@ -268,6 +273,7 @@ export default {
 
         clearAdminData() {
             this.adminSubmissions = [];
+            this.adminLevelSubmissions = [];
             this.adminLevels = [];
             this.adminPlayers = [];
             this.adminLogs = [];
@@ -299,6 +305,7 @@ export default {
                 logsResult,
                 recordsResult,
                 listEntriesResult,
+                levelSubmissionsResult,
             ] = await Promise.all([
                 supabase
                     .from('record_submissions')
@@ -332,6 +339,11 @@ export default {
                     .order('list_key', { ascending: true })
                     .order('position', { ascending: true }),
 
+                supabase
+                    .from('level_submissions')
+                    .select('*')
+                    .order('submitted_at', { ascending: false }),
+
             ]);
 
             const errors = [
@@ -341,9 +353,11 @@ export default {
                 logsResult.error,
                 recordsResult.error,
                 listEntriesResult.error,
+                levelSubmissionsResult.error,
             ].filter(Boolean);
 
             this.adminSubmissions = submissionsResult.data || [];
+            this.adminLevelSubmissions = levelSubmissionsResult.data || [];
 
             this.adminLevels = (levelsResult.data || []).sort((a, b) => {
                 const rankA = a.spreadsheet_rank ?? Infinity;
@@ -1169,21 +1183,53 @@ export default {
         async loadSubmissions(userId) {
             this.submissionsLoading = true;
 
-            const { data, error } = await supabase
-                .from('record_submissions')
-                .select('id, level_id, percentage, status, moderator_note, submitted_at, reviewed_at, levels(name)')
-                .eq('submitted_by', userId)
-                .order('submitted_at', { ascending: false });
+            const [recordsResult, levelsResult] = await Promise.all([
+                supabase
+                    .from('record_submissions')
+                    .select('id, level_id, percentage, status, moderator_note, submitted_at, reviewed_at, levels(name)')
+                    .eq('submitted_by', userId)
+                    .order('submitted_at', { ascending: false }),
+                supabase
+                    .from('level_submissions')
+                    .select('id, name, verifier, recommended_difficulty, recommended_enjoyment, suggested_position, status, moderator_note, submitted_at, reviewed_at')
+                    .eq('submitted_by', userId)
+                    .order('submitted_at', { ascending: false }),
+            ]);
+
+            if (recordsResult.error) {
+                console.error('Failed to load record submissions:', recordsResult.error);
+                this.submissions = [];
+            } else {
+                this.submissions = recordsResult.data || [];
+            }
+
+            if (levelsResult.error) {
+                console.error('Failed to load level proposals:', levelsResult.error);
+                this.levelSubmissions = [];
+            } else {
+                this.levelSubmissions = levelsResult.data || [];
+            }
+
+            this.submissionsLoading = false;
+        },
+
+        async reviewLevelSubmission(submission, decision) {
+            if (!this.isAdmin || submission.status !== 'pending') return;
+            const action = decision === 'approved' ? 'approve' : 'reject';
+            if (!window.confirm(`Are you sure you want to ${action} "${submission.name}"?`)) return;
+
+            const { error } = await supabase.rpc('admin_review_level_submission', {
+                p_submission_id: submission.id,
+                p_decision: decision,
+                p_moderator_note: null,
+            });
 
             if (error) {
-                console.error('Failed to load record submissions:', error);
-                this.submissions = [];
-                this.submissionsLoading = false;
+                this.adminError = error.message || 'The level proposal could not be reviewed.';
                 return;
             }
 
-            this.submissions = data || [];
-            this.submissionsLoading = false;
+            await this.loadAdminData();
         },
 
         switchTab(tab) {
@@ -2068,6 +2114,39 @@ export default {
                                     <p>Your record submissions will appear here once you submit one.</p>
                                 </div>
 
+                                <div class="content-heading" style="margin-top: 38px;">
+                                    <div>
+                                        <h1>Level Proposals</h1>
+                                        <p>Track new levels you have suggested for the Main List.</p>
+                                    </div>
+                                    <router-link class="account-submit" to="/submit-level">Propose a Level</router-link>
+                                </div>
+
+                                <div v-if="levelSubmissions.length" class="submission-list">
+                                    <article v-for="proposal in levelSubmissions" :key="proposal.id" class="submission-card">
+                                        <div class="submission-card-heading">
+                                            <div>
+                                                <h2>{{ proposal.name }}</h2>
+                                                <p>Submitted {{ formatDate(proposal.submitted_at) }}</p>
+                                            </div>
+                                            <span class="submission-status" :class="proposal.status">{{ proposal.status }}</span>
+                                        </div>
+                                        <div class="submission-details">
+                                            <span>Verifier</span><strong>{{ proposal.verifier }}</strong>
+                                            <span>Suggested placement</span><strong>#{{ proposal.suggested_position }}</strong>
+                                            <span>Enjoyment</span><strong>{{ proposal.recommended_enjoyment }}</strong>
+                                        </div>
+                                        <div v-if="proposal.moderator_note" class="moderator-feedback">
+                                            <strong>Moderator feedback</strong><p>{{ proposal.moderator_note }}</p>
+                                        </div>
+                                    </article>
+                                </div>
+                                <div v-else class="empty-state">
+                                    <h2>No level proposals yet</h2>
+                                    <p>Propose a level when you have its verifier and details ready.</p>
+                                    <router-link class="account-submit" to="/submit-level">Propose a Level</router-link>
+                                </div>
+
                             </template>
 
                             <!-- WEBSITE CUSTOMIZATION -->
@@ -2152,6 +2231,7 @@ export default {
                                         v-for="tab in [
                                             { id: 'overview', label: 'Overview' },
                                             { id: 'submissions', label: 'Submissions' },
+                                            { id: 'level-submissions', label: 'Level Proposals' },
                                             { id: 'levels', label: 'Levels' },
                                             { id: 'players', label: 'Players' },
                                             ...(isOwner ? [{ id: 'admins', label: 'Admins' }] : []),
@@ -2165,6 +2245,9 @@ export default {
                                         {{ tab.label }}
                                         <span v-if="tab.id === 'submissions' && adminStats.pending">
                                             {{ adminStats.pending }}
+                                        </span>
+                                        <span v-if="tab.id === 'level-submissions' && adminStats.pendingLevelSubmissions">
+                                            {{ adminStats.pendingLevelSubmissions }}
                                         </span>
                                     </button>
                                 </div>
@@ -2392,6 +2475,47 @@ export default {
                                             <p>Player record submissions will appear here.</p>
                                         </div>
 
+                                    </template>
+
+                                    <!-- ADMIN LEVEL PROPOSALS -->
+                                    <template v-else-if="activeAdminTab === 'level-submissions'">
+                                        <div class="admin-section-intro">
+                                            <h2>Level Proposals</h2>
+                                            <p>Review proposed levels, verifier details, enjoyment ratings and suggested placements.</p>
+                                        </div>
+
+                                        <div v-if="adminLevelSubmissions.length" class="admin-table-list">
+                                            <article v-for="submission in adminLevelSubmissions" :key="submission.id" class="admin-submission-card">
+                                                <div class="admin-submission-top">
+                                                    <div>
+                                                        <strong>{{ submission.name }}</strong>
+                                                        <small>Submitted {{ formatDateTime(submission.submitted_at) }}</small>
+                                                    </div>
+                                                    <span class="submission-status" :class="submission.status">{{ submission.status }}</span>
+                                                </div>
+
+                                                <div class="admin-submission-details">
+                                                    <div><span>Verifier</span><strong>{{ submission.verifier }}</strong></div>
+                                                    <div><span>Difficulty</span><strong>{{ submission.recommended_difficulty }}</strong></div>
+                                                    <div><span>Enjoyment</span><strong>{{ submission.recommended_enjoyment }}</strong></div>
+                                                    <div><span>Suggested rank</span><strong>#{{ submission.suggested_position }}</strong></div>
+                                                </div>
+
+                                                <div class="admin-submission-actions">
+                                                    <a v-if="submission.verification_url" :href="submission.verification_url" target="_blank" rel="noopener noreferrer">View Verification</a>
+                                                    <span v-else>No verification video link</span>
+                                                    <template v-if="submission.status === 'pending'">
+                                                        <button type="button" class="account-submit" @click="reviewLevelSubmission(submission, 'approved')">Approve & Add</button>
+                                                        <button type="button" class="admin-refresh-button" @click="reviewLevelSubmission(submission, 'rejected')">Reject</button>
+                                                    </template>
+                                                    <p v-if="submission.moderator_note">{{ submission.moderator_note }}</p>
+                                                </div>
+                                            </article>
+                                        </div>
+                                        <div v-else class="empty-state">
+                                            <h2>No level proposals</h2>
+                                            <p>New level proposals will appear here for review.</p>
+                                        </div>
                                     </template>
 
                                     <!-- ADMIN LEVEL MANAGEMENT -->

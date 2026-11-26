@@ -2868,6 +2868,10 @@ export default {
                                 3–20 characters. Letters, numbers and underscores only.
                             </p>
 
+                            <p class="account-hint">
+                                Already on the leaderboard? Use the same username to connect your existing profile and records automatically.
+                            </p>
+
                             <label for="register-email">Email Address</label>
                             <input
                                 id="register-email"

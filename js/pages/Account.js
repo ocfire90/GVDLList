@@ -542,6 +542,7 @@ export default {
             }
 
             const records = this.levelEditorRecords.map(record => ({
+                id: record.id || null,
                 player_name: String(record.player_name || '').trim(),
                 percentage: Number(record.percentage),
                 video_url: String(record.video_url || '').trim() || null,

@@ -14,7 +14,9 @@ export const supabase = createClient(
 // Global website state
 export const store = Vue.reactive({
     dark: JSON.parse(localStorage.getItem('dark')) || false,
-    activeList: localStorage.getItem('activeList') || 'main',
+    activeList: ['main', 'platformer', 'challenge', 'created', 'upcoming'].includes(localStorage.getItem('activeList'))
+        ? localStorage.getItem('activeList')
+        : 'main',
 
     user: null,
     profile: null,

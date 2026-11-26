@@ -300,7 +300,7 @@ export default {
 
         levelUrl(item) {
             const routes = {
-                main: '/',
+                main: '/list',
                 created: '/created',
                 challenge: '/challenge',
                 platformer: '/platformer',

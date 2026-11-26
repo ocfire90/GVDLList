@@ -10,6 +10,8 @@ export default {
         leaderboard: [],
         loading: true,
         selectedUser: '',
+        selectedList: ['main', 'created', 'challenge', 'platformer'].includes(store.activeList) ? store.activeList : 'main',
+        listRequest: 0,
         search: '',
         profile: null,
         profileLoading: false,
@@ -161,9 +163,20 @@ export default {
 
                                 <div class="player-profile-divider"></div>
 
-                                <div class="player-stats-heading">
-                                    <h3>PLAYER STATISTICS</h3>
-                                    <span>GVDL RECORDS</span>
+                                <div class="player-stats-heading leaderboard-profile-stats-heading">
+                                    <div>
+                                        <h3>PLAYER STATISTICS</h3>
+                                        <span>GVDL RECORDS</span>
+                                    </div>
+                                    <label class="profile-list-picker">
+                                        <span>LIST</span>
+                                        <select v-model="selectedList" @change="changeProfileList">
+                                            <option value="main">Main List</option>
+                                            <option value="platformer">Platformer</option>
+                                            <option value="challenge">Challenge</option>
+                                            <option value="created">Created</option>
+                                        </select>
+                                    </label>
                                 </div>
 
                                 <div class="player-stats-grid">
@@ -256,6 +269,55 @@ export default {
             this.selectedUser = username;
         },
 
+        async changeProfileList() {
+            const username = this.selectedUser;
+            this.store.setActiveList(this.selectedList);
+            await this.loadLeaderboardForList(this.selectedList, username);
+        },
+
+        async loadLeaderboardForList(listKey, preferredPlayer = '') {
+            const listFiles = {
+                main: '_list.json',
+                created: '_created.json',
+                challenge: '_challenge.json',
+                platformer: '_platformer.json',
+            };
+            const indexFile = listFiles[listKey];
+            const request = ++this.listRequest;
+
+            this.loading = true;
+            this.err = [];
+
+            if (!indexFile) {
+                this.leaderboard = [];
+                this.selectedUser = '';
+                this.err = ['The leaderboard is unavailable for this list.'];
+                this.loading = false;
+                return;
+            }
+
+            try {
+                const [leaderboard, err] = await fetchLeaderboard(indexFile);
+                if (request !== this.listRequest) return;
+
+                this.leaderboard = leaderboard;
+                this.err = err;
+                const requestedEntry = leaderboard.find(item =>
+                    item.user.toLowerCase() === String(preferredPlayer || '').toLowerCase()
+                );
+                this.selectedUser = requestedEntry?.user || leaderboard[0]?.user || '';
+            } catch (error) {
+                console.error('Failed to load leaderboard:', error);
+                if (request === this.listRequest) {
+                    this.leaderboard = [];
+                    this.selectedUser = '';
+                    this.err = ['Failed to load leaderboard. Please try again.'];
+                }
+            } finally {
+                if (request === this.listRequest) this.loading = false;
+            }
+        },
+
         async loadSelectedProfile() {
             const request = ++this.profileRequest;
             const username = this.selectedUser;
@@ -324,37 +386,9 @@ export default {
     },
 
     async mounted() {
-        const listFiles = {
-            main: '_list.json',
-            created: '_created.json',
-            challenge: '_challenge.json',
-            platformer: '_platformer.json',
-        };
-        const indexFile = listFiles[store.activeList];
-
-        if (!indexFile) {
-            this.leaderboard = [];
-            this.err = ['The leaderboard is unavailable for this list.'];
-            this.loading = false;
-            return;
-        }
-
-        try {
-            const [leaderboard, err] = await fetchLeaderboard(indexFile);
-            this.leaderboard = leaderboard;
-            this.err = err;
-
-            const requestedPlayer = String(this.$route.query.player || '');
-            const requestedEntry = leaderboard.find(item =>
-                item.user.toLowerCase() === requestedPlayer.toLowerCase()
-            );
-            this.selectedUser = requestedEntry?.user || leaderboard[0]?.user || '';
-        } catch (error) {
-            console.error('Failed to load leaderboard:', error);
-            this.leaderboard = [];
-            this.err = ['Failed to load leaderboard. Please try again.'];
-        } finally {
-            this.loading = false;
-        }
+        await this.loadLeaderboardForList(
+            this.selectedList,
+            String(this.$route.query.player || '')
+        );
     },
 };

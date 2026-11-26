@@ -125,7 +125,7 @@ export default {
                                     <strong>#{{ latestVictory.position }}</strong>
                                 </div>
                                 <div class="home-victory-footer">
-                                    <time>{{ formatDate(latestVictory.achieved_at || latestVictory.created_at) }}</time>
+                                    <time>{{ latestVictory.achieved_at ? 'Achieved ' : 'Record logged ' }}{{ formatDate(latestVictory.achieved_at || latestVictory.created_at) }}</time>
                                     <router-link :to="{ path: '/list', query: { level: latestVictory.levelPath } }">View level <span>↗</span></router-link>
                                 </div>
                             </template>

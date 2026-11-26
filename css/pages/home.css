@@ -16,11 +16,12 @@ main.page-home {
 .page-home .home-shell {
     width: 100%;
     min-height: 100%;
+    height: 100%;
     margin: 0;
     padding: clamp(1.25rem, 2.7vw, 2.5rem) clamp(1.25rem, 3.2vw, 3.5rem) 1.25rem;
     display: grid;
-    grid-template-rows: minmax(220px, auto) auto minmax(230px, 1fr) auto;
-    gap: clamp(.9rem, 1.5vw, 1.35rem);
+    grid-template-rows: minmax(230px, .9fr) minmax(0, 1.1fr);
+    gap: clamp(1.25rem, 2.2vw, 2rem);
 }
 
 /* Open, full-width introduction. This is deliberately not a card. */
@@ -120,6 +121,12 @@ main.page-home {
 }
 .home-mark-caption { position: absolute; bottom: 0; font-size: .56rem; line-height: 1; letter-spacing: .16em; opacity: .6; }
 
+ .home-content {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: clamp(.85rem, 1.35vw, 1.2rem);
+}
 .home-feature-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.8rem, 1.5vw, 1.25rem); margin: 0; }
 .home-feature-card, .home-panel {
     min-width: 0;
@@ -132,15 +139,24 @@ main.page-home {
 .home-best-player { background: linear-gradient(145deg, #202633, #303b50); color: #fff; border-color: transparent; }
 .home-card-topline, .home-feature-bottom, .home-section-heading, .home-victory-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .home-index { font-size: .62rem; line-height: 1.2; opacity: .55; font-weight: 700; letter-spacing: .08em; }
-.home-feature-rank { margin: .85rem 0 .08rem; color: #91b5ff; font-size: .72rem; line-height: 1.2; font-weight: 900; letter-spacing: .1em; }
-.home-feature-card h2 { margin: 0; font-size: clamp(1.45rem, 2.5vw, 2rem); line-height: 1.12; font-weight: 800; letter-spacing: -.045em; overflow-wrap: anywhere; }
-.home-feature-meta { margin: .12rem 0 .8rem; color: rgba(255,255,255,.68); font-size: .78rem; line-height: 1.4; }
+ .home-feature-body {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    justify-items: start;
+    align-content: start;
+    gap: .12rem;
+    min-width: 0;
+    margin-top: .8rem;
+}
+.home-feature-rank { display: block; position: static; margin: 0; color: #91b5ff; font-size: .72rem; line-height: 1.25; font-weight: 900; letter-spacing: .1em; }
+.home-feature-card h2 { display: block; position: static; margin: 0; padding: 0; font-size: clamp(1.45rem, 2.5vw, 2rem); line-height: 1.16; font-weight: 800; letter-spacing: -.045em; overflow-wrap: anywhere; }
+.home-feature-meta { display: block; position: static; margin: 0 0 .7rem; color: rgba(255,255,255,.68); font-size: .78rem; line-height: 1.4; }
 .home-feature-bottom { margin-top: auto; padding-top: .7rem; border-top: 1px solid rgba(255,255,255,.16); }
 .home-feature-bottom a { color: #fff; font-size: .72rem; line-height: 1.2; font-weight: 800; text-decoration: none; }
 .home-feature-bottom a span { margin-left: .35rem; }
 .home-difficulty, .home-player-score { font-size: .7rem; line-height: 1.2; font-weight: 800; color: #b7d0ff; }
 
-.home-lower-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: clamp(.8rem, 1.5vw, 1.25rem); min-height: 0; }
+ .home-lower-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr); gap: clamp(.8rem, 1.5vw, 1.25rem); min-height: 0; }
 .home-panel { padding: clamp(1.15rem, 2vw, 1.55rem); }
 .home-section-heading { align-items: flex-start; margin-bottom: .9rem; }
 .home-section-heading h2 { margin: .25rem 0 0; font-size: clamp(1.15rem, 1.8vw, 1.4rem); line-height: 1.2; font-weight: 800; letter-spacing: -.04em; }
@@ -164,9 +180,9 @@ main.page-home {
 .home-empty-state p { margin: .25rem 0 0; color: var(--color-on-background); opacity: .62; font-size: .75rem; line-height: 1.45; }
 .home-victory { background: linear-gradient(150deg, rgba(220,174,73,.12), rgba(220,174,73,.035)); }
 .home-trophy { width: 34px; height: 34px; flex: 0 0 34px; display: grid; place-items: center; border-radius: 50%; background: rgba(220,174,73,.18); color: #c28a24; font-size: 1.1rem; line-height: 1; }
-.home-victory-label { margin: 1.35rem 0 .3rem; color: #c28a24; font-size: .64rem; line-height: 1.2; font-weight: 900; letter-spacing: .12em; }
-.home-victory h3 { margin: 0; font-size: clamp(1.4rem, 2.2vw, 1.75rem); line-height: 1.12; font-weight: 800; letter-spacing: -.045em; overflow-wrap: anywhere; }
-.home-victory-description { margin: .2rem 0 1.1rem; color: var(--color-on-background); opacity: .75; font-size: .8rem; line-height: 1.4; }
+ .home-victory-label { display: block; margin: .9rem 0 .2rem; color: #c28a24; font-size: .64rem; line-height: 1.25; font-weight: 900; letter-spacing: .12em; }
+.home-victory h3 { display: block; margin: 0; font-size: clamp(1.4rem, 2.2vw, 1.75rem); line-height: 1.18; font-weight: 800; letter-spacing: -.045em; overflow-wrap: anywhere; }
+.home-victory-description { display: block; margin: .15rem 0 .85rem; color: var(--color-on-background); opacity: .75; font-size: .8rem; line-height: 1.4; }
 .home-victory-rank { display: flex; align-items: center; justify-content: space-between; padding: .75rem 0; border-top: 1px solid rgba(128,128,128,.2); border-bottom: 1px solid rgba(128,128,128,.2); }
 .home-victory-rank span { font-size: .62rem; line-height: 1.2; font-weight: 800; letter-spacing: .08em; opacity: .6; }
 .home-victory-rank strong { font-size: 1.45rem; line-height: 1; }
@@ -184,7 +200,8 @@ main.page-home {
     .home-feature-card { min-height: 205px; }
 }
 @media (max-width: 760px) {
-    .page-home .home-shell { grid-template-rows: auto auto auto auto; }
+    .page-home .home-shell { height: auto; min-height: 100%; grid-template-rows: auto auto; }
+    .home-content { grid-template-rows: auto auto auto; }
     .home-intro { min-height: 190px; }
     .home-intro-mark { width: 135px; height: 135px; flex-basis: 135px; margin-right: .5rem; }
     .home-mark-core { font-size: 1.2rem; }
@@ -192,7 +209,7 @@ main.page-home {
     .home-lower-grid { grid-template-columns: 1fr; gap: .8rem; }
 }
 @media (max-width: 560px) {
-    .page-home .home-shell { padding: 1rem; gap: .85rem; }
+    .page-home .home-shell { height: auto; padding: 1rem; gap: .85rem; }
     .home-intro { min-height: 0; padding: 1.3rem .25rem 1.5rem; }
     .home-intro-mark { display: none; }
     .home-intro h1 { font-size: clamp(2.8rem, 13vw, 4rem); }

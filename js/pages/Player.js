@@ -8,13 +8,17 @@ export default {
  methods: { localize },
  async mounted() {
   const username = String(this.$route.params.username || '').trim();
-  const { data: identity, error } = await supabase.from('leaderboard_players').select('id, username, account_id, claimed_at').ilike('username', username).maybeSingle();
+  const { data: identity, error } = await supabase.from('leaderboard_players').select('id, username, account_id, claimed_at').eq('username', username).maybeSingle();
   if (error || !identity) { this.error = 'This leaderboard identity does not exist.'; this.loading = false; return; }
   this.identity = identity;
   if (identity.account_id) { const { data } = await supabase.from('profiles').select('username, avatar_url, bio').eq('id', identity.account_id).maybeSingle(); this.account = data || null; }
-  const [leaderboard] = await fetchLeaderboard('_list.json');
-  const index = leaderboard.findIndex(item => item.user.toLowerCase() === identity.username.toLowerCase());
-  if (index !== -1) { this.entry = leaderboard[index]; this.rank = index + 1; }
+  try {
+   const [leaderboard] = await fetchLeaderboard('_list.json');
+   const index = leaderboard.findIndex(item => item.user.toLowerCase() === identity.username.toLowerCase());
+   if (index !== -1) { this.entry = leaderboard[index]; this.rank = index + 1; }
+  } catch (loadError) {
+   console.error('Could not load player leaderboard activity:', loadError);
+  }
   this.loading = false;
  }
 };

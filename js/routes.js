@@ -5,6 +5,7 @@ import Roulette from './pages/Roulette.js';
 import Account from './pages/Account.js';
 import Player from './pages/Player.js';
 import SubmitRecord from './pages/SubmitRecord.js';
+import SubmitLevel from './pages/SubmitLevel.js';
 
 export default [
     { path: '/', component: Home },
@@ -13,6 +14,7 @@ export default [
     { path: '/roulette', component: Roulette },
     { path: '/account', component: Account },
     { path: '/submit-record', component: SubmitRecord },
+    { path: '/submit-level', component: SubmitLevel },
     { path: '/player/:username', component: Player },
     {
         path: '/platformer',

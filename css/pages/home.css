@@ -221,3 +221,93 @@ main.page-home {
 }
 
 /* Homepage spacing refinement: isolated content grid and explicit text flow. */
+
+
+/* Isolate homepage from typography.css's font-metric pseudo-elements.
+   Those negative-margin elements were collapsing the vertical space between text lines. */
+.page-home h1::before,
+.page-home h1::after,
+.page-home h2::before,
+.page-home h2::after,
+.page-home h3::before,
+.page-home h3::after,
+.page-home p::before,
+.page-home p::after {
+    content: none !important;
+    display: none !important;
+    margin: 0 !important;
+}
+
+.page-home .home-intro h1 {
+    display: block;
+    margin: .55rem 0 .8rem;
+    font-size: clamp(3.25rem, 7.1vw, 6rem);
+    line-height: .99;
+    font-weight: 800;
+    letter-spacing: -.065em;
+}
+
+.page-home .home-feature-rank,
+.page-home .home-feature-meta,
+.page-home .home-victory-label,
+.page-home .home-victory-description,
+.page-home .home-update-content p {
+    display: block;
+    position: static;
+    transform: none;
+}
+
+.page-home .home-feature-card h2 {
+    display: block;
+    position: static;
+    margin: 0;
+    padding: 0;
+    font-size: clamp(1.45rem, 2.5vw, 2rem);
+    line-height: 1.16;
+    font-weight: 800;
+    letter-spacing: -.045em;
+}
+
+.page-home .home-section-heading h2 {
+    display: block;
+    margin: .25rem 0 0;
+    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -.04em;
+}
+
+.page-home .home-victory h3 {
+    display: block;
+    margin: 0;
+    font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+    line-height: 1.18;
+    font-weight: 800;
+    letter-spacing: -.045em;
+}
+
+.page-home .home-feature-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .12rem;
+    margin-top: .8rem;
+}
+
+.page-home .home-feature-card {
+    min-height: 184px;
+}
+
+.page-home .home-feature-bottom {
+    margin-top: auto;
+}
+
+.page-home .home-victory-label {
+    margin: .9rem 0 .2rem;
+    line-height: 1.25;
+}
+
+.page-home .home-victory-description {
+    margin: .15rem 0 .85rem;
+    line-height: 1.4;
+}

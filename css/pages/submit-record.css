@@ -409,3 +409,15 @@ main.page-submit-record {
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
+.submit-record-heading-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+@media (max-width: 600px) {
+    .submit-record-heading-actions {
+        width: 100%;
+    }
+}

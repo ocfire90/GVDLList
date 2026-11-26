@@ -1,6 +1,8 @@
 
 import { round, score } from './score.js';
 
+// Public records are merged from legacy JSON and Supabase until migration is complete.
+
 const dir = './data';
 
 const databaseListKeys = {

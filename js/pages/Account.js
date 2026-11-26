@@ -357,7 +357,12 @@ export default {
             ].filter(Boolean);
 
             this.adminSubmissions = submissionsResult.data || [];
-            this.adminLevelSubmissions = levelSubmissionsResult.data || [];
+            this.adminLevelSubmissions = (levelSubmissionsResult.data || []).map(submission => ({
+                ...submission,
+                reviewPosition: submission.suggested_position,
+                reviewDifficulty: submission.recommended_difficulty,
+                reviewEnjoyment: submission.recommended_enjoyment,
+            }));
 
             this.adminLevels = (levelsResult.data || []).sort((a, b) => {
                 const rankA = a.spreadsheet_rank ?? Infinity;
@@ -1222,6 +1227,9 @@ export default {
                 p_submission_id: submission.id,
                 p_decision: decision,
                 p_moderator_note: null,
+                p_final_position: decision === 'approved' ? Number(submission.reviewPosition) : null,
+                p_final_difficulty: decision === 'approved' ? submission.reviewDifficulty : null,
+                p_final_enjoyment: decision === 'approved' ? submission.reviewEnjoyment : null,
             });
 
             if (error) {
@@ -2504,6 +2512,25 @@ export default {
                                                     <div><span>Difficulty</span><strong>{{ submission.recommended_difficulty }}</strong></div>
                                                     <div><span>Enjoyment</span><strong>{{ submission.recommended_enjoyment }}</strong></div>
                                                     <div><span>Suggested rank</span><strong>#{{ submission.suggested_position }}</strong></div>
+                                                </div>
+
+                                                <div v-if="submission.status === 'pending'" class="admin-level-review-controls">
+                                                    <label>
+                                                        Final placement
+                                                        <input v-model.number="submission.reviewPosition" type="number" min="1" max="152" step="1" />
+                                                    </label>
+                                                    <label>
+                                                        Final difficulty
+                                                        <select v-model="submission.reviewDifficulty">
+                                                            <option v-for="difficulty in ['Easy', 'Medium', 'Hard -', 'Hard', 'Hard +', 'Extreme -', 'Extreme', 'Extreme +', 'Insane -', 'Insane', 'Insane +']" :key="difficulty" :value="difficulty">{{ difficulty }}</option>
+                                                        </select>
+                                                    </label>
+                                                    <label>
+                                                        Final enjoyment
+                                                        <select v-model="submission.reviewEnjoyment">
+                                                            <option v-for="grade in ['S+', 'S', 'A+', 'A', 'B+', 'B', 'C+', 'C', 'D', 'F', 'F-']" :key="grade" :value="grade">{{ grade }}</option>
+                                                        </select>
+                                                    </label>
                                                 </div>
 
                                                 <div class="admin-submission-actions">
